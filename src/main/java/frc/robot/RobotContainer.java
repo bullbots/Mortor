@@ -2,7 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.subsystems.DrivetrainFalcon;
+//import frc.robot.subsystems.DrivetrainFalcon;
 
 public class RobotContainer {
 
@@ -17,5 +17,5 @@ public class RobotContainer {
     private static JoystickButton button10 = new JoystickButton(stick, 10);
 
     // Subsystems
-    private final DrivetrainFalcon drivetrainFalcon = new DrivetrainFalcon();
+    //private final DrivetrainFalcon drivetrainFalcon = new DrivetrainFalcon();
 }

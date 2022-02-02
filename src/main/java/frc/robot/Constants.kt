@@ -29,8 +29,8 @@ class Constants {
         const val LEFT_VELOCITY_D = 0.0
         const val LEFT_VELOCITY_FF = 2048.0 / 21000.0
 
-        const val LEFT_MASTER_ACCELERATION = 0
-        const val LEFT_MASTER_VELOCITY = 0
+        const val LEFT_MASTER_ACCELERATION = 0.0
+        const val LEFT_MASTER_VELOCITY = 0.0
 
         const val RIGHT_VELOCITY_P = 0.05
         const val RIGHT_VELOCITY_I = 0.0
@@ -38,8 +38,8 @@ class Constants {
         const val RIGHT_VELOCITY_FF = 2048.0 / 21000.0
 
 
-        const val RIGHT_MASTER_ACCELERATION = 3300
-        const val RIGHT_MASTER_VELOCITY = 3300
+        const val RIGHT_MASTER_ACCELERATION = 3300.0
+        const val RIGHT_MASTER_VELOCITY = 3300.0
 
         /**
          * ALL INTAKE RELATED CONSTANTS GO HERE

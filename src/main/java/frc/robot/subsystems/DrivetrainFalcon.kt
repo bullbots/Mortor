@@ -1,25 +1,22 @@
 package frc.robot.subsystems
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.InvertType;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.music.Orchestra;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
-import edu.wpi.first.networktables.NetworkTableEntry;
+import com.ctre.phoenix.motorcontrol.ControlMode
+import com.ctre.phoenix.motorcontrol.InvertType
+import com.ctre.phoenix.motorcontrol.NeutralMode
+import edu.wpi.first.math.geometry.Pose2d
+import edu.wpi.first.math.geometry.Rotation2d
+import edu.wpi.first.math.kinematics.DifferentialDriveOdometry
+import edu.wpi.first.networktables.NetworkTableEntry
 import edu.wpi.first.wpilibj.RobotBase
-import edu.wpi.first.wpilibj.RobotBase.isReal
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
-import frc.robot.Robot;
-import frc.robot.util.DifferentialDriveDebug;
-import frc.robot.util.NavX;
-import frc.robot.util.SafeTalonFX;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
+import edu.wpi.first.wpilibj.smartdashboard.Field2d
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
+import edu.wpi.first.wpilibj2.command.SubsystemBase
+import frc.robot.Constants
+import frc.robot.util.DifferentialDriveDebug
+import frc.robot.util.NavX
+import frc.robot.util.SafeTalonFX
 
 class DrivetrainFalcon : SubsystemBase() {
 
@@ -41,20 +38,17 @@ class DrivetrainFalcon : SubsystemBase() {
     private val diffDrive = DifferentialDriveDebug(leftMasterFalcon, rightMasterFalcon)
     private val gyro = NavX()
 
-    private val leftCurrent: NetworkTableEntry? = null
-    private val leftPosition: NetworkTableEntry? = null
-    private val leftVelocity: NetworkTableEntry? = null
+    private var leftCurrent: NetworkTableEntry? = null
+    private var leftPosition: NetworkTableEntry? = null
+    private var leftVelocity: NetworkTableEntry? = null
 
-    private val rightCurrent: NetworkTableEntry? = null
-    private val rightPosition: NetworkTableEntry? = null
-    private val rightVelocity: NetworkTableEntry? = null
+    private var rightCurrent: NetworkTableEntry? = null
+    private var rightPosition: NetworkTableEntry? = null
+    private var rightVelocity: NetworkTableEntry? = null
 
     private val shiftThreshold = 0.8
     private val firstGearSlope = 1 / shiftThreshold
     private val secondGearSlope = ( (21000 - 9240) / (1 - shiftThreshold)) / 21000
-
-    private var m_leftDist: Double? = null
-    private var m_rightDist: Double? = null
 
     private var m_flippedOdometry = false
 
@@ -96,7 +90,7 @@ class DrivetrainFalcon : SubsystemBase() {
         }
 
         // diffDrive.setRightSideInverted(false);
-        diffDrive.setSafetyEnabled(false);
+        diffDrive.isSafetyEnabled = false;
 
         // shifter.shiftLow();
 
@@ -124,27 +118,194 @@ class DrivetrainFalcon : SubsystemBase() {
     fun setOdometryDirection(invert: Boolean) { m_flippedOdometry = invert }
 
     fun updateOdometry() {
-        val leftDist = leftMasterFalcon.getSelectedSensorPosition() / ticks_per_foot
-        val rightDist = rightMasterFalcon.getSelectedSensorPosition() / ticks_per_foot
+        var leftDist = leftMasterFalcon.selectedSensorPosition / ticks_per_foot
+        var rightDist = rightMasterFalcon.selectedSensorPosition / ticks_per_foot
+
+        if(m_flippedOdometry) {
+            var temporary = -leftDist
+            leftDist = -rightDist
+            rightDist = temporary
+        }
+
+        // Debugging values
+        // SmartDashboard.putNumber("Left Distance", m_leftDist!!)
+        // SmartDashboard.putNumber("Right Distance", m_rightDist!!)
 
         var rotation2d = gyro.rotation2d
 
-            if (m_flippedOdometry) {
-                rotation2d.rotateBy(Rotation2d.fromDegrees(180.0))
-            }
-
-
+        if (m_flippedOdometry) {
+            rotation2d.rotateBy(Rotation2d.fromDegrees(180.0))
+        }
 
         m_odometry.update(rotation2d, leftDist, rightDist)
 
     }
 
     fun resetOdometry(pose: Pose2d) {
-        leftMasterFalcon.setSelectedSensorPosition(0)
+        leftMasterFalcon.selectedSensorPosition = 0.0
+        rightMasterFalcon.selectedSensorPosition = 0.0
+
+        m_odometry.resetPosition(pose, gyro.rotation2d)
+    }
+
+    fun resetGyro() { gyro.reset() }
+
+    fun resetGyro180() { gyro.reset180() }
+
+    fun getPose(): Pose2d { return m_odometry.poseMeters }
+
+    fun configurePID() {
+
+        // Set Velocity PID Constants in slot 0
+        leftMasterFalcon.config_kF(0, Constants.LEFT_VELOCITY_FF)
+        leftMasterFalcon.config_kP(0, Constants.LEFT_VELOCITY_P)
+        leftMasterFalcon.config_kI(0, Constants.LEFT_VELOCITY_I)
+        leftMasterFalcon.config_kD(0, Constants.LEFT_VELOCITY_D)
+
+        rightMasterFalcon.config_kF(0, Constants.RIGHT_VELOCITY_FF)
+        rightMasterFalcon.config_kP(0, Constants.RIGHT_VELOCITY_P)
+        rightMasterFalcon.config_kI(0, Constants.RIGHT_VELOCITY_I)
+        rightMasterFalcon.config_kD(0, Constants.RIGHT_VELOCITY_D)
 
     }
 
+    fun configureMotionMagic() {
+        leftMasterFalcon.configMotionCruiseVelocity(Constants.LEFT_MASTER_VELOCITY, Constants.kTIMEOUT_MS)
+        leftMasterFalcon.configMotionAcceleration(Constants.LEFT_MASTER_ACCELERATION, Constants.kTIMEOUT_MS)
+
+        rightMasterFalcon.configMotionCruiseVelocity(Constants.RIGHT_MASTER_VELOCITY, Constants.kTIMEOUT_MS)
+        rightMasterFalcon.configMotionAcceleration(Constants.RIGHT_MASTER_ACCELERATION, Constants.kTIMEOUT_MS)
+    }
+
+    fun configureSmartDashBoard() {
+        leftCurrent = generateEntry("Left Current", 0, 0)
+        leftPosition = generateEntry("Left Position", 2, 0)
+        leftVelocity = generateEntry("Left Velocity", 4, 0)
+        rightCurrent = generateEntry("Right Current", 0, 2)
+        rightPosition = generateEntry("Right Position", 2, 2)
+        rightVelocity = generateEntry("Right Velocity", 4, 2)
+    }
+
+    override fun periodic() {
+//        println("DrivetrainFalcon periodic")
+//        SmartDashboard.putNumber("Encoder Ticks - Left", leftMasterFalcon.selectedSensorPosition)
+//        SmartDashboard.putNumber("Encoder Ticks - Right", rightMasterFalcon.selectedSensorPosition)
+//        SmartDashboard.putNumber(
+//            "Encoder Rate (Normalized) - Left",
+//            leftMasterFalcon.selectedSensorVelocity / max_ticks_per_hundred_milliseconds
+//        )
+//        SmartDashboard.putNumber(
+//            "Encoder Rate (Normalized) - Right",
+//            rightMasterFalcon.selectedSensorVelocity / max_ticks_per_hundred_milliseconds
+//        )
+//
+//        SmartDashboard.putNumber("NavX Angle", gyro.rotation2d.degrees)
+//
+//        SmartDashboard.putNumber("Right Master Current", rightMasterFalcon.statorCurrent)
+//        SmartDashboard.putNumber("Right Slave Current", rightSlaveFalcon.statorCurrent)
+//        SmartDashboard.putNumber("Left Master Current", leftMasterFalcon.statorCurrent)
+//        SmartDashboard.putNumber("Left Slave Current", leftSlaveFalcon.statorCurrent)
+
+        updateOdometry()
+
+        if(RobotBase.isReal()) {
+            leftCurrent!!.setNumber(leftMasterFalcon.statorCurrent)
+            // leftPosition!!.setNumber(leftMasterFalcon.selectedSensorPosition)
+            // leftVelocity!!.setNumber(leftMasterFalcon.selectedSensorVelocity)
+
+            rightCurrent!!.setNumber(rightMasterFalcon.statorCurrent)
+            // rightPosition!!.setNumber(rightMasterFalcon.selectedSensorPosition)
+            // rightVelocity!!.setNumber(rightMasterFalcon.selectedSensorVelocity)
 
 
+        } else {
+            var curLeftCurrent = 0.0
+
+            // if (simIter.hasNext()) {
+            //   curLeftCurrent = simIter.next();
+            // }
+            leftCurrent!!.setNumber(curLeftCurrent)
+            leftPosition!!.setNumber(0.0)
+            leftVelocity!!.setNumber(0.0)
+
+            rightCurrent!!.setNumber(0.0)
+            rightPosition!!.setNumber(0.0)
+            rightVelocity!!.setNumber(0.0)
+
+        }
+    }
+
+    fun arcadeDrive(speed: Double, rotation: Double, squareInputs: Boolean) {
+
+        diffDrive.arcadeDrive(speed, rotation, squareInputs)
+    }
+
+
+    fun curvatureDrive(speed: Double, rotation: Double, isQuickTurn: Boolean) {
+        diffDrive.curvatureDrive(speed, rotation, isQuickTurn)
+    }
+
+    /**
+     * Sets the encoder values back to zero
+     */
+    fun resetEncoders() {
+        println("Reset Encoders called")
+        leftMasterFalcon.selectedSensorPosition = 0.0
+        rightMasterFalcon.selectedSensorPosition = 0.0
+    }
+
+    /**
+     * @return double array of positions [left, right]
+     */
+    fun getPositions(): DoubleArray {
+        return doubleArrayOf(leftMasterFalcon.selectedSensorPosition, rightMasterFalcon.selectedSensorPosition)
+    }
+
+    /**
+     * @return double array of velocities [left, right]
+     */
+    fun getVelocities(): DoubleArray {
+        return doubleArrayOf(leftMasterFalcon.selectedSensorVelocity, rightMasterFalcon.selectedSensorVelocity)
+    }
+
+    /**
+     * Sets the left and right motors to a percent output
+     * @param leftPercent Double
+     * @param rightPercent Double
+     */
+    fun set(leftPercent: Double, rightPercent: Double) {
+        leftMasterFalcon.set(leftPercent)
+        rightMasterFalcon.set(rightPercent)
+    }
+
+    fun set(controlMode: ControlMode, leftMagnitude: Double, rightMagnitude: Double) {
+        leftMasterFalcon.set(controlMode, leftMagnitude)
+        rightMasterFalcon.set(controlMode, rightMagnitude)
+    }
+
+    /**
+     * Immediately stops the drivetrain, only use in emergencies
+     */
+    fun stop() {
+        leftMasterFalcon.stopMotor()
+        rightMasterFalcon.stopMotor()
+    }
+
+
+    /**
+     * Helper function to generate NetworkTableEntries
+     */
+    private fun generateEntry(entryName: String, columnIndex: Int, rowIndex: Int): NetworkTableEntry {
+        return Shuffleboard.getTab("Drivetrain")
+            .add(entryName, 0)
+            .withSize(2, 2)
+            .withPosition(columnIndex, rowIndex)
+            .withWidget(BuiltInWidgets.kGraph)
+            .entry
+    }
+
+    fun driveLeft(value: Double) { leftMasterFalcon.set(value) }
+
+    fun driveRight(value: Double) { rightMasterFalcon.set(value) }
 
 }

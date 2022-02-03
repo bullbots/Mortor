@@ -1,6 +1,5 @@
 package frc.robot
 
-import edu.wpi.first.math.MathUtil
 import edu.wpi.first.math.controller.PIDController
 import edu.wpi.first.wpilibj.DriverStation
 import edu.wpi.first.wpilibj.Joystick
@@ -8,7 +7,6 @@ import edu.wpi.first.wpilibj.RobotBase
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.Command
-import edu.wpi.first.wpilibj2.command.ConditionalCommand
 import edu.wpi.first.wpilibj2.command.InstantCommand
 import edu.wpi.first.wpilibj2.command.button.JoystickButton
 import frc.robot.commands.Drivetrain_Commands.JoystickDrive
@@ -29,6 +27,7 @@ class RobotContainer {
         private val button2 = JoystickButton(stick, 2)
         private val button3 = JoystickButton(stick, 3)
         private val button4 = JoystickButton(stick, 4)
+        private val button5 = JoystickButton(stick, 5)
         private val button6 = JoystickButton(stick, 6)
         private val button10 = JoystickButton(stick, 10)
 
@@ -92,8 +91,8 @@ class RobotContainer {
     }
 
     private enum class ShooterMode {
-        COMPETITION,
-        DEMO
+        STATIC,
+        DYANMIC
     }
 
     /**
@@ -192,6 +191,8 @@ class RobotContainer {
         button1.whileHeld(IntakeGroup(intake))
 
         button2.whileHeld(ShooterGroup(staticShooter))
+
+        button5.whileHeld(IntakeGroup(intake, -0.3))
 
         SmartDashboard.putData(object : InstantCommand(
             { drivetrain.resetEncoders() },

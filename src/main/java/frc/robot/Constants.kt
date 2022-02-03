@@ -24,6 +24,7 @@ class Constants {
          * ALL DRIVETRAIN RELATED CONSTANTS GO HERE
          */
 
+        // TODO: These values need to be tuned
         const val LEFT_VELOCITY_P = 0.05
         const val LEFT_VELOCITY_I = 0.0
         const val LEFT_VELOCITY_D = 0.0

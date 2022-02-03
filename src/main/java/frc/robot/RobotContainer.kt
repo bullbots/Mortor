@@ -13,8 +13,10 @@ import edu.wpi.first.wpilibj2.command.InstantCommand
 import edu.wpi.first.wpilibj2.command.button.JoystickButton
 import frc.robot.commands.Drivetrain_Commands.JoystickDrive
 import frc.robot.commands.Intake_Commands.IntakeGroup
+import frc.robot.commands.Shooter_Commands.ShooterGroup
 import frc.robot.subsystems.DrivetrainFalcon
 import frc.robot.subsystems.Intake
+import frc.robot.subsystems.StaticShooter
 import frc.robot.util.PIDControllerDebug
 import java.util.concurrent.atomic.AtomicReference
 
@@ -37,6 +39,7 @@ class RobotContainer {
 
     private val drivetrain = DrivetrainFalcon()
     private val intake = Intake()
+    private val staticShooter = StaticShooter()
 
     var m_chooser = SendableChooser<Command>()
 
@@ -188,7 +191,7 @@ class RobotContainer {
 
         button1.whileHeld(IntakeGroup(intake))
 
-        button2.whileHeld()
+        button2.whileHeld(ShooterGroup(staticShooter))
 
         SmartDashboard.putData(object : InstantCommand(
             { drivetrain.resetEncoders() },

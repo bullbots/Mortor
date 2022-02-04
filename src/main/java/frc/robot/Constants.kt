@@ -18,7 +18,7 @@ class Constants {
         const val unassigned1 = 7;
 
         // Intake Ports
-        const val INTAKE_SPINNER = 8;
+        const val INTAKE_SPINNER_PORT = 8;
 
         /**
          * ALL DRIVETRAIN RELATED CONSTANTS GO HERE

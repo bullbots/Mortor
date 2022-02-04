@@ -99,6 +99,7 @@ class RobotContainer {
      * The container for the robot. Contains subsystems, IO Devices, and commands.
      */
     init {
+        DriverStation.silenceJoystickConnectionWarning(true)
         // Configure the button bindings
         configureButtonBindings()
         // initializeTrajectory must come before configureButtonBindings

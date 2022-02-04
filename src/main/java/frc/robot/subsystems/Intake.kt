@@ -12,21 +12,10 @@ class Intake : SubsystemBase() {
     init {
         configureShuffleBoard()
 
-        intakeSpinner = SafeSparkMax(Constants.INTAKE_SPINNER, CANSparkMaxLowLevel.MotorType.kBrushless)
+        intakeSpinner = SafeSparkMax(Constants.INTAKE_SPINNER_PORT, CANSparkMaxLowLevel.MotorType.kBrushless)
         intakeSpinner!!.idleMode = CANSparkMax.IdleMode.kBrake
 
     }
-
-//    /**
-//     * This sets the speed of the intake motors
-//     * @param spinner This is the value set to the motor
-//     */
-//    fun set(spinner: Double) {
-//        intake_spinner?.set(spinner)
-//    }
-
-    // This sets the value of the Intake
-    fun setIntake() { intakeSpinner?.set(0.3) }
 
     private fun configureShuffleBoard() {}
 

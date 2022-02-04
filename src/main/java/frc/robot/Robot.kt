@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler
  * the package after creating this project, you must also update the build.gradle file in the
  * project.
  */
-class Robot : TimedRobot() {
+object Robot : TimedRobot() {
     private var m_autonomousCommand: Command? = null
     private var m_robotContainer: RobotContainer? = null
     private var m_field: Field2d? = null

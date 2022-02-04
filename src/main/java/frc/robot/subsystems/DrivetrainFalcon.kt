@@ -38,13 +38,13 @@ class DrivetrainFalcon : SubsystemBase() {
     private val diffDrive = DifferentialDriveDebug(leftMasterFalcon, rightMasterFalcon)
     private val gyro = NavX()
 
-    private var leftCurrent: NetworkTableEntry? = null
-    private var leftPosition: NetworkTableEntry? = null
-    private var leftVelocity: NetworkTableEntry? = null
+    lateinit var leftCurrent: NetworkTableEntry
+    lateinit var leftPosition: NetworkTableEntry
+    lateinit var leftVelocity: NetworkTableEntry
 
-    private var rightCurrent: NetworkTableEntry? = null
-    private var rightPosition: NetworkTableEntry? = null
-    private var rightVelocity: NetworkTableEntry? = null
+    lateinit var rightCurrent: NetworkTableEntry
+    lateinit var rightPosition: NetworkTableEntry
+    lateinit var rightVelocity: NetworkTableEntry
 
     private val shiftThreshold = 0.8
     private val firstGearSlope = 1 / shiftThreshold
@@ -97,6 +97,8 @@ class DrivetrainFalcon : SubsystemBase() {
         // configurePID();
         // configureMotionMagic();
         // configureSmartDashboard();
+
+        configureSmartDashBoard()
 
         SmartDashboard.putData("Field", m_fieldSim);
     }
@@ -224,9 +226,9 @@ class DrivetrainFalcon : SubsystemBase() {
             // if (simIter.hasNext()) {
             //   curLeftCurrent = simIter.next();
             // }
-            leftCurrent!!.setNumber(curLeftCurrent)
-            leftPosition!!.setNumber(0.0)
-            leftVelocity!!.setNumber(0.0)
+            leftCurrent.setNumber(curLeftCurrent)
+            leftPosition.setNumber(0.0)
+            leftVelocity.setNumber(0.0)
 
             rightCurrent!!.setNumber(0.0)
             rightPosition!!.setNumber(0.0)

@@ -9,16 +9,15 @@ class Constants {
         const val RIGHT_SLAVE_PORT = 2;
         const val LEFT_MASTER_PORT = 3;
         const val LEFT_SLAVE_PORT = 4;
-
-        // Shooter Ports
-        const val SHOOTER_PORT = 5;
-
+        
         // Unassigned Falcons
-        const val unassigned = 6;
-        const val unassigned1 = 7;
+        const val unassigned = 5;
+        const val unassigned1 = 6;
+        const val unassigned2 = 7;
 
         // Intake Ports
         const val INTAKE_SPINNER_PORT = 8;
+        const val SHOOTER_PORT = 9
 
         /**
          * ALL DRIVETRAIN RELATED CONSTANTS GO HERE

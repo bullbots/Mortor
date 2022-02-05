@@ -103,7 +103,6 @@ class RobotContainer {
         // Configure the button bindings
         configureButtonBindings()
         // initializeTrajectory must come before configureButtonBindings
-        DriverStation.silenceJoystickConnectionWarning(true)
 
         drivetrain.defaultCommand = JoystickDrive(
             drivetrain,

@@ -50,6 +50,7 @@ class Constants {
          *  ALL SHOOTER RELATED CONSTANTS GO HERE
          */
 
+        // TODO: These values need to be tuned
         const val  SHOOTER_FF = 0.0473 // 0
         const val SHOOTER_P = 0.15 // 0
         const val SHOOTER_I = 0.0 // 1e-6

@@ -9,7 +9,7 @@ import frc.robot.util.SafeSparkMax
 import frc.robot.util.SafeTalonFX
 
 class StaticShooter : SubsystemBase() {
-    private lateinit var shooter_spinner: SafeSparkMax
+    private var shooter_spinner: SafeSparkMax
 
     init {
         configureShuffleBoard()

@@ -89,6 +89,19 @@ class RobotContainer {
         fun getValue(): Int { return value!! }
 
     }
+    var staticChooser = SendableChooser<Double>()
+
+
+    private enum class staticShooterVel(velocity: Double) {
+        Vel(0.1),
+        Vel2(0.2),
+        Vel3(0.3),
+        Vel4(0.4),
+        Vel5(0.5),
+        Vel6(0.6),
+        Vel7(0.7),
+        Vel8(0.8);
+    }
 
     private enum class ShooterMode {
         STATIC,
@@ -99,11 +112,23 @@ class RobotContainer {
      * The container for the robot. Contains subsystems, IO Devices, and commands.
      */
     init {
+        println("****************************CONFIG****************************************")
         DriverStation.silenceJoystickConnectionWarning(true)
         // Configure the button bindings
         configureButtonBindings()
+
         // initializeTrajectory must come before configureButtonBindings
-        DriverStation.silenceJoystickConnectionWarning(true)
+        staticChooser.setDefaultOption("Vel", 0.0)
+        staticChooser.addOption("Vel1", 0.1)
+        staticChooser.addOption("Vel2", 0.2)
+        staticChooser.addOption("Vel3", 0.3)
+        staticChooser.addOption("Vel", 0.4)
+        staticChooser.addOption("Vel", 0.5)
+        staticChooser.addOption("Vel", 0.6)
+        staticChooser.addOption("Vel", 0.7)
+
+        SmartDashboard.putData("Velocity Chooser", staticChooser)
+
 
         drivetrain.defaultCommand = JoystickDrive(
             drivetrain,
@@ -192,6 +217,7 @@ class RobotContainer {
         button1.whileHeld(IntakeGroup(intake))
 
         button2.whileHeld(ShooterGroup(staticShooter))
+        println("Button2 was configured")
 
         button5.whileHeld(IntakeGroup(intake, -0.3))
 

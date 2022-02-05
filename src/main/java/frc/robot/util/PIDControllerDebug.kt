@@ -11,13 +11,13 @@ import java.lang.reflect.Field
 /** Add your docs here.  */
 class PIDControllerDebug(private val m_kp: Double, private val m_ki: Double, kd: Double) :
     PIDController(m_kp, m_ki, kd) {
-    var m_totalErrorField: Field? = null
-    private var m_prev = false
+    lateinit var totalErrorField: Field
+    private var prev = false
 
     init {
         try {
-            m_totalErrorField = PIDController::class.java.getDeclaredField("m_totalError")
-            m_totalErrorField?.isAccessible = true
+            totalErrorField = PIDController::class.java.getDeclaredField("m_totalError")
+            totalErrorField.isAccessible = true
         } catch (e: NoSuchFieldException) {
             e.printStackTrace()
         } catch (e: SecurityException) {
@@ -32,15 +32,15 @@ class PIDControllerDebug(private val m_kp: Double, private val m_ki: Double, kd:
         var output = 0.0
         var outputRegion = 0
         if (Math.abs(measurement) <= Constants.VISION_OUTER_ALIGN_THRESHOLD) {
-            if (!m_prev) {
+            if (!prev) {
                 println("INFO: Calling PID reset")
                 reset()
             }
             output = super.calculate(measurement)
-            m_prev = true
+            prev = true
             outputRegion = 1
         } else {
-            m_prev = false
+            prev = false
         }
         SmartDashboard.putNumber("PID Region", outputRegion.toDouble())
 
@@ -66,7 +66,7 @@ class PIDControllerDebug(private val m_kp: Double, private val m_ki: Double, kd:
         */
         var totalError = 0.0
         try {
-            totalError = m_totalErrorField!![this] as Double
+            totalError = totalErrorField[this] as Double
         } catch (e: IllegalArgumentException) {
             e.printStackTrace()
         } catch (e: IllegalAccessException) {

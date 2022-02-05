@@ -211,11 +211,11 @@ class DrivetrainFalcon : SubsystemBase() {
         updateOdometry()
 
         if(RobotBase.isReal()) {
-            leftCurrent!!.setNumber(leftMasterFalcon.statorCurrent)
+            leftCurrent.setNumber(leftMasterFalcon.statorCurrent)
             // leftPosition!!.setNumber(leftMasterFalcon.selectedSensorPosition)
             // leftVelocity!!.setNumber(leftMasterFalcon.selectedSensorVelocity)
 
-            rightCurrent!!.setNumber(rightMasterFalcon.statorCurrent)
+            rightCurrent.setNumber(rightMasterFalcon.statorCurrent)
             // rightPosition!!.setNumber(rightMasterFalcon.selectedSensorPosition)
             // rightVelocity!!.setNumber(rightMasterFalcon.selectedSensorVelocity)
 
@@ -230,9 +230,9 @@ class DrivetrainFalcon : SubsystemBase() {
             leftPosition.setNumber(0.0)
             leftVelocity.setNumber(0.0)
 
-            rightCurrent!!.setNumber(0.0)
-            rightPosition!!.setNumber(0.0)
-            rightVelocity!!.setNumber(0.0)
+            rightCurrent.setNumber(0.0)
+            rightPosition.setNumber(0.0)
+            rightVelocity.setNumber(0.0)
 
         }
     }

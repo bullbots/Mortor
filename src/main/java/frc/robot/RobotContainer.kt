@@ -217,7 +217,6 @@ class RobotContainer {
         button1.whileHeld(IntakeGroup(intake))
 
         button2.whileHeld(ShooterGroup(staticShooter))
-        println("Button2 was configured")
 
         button5.whileHeld(IntakeGroup(intake, -0.3))
 

@@ -20,7 +20,7 @@ class ShooterCargos(private var staticShooter: StaticShooter, var shooterVel: Do
     // Called when the command is initially scheduled.
     override fun initialize() {
         var dashBoardVel = SmartDashboard.getNumber("staticChooser", 0.5)
-        staticShooter.set(shooterVel)
+        staticShooter.set(dashBoardVel)
         println("****************$dashBoardVel*ShooterCargos*************************")
     }
 

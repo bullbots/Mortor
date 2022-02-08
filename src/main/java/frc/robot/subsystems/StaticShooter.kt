@@ -35,7 +35,10 @@ class StaticShooter : SubsystemBase() {
     /**
      * This sets the speed of the static Shooter
      */
-    fun set(shootVel: Double) { shooterSpinner.set(shootVel) }
+    fun set(shootVel: Double) {
+        shooterSpinner.set(shootVel)
+        println("StaticShooterVelocity: $shootVel")
+    }
 
     private fun configureShuffleBoard() {}
 

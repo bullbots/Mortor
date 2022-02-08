@@ -215,7 +215,7 @@ class RobotContainer {
 
         button1.whileHeld(IntakeGroup(intake))
 
-        button2.whileHeld(ShooterGroup(staticShooter, 0.3))
+        button2.whileHeld(ShooterGroup(staticShooter, SmartDashboard.getNumber("staticShooter", 0.3)))
 
         button5.whileHeld(IntakeGroup(intake, -0.3))
 

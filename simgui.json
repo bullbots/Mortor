@@ -14,6 +14,7 @@
       "/LiveWindow/Ungrouped/navX-Sensor[4]": "Gyro",
       "/SmartDashboard/Field": "Field2d",
       "/SmartDashboard/RobotContainer$configureButtonBindings$1": "Command",
+      "/SmartDashboard/SendableChooser[2]": "String Chooser",
       "/SmartDashboard/Velocity Chooser": "String Chooser"
     },
     "windows": {
@@ -22,7 +23,7 @@
           "visible": true
         }
       },
-      "/SmartDashboard/Velocity Chooser": {
+      "/SmartDashboard/SendableChooser[2]": {
         "window": {
           "visible": true
         }

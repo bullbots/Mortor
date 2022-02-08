@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.InstantCommand
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup
 import edu.wpi.first.wpilibj2.command.button.JoystickButton
 import frc.robot.commands.Drivetrain_Commands.JoystickDrive
 import frc.robot.commands.Intake_Commands.IntakeGroup
@@ -41,6 +42,7 @@ class RobotContainer {
     private val staticShooter = StaticShooter()
 
     var m_chooser = SendableChooser<Command>()
+    var static_chooser = SendableChooser<Command>()
 
     enum class Color(value: Int) {
         UNLOADED(0),
@@ -91,18 +93,6 @@ class RobotContainer {
     }
     var staticChooser = SendableChooser<Double>()
 
-
-    private enum class staticShooterVel(velocity: Double) {
-        Vel(0.1),
-        Vel2(0.2),
-        Vel3(0.3),
-        Vel4(0.4),
-        Vel5(0.5),
-        Vel6(0.6),
-        Vel7(0.7),
-        Vel8(0.8);
-    }
-
     private enum class ShooterMode {
         STATIC,
         DYANMIC
@@ -117,17 +107,9 @@ class RobotContainer {
         // Configure the button bindings
         configureButtonBindings()
 
-        // initializeTrajectory must come before configureButtonBindings
-        staticChooser.setDefaultOption("Vel", 0.0)
-        staticChooser.addOption("Vel1", 0.1)
-        staticChooser.addOption("Vel2", 0.2)
-        staticChooser.addOption("Vel3", 0.3)
-        staticChooser.addOption("Vel", 0.4)
-        staticChooser.addOption("Vel", 0.5)
-        staticChooser.addOption("Vel", 0.6)
-        staticChooser.addOption("Vel", 0.7)
 
-        SmartDashboard.putData("Velocity Chooser", staticChooser)
+        // initializeTrajectory must come before configureButtonBindings
+
 
 
         drivetrain.defaultCommand = JoystickDrive(
@@ -137,10 +119,28 @@ class RobotContainer {
         ) { (stick.z - 1) / -2.0 }
 
         initializeAutonomousOptions()
+        initializeStaticShooterVel()
 
 //        shooterMode.setDefaultOption("Competition Shooting", ShooterMode.COMPETITION)
 //        shooterMode.addOption("Demo Shooting", ShooterMode.DEMO)
 //        SmartDashboard.putData(shooterMode)
+    }
+
+    private fun initializeStaticShooterVel() {
+        static_chooser.setDefaultOption("0.1 Vel", SequentialCommandGroup(
+            ShooterGroup(staticShooter, 0.1)
+        ))
+        static_chooser.addOption("0.2 Vel", SequentialCommandGroup(
+            ShooterGroup(staticShooter, 0.2)
+        ))
+        static_chooser.addOption("0.3 Vel", SequentialCommandGroup(
+            ShooterGroup(staticShooter, 0.3)
+        ))
+        static_chooser.addOption("0.4 Vel", SequentialCommandGroup(
+            ShooterGroup(staticShooter, 0.4)
+        ))
+
+        SmartDashboard.putData(static_chooser)
     }
 
     private fun initializeAutonomousOptions() {
@@ -250,6 +250,8 @@ class RobotContainer {
     fun getAutonomousCommand(): Command {
         return m_chooser.selected
     }
+
+
 
     fun stopAllSubsystems() {
         drivetrain.stop()

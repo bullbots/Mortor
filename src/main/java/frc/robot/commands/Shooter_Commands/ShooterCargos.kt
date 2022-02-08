@@ -25,9 +25,7 @@ class ShooterCargos(private var staticShooter: StaticShooter, var shooterVel: Do
     }
 
     // Called every time the scheduler runs while the command is scheduled.
-    override fun execute() {
-        staticShooter.set(shooterVel)
-    }
+    override fun execute() {}
 
     override fun end(interrupted: Boolean) {
         staticShooter.stop()

@@ -6,8 +6,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase
 import frc.robot.Constants
 import frc.robot.util.SafeSparkMax
 
+/**
+ * The shooterSpinner spins from a static velocity taking in
+ * inputs from the SmartDashboard to change its values
+ */
 class StaticShooter : SubsystemBase() {
-    private var shooterSpinner: SafeSparkMax
+    var shooterSpinner: SafeSparkMax
 
     init {
         configureShuffleBoard()
@@ -18,10 +22,8 @@ class StaticShooter : SubsystemBase() {
 
         shooterSpinner.idleMode = CANSparkMax.IdleMode.kCoast
 
-
         var inst = NetworkTableInstance.getDefault()
 
-        println("*******************StaticShooterCalled*********************")
     }
 
     private fun configurePID() {
@@ -29,15 +31,6 @@ class StaticShooter : SubsystemBase() {
         shooterSpinner.pidController.p = Constants.SHOOTER_P
         shooterSpinner.pidController.i = Constants.SHOOTER_I
         shooterSpinner.pidController.d = Constants.SHOOTER_D
-
-    }
-
-    /**
-     * This sets the speed of the static Shooter
-     */
-    fun set(shootVel: Double) {
-        shooterSpinner.set(shootVel)
-        println("StaticShooterVelocity: $shootVel")
     }
 
     private fun configureShuffleBoard() {}

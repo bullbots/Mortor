@@ -37,12 +37,12 @@ class RobotContainer {
         private val shooterMode = SendableChooser<ShooterMode>()
     }
 
+    // Subsystems
     private val drivetrain = DrivetrainFalcon()
     private val intake = Intake()
     private val staticShooter = StaticShooter()
 
     var m_chooser = SendableChooser<Command>()
-    var static_chooser = SendableChooser<Command>()
 
     enum class Color(value: Int) {
         UNLOADED(0),
@@ -106,10 +106,7 @@ class RobotContainer {
         // Configure the button bindings
         configureButtonBindings()
 
-
         // initializeTrajectory must come before configureButtonBindings
-
-
 
         drivetrain.defaultCommand = JoystickDrive(
             drivetrain,
@@ -125,23 +122,11 @@ class RobotContainer {
 //        SmartDashboard.putData(shooterMode)
     }
 
-    private fun initializeStaticShooterVel() {
-
-//        static_chooser.setDefaultOption("0.1 Vel", SequentialCommandGroup(
-//            ShooterGroup(staticShooter, 0.1)
-//        ))
-//        static_chooser.addOption("0.2 Vel", SequentialCommandGroup(
-//            ShooterGroup(staticShooter, 0.2)
-//        ))
-//        static_chooser.addOption("0.3 Vel", SequentialCommandGroup(
-//            ShooterGroup(staticShooter, 0.3)
-//        ))
-//        static_chooser.addOption("0.4 Vel", SequentialCommandGroup(
-//            ShooterGroup(staticShooter, 0.4)
-//        ))
-
-        SmartDashboard.putNumber("staticChooser", 0.1)
-    }
+    /**
+     * Adds the staticShooter velocity values to the SmartDashboard.
+     * You are able to adjust the value inside the SmartDashboard to change velocity
+     */
+    private fun initializeStaticShooterVel() { SmartDashboard.putNumber("staticChooser", 0.3) }
 
     private fun initializeAutonomousOptions() {
         // Add commands to the autonomous command chooser
@@ -246,19 +231,11 @@ class RobotContainer {
 
     }
 
-    fun getAutonomousCommand(): Command {
-        return m_chooser.selected
-    }
+    fun getAutonomousCommand(): Command { return m_chooser.selected }
 
+    fun stopAllSubsystems() { drivetrain.stop() }
 
-
-    fun stopAllSubsystems() {
-        drivetrain.stop()
-    }
-
-    fun periodic() {
-        drivetrain.periodic()
-    }
+    fun periodic() { drivetrain.periodic() }
 
 
 

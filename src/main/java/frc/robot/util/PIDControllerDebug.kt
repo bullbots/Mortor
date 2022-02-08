@@ -7,8 +7,14 @@ import edu.wpi.first.math.controller.PIDController
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import frc.robot.Constants
 import java.lang.reflect.Field
+import kotlin.math.abs
 
-/** Add your docs here.  */
+/**
+ * Wrapper for the PIDController setting the PID values
+ * @param m_kp: Double
+ * @param m_ki: Double
+ * @param kd: Double
+ */
 class PIDControllerDebug(private val m_kp: Double, private val m_ki: Double, kd: Double) :
     PIDController(m_kp, m_ki, kd) {
     lateinit var totalErrorField: Field
@@ -31,7 +37,7 @@ class PIDControllerDebug(private val m_kp: Double, private val m_ki: Double, kd:
     override fun calculate(measurement: Double): Double {
         var output = 0.0
         var outputRegion = 0
-        if (Math.abs(measurement) <= Constants.VISION_OUTER_ALIGN_THRESHOLD) {
+        if (abs(measurement) <= Constants.VISION_OUTER_ALIGN_THRESHOLD) {
             if (!prev) {
                 println("INFO: Calling PID reset")
                 reset()

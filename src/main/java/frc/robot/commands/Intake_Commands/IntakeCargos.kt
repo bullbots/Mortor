@@ -17,7 +17,7 @@ class IntakeCargos(private var intake: Intake, var intakeVel: Double) : CommandB
 
     // Called when the command is initially scheduled.
     override fun initialize() {
-        intake.intakeSpinner?.set(intakeVel)
+        intake.intakeSpinner.set(intakeVel)
     }
 
     // Called every time the scheduler runs while the command is scheduled.

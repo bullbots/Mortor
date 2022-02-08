@@ -139,7 +139,7 @@ class RobotContainer {
 //            ShooterGroup(staticShooter, 0.4)
 //        ))
 
-        SmartDashboard.putData(static_chooser)
+        SmartDashboard.putData("staticChooser", static_chooser)
     }
 
     private fun initializeAutonomousOptions() {

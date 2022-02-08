@@ -8,6 +8,7 @@ class ShooterCargos(private var staticShooter: StaticShooter, var shooterVel: Do
     /**
      * Creates a new IntakeCargo
      */
+
     // Use addRequirements() here to declare subsystem dependencies.
     init {
 
@@ -18,8 +19,9 @@ class ShooterCargos(private var staticShooter: StaticShooter, var shooterVel: Do
 
     // Called when the command is initially scheduled.
     override fun initialize() {
+        var dashBoardVel = SmartDashboard.getData("staticChooser")
         staticShooter.set(shooterVel)
-        println("****************$shooterVel*ShooterCargos*************************")
+        println("****************$dashBoardVel*ShooterCargos*************************")
     }
 
     // Called every time the scheduler runs while the command is scheduled.

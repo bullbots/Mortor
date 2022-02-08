@@ -126,9 +126,10 @@ class RobotContainer {
     }
 
     private fun initializeStaticShooterVel() {
-        static_chooser.setDefaultOption("0.1 Vel", SequentialCommandGroup(
-            ShooterGroup(staticShooter, 0.1)
-        ))
+
+//        static_chooser.setDefaultOption("0.1 Vel", SequentialCommandGroup(
+//            ShooterGroup(staticShooter, 0.1)
+//        ))
 //        static_chooser.addOption("0.2 Vel", SequentialCommandGroup(
 //            ShooterGroup(staticShooter, 0.2)
 //        ))
@@ -139,7 +140,7 @@ class RobotContainer {
 //            ShooterGroup(staticShooter, 0.4)
 //        ))
 
-        SmartDashboard.putData("staticChooser", static_chooser)
+        SmartDashboard.putNumber("staticChooser", 0.1)
     }
 
     private fun initializeAutonomousOptions() {

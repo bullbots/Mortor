@@ -102,7 +102,6 @@ class RobotContainer {
      * The container for the robot. Contains subsystems, IO Devices, and commands.
      */
     init {
-        println("****************************CONFIG****************************************")
         DriverStation.silenceJoystickConnectionWarning(true)
         // Configure the button bindings
         configureButtonBindings()
@@ -130,15 +129,15 @@ class RobotContainer {
         static_chooser.setDefaultOption("0.1 Vel", SequentialCommandGroup(
             ShooterGroup(staticShooter, 0.1)
         ))
-        static_chooser.addOption("0.2 Vel", SequentialCommandGroup(
-            ShooterGroup(staticShooter, 0.2)
-        ))
-        static_chooser.addOption("0.3 Vel", SequentialCommandGroup(
-            ShooterGroup(staticShooter, 0.3)
-        ))
-        static_chooser.addOption("0.4 Vel", SequentialCommandGroup(
-            ShooterGroup(staticShooter, 0.4)
-        ))
+//        static_chooser.addOption("0.2 Vel", SequentialCommandGroup(
+//            ShooterGroup(staticShooter, 0.2)
+//        ))
+//        static_chooser.addOption("0.3 Vel", SequentialCommandGroup(
+//            ShooterGroup(staticShooter, 0.3)
+//        ))
+//        static_chooser.addOption("0.4 Vel", SequentialCommandGroup(
+//            ShooterGroup(staticShooter, 0.4)
+//        ))
 
         SmartDashboard.putData(static_chooser)
     }
@@ -216,7 +215,7 @@ class RobotContainer {
 
         button1.whileHeld(IntakeGroup(intake))
 
-        button2.whileHeld(ShooterGroup(staticShooter))
+        button2.whileHeld(ShooterGroup(staticShooter, 0.3))
 
         button5.whileHeld(IntakeGroup(intake, -0.3))
 

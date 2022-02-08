@@ -13,7 +13,7 @@ class ShooterCargos(private var staticShooter: StaticShooter, var shooterVel: Do
 
         addRequirements(staticShooter)
         this.staticShooter = staticShooter
-
+        println("ShooterCargos: $shooterVel")
     }
 
     // Called when the command is initially scheduled.

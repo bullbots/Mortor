@@ -20,6 +20,8 @@ class StaticShooter : SubsystemBase() {
 
 
         var inst = NetworkTableInstance.getDefault()
+
+        println("*******************StaticShooterCalled*********************")
     }
 
     private fun configurePID() {

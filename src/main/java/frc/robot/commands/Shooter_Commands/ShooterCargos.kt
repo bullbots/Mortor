@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.CommandBase
 import frc.robot.subsystems.StaticShooter
 
-class ShooterCargos(private var staticShooter: StaticShooter, var shooterVel: Double) : CommandBase() {
+class ShooterCargos(private var staticShooter: StaticShooter) : CommandBase() {
     /**
      * Creates a new IntakeCargo
      */
@@ -14,11 +14,12 @@ class ShooterCargos(private var staticShooter: StaticShooter, var shooterVel: Do
 
         addRequirements(staticShooter)
         this.staticShooter = staticShooter
-        println("ShooterCargos: $shooterVel")
+
     }
 
     // Called when the command is initially scheduled.
     override fun initialize() {
+        var shooterVel = SmartDashboard.getNumber("staticChooser", 0.3)
         staticShooter.set(shooterVel)
         println("****************$shooterVel*ShooterCargos*************************")
     }

@@ -43,7 +43,7 @@ class RobotContainer {
     // Subsystems
     private val drivetrain = DrivetrainFalcon()
     private val intake = Intake()
-    private val staticShooter = StaticShooter()
+    // private val staticShooter = StaticShooter()
     private val dynamicShooter = DynamicShooter()
 
     // Util
@@ -208,7 +208,7 @@ class RobotContainer {
 
         button1.whileHeld(IntakeGroup(intake))
 
-        button2.whileHeld(ShooterGroup(staticShooter))
+        // button2.whileHeld(ShooterGroup(staticShooter))
 
         button4.whileHeld(DynamicShooterGroup(dynamicShooter))
 

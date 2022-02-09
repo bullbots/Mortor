@@ -7,10 +7,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 
 class LiDAR {
 
-    private var m_LiDAR: Counter = Counter(0)
+    private var m_LiDAR: Counter
     var dist: Double = 0.0
 
     init {
+        m_LiDAR = Counter(0)
         m_LiDAR.setMaxPeriod(1.00)
         m_LiDAR.setSemiPeriodMode(true)
         m_LiDAR.reset()

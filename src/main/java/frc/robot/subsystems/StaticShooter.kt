@@ -1,48 +1,41 @@
 package frc.robot.subsystems
 
-import com.ctre.phoenix.motorcontrol.NeutralMode
+import com.revrobotics.CANSparkMax
 import edu.wpi.first.networktables.NetworkTableInstance
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import frc.robot.Constants
-import frc.robot.util.SafeTalonFX
+import frc.robot.util.SafeSparkMax
 
+/**
+ * The shooterSpinner spins from a static velocity taking in
+ * inputs from the SmartDashboard to change its values
+ */
 class StaticShooter : SubsystemBase() {
-    private var shooter_spinner: SafeTalonFX? = null
+    var shooterSpinner: SafeSparkMax
 
     init {
         configureShuffleBoard()
 
-        shooter_spinner = SafeTalonFX(Constants.SHOOTER_PORT, true)
+        shooterSpinner = SafeSparkMax(Constants.SHOOTER_PORT)
 
         configurePID()
 
-        shooter_spinner?.setNeutralMode(NeutralMode.Coast)
+        shooterSpinner.idleMode = CANSparkMax.IdleMode.kCoast
 
         var inst = NetworkTableInstance.getDefault()
+
     }
 
     private fun configurePID() {
-        shooter_spinner?.config_kF(0, Constants.SHOOTER_FF)
-        shooter_spinner?.config_kP(0, Constants.SHOOTER_P)
-        shooter_spinner?.config_kI(0, Constants.SHOOTER_I)
-        shooter_spinner?.config_kD(0, Constants.SHOOTER_D)
-
+        shooterSpinner.pidController.ff = Constants.SHOOTER_FF
+        shooterSpinner.pidController.p = Constants.SHOOTER_P
+        shooterSpinner.pidController.i = Constants.SHOOTER_I
+        shooterSpinner.pidController.d = Constants.SHOOTER_D
     }
-
-    /**
-     * This sets the speed of the static Shooter
-     */
-    fun set(shootVel: Double) {
-        shooter_spinner?.set(shootVel)
-    }
-
-    fun setShooter() { set(0.5) }
 
     private fun configureShuffleBoard() {}
 
     override fun periodic() {}
 
-    fun stop() {
-        shooter_spinner?.stopMotor()
-    }
+    fun stop() { shooterSpinner.stopMotor() }
 }

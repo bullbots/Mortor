@@ -18,6 +18,9 @@ import frc.robot.util.DifferentialDriveDebug
 import frc.robot.util.NavX
 import frc.robot.util.SafeTalonFX
 
+/**
+ * Initializes the drivetrain using falcon500
+ */
 class DrivetrainFalcon : SubsystemBase() {
 
     // These values are used for Autonomous
@@ -28,8 +31,8 @@ class DrivetrainFalcon : SubsystemBase() {
     // private val max_ticks_per_hundred_milliseconds: Double = ticks_per_foot * Constants.MAX_SPEED_LOW_GEAR / 10
 
     // Initializing Master Falcon Motors
-    val leftMasterFalcon = SafeTalonFX(Constants.LEFT_MASTER_PORT, false) // change to false for no PID?
-    val rightMasterFalcon = SafeTalonFX(Constants.RIGHT_MASTER_PORT, false)
+    private val leftMasterFalcon = SafeTalonFX(Constants.LEFT_MASTER_PORT, false) // change to false for no PID?
+    private val rightMasterFalcon = SafeTalonFX(Constants.RIGHT_MASTER_PORT, false)
 
     // Initializing Slave Falcon Motors
     private val leftSlaveFalcon = SafeTalonFX(Constants.LEFT_SLAVE_PORT, false)
@@ -211,11 +214,11 @@ class DrivetrainFalcon : SubsystemBase() {
         updateOdometry()
 
         if(RobotBase.isReal()) {
-            leftCurrent!!.setNumber(leftMasterFalcon.statorCurrent)
+            leftCurrent.setNumber(leftMasterFalcon.statorCurrent)
             // leftPosition!!.setNumber(leftMasterFalcon.selectedSensorPosition)
             // leftVelocity!!.setNumber(leftMasterFalcon.selectedSensorVelocity)
 
-            rightCurrent!!.setNumber(rightMasterFalcon.statorCurrent)
+            rightCurrent.setNumber(rightMasterFalcon.statorCurrent)
             // rightPosition!!.setNumber(rightMasterFalcon.selectedSensorPosition)
             // rightVelocity!!.setNumber(rightMasterFalcon.selectedSensorVelocity)
 
@@ -230,9 +233,9 @@ class DrivetrainFalcon : SubsystemBase() {
             leftPosition.setNumber(0.0)
             leftVelocity.setNumber(0.0)
 
-            rightCurrent!!.setNumber(0.0)
-            rightPosition!!.setNumber(0.0)
-            rightVelocity!!.setNumber(0.0)
+            rightCurrent.setNumber(0.0)
+            rightPosition.setNumber(0.0)
+            rightVelocity.setNumber(0.0)
 
         }
     }

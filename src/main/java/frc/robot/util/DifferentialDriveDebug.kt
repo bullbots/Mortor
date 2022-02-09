@@ -9,8 +9,12 @@ import edu.wpi.first.wpilibj.motorcontrol.MotorController
 import kotlin.math.abs
 import kotlin.math.withSign
 
-/** Add your docs here.  */
-class DifferentialDriveDebug(leftMotor: MotorController?, rightMotor: MotorController?) :
+/**
+ * Wrapper for DifferentialDrive setting values
+ * @param leftMotor: MotorController
+ * @param rightMotor: MotorController
+ */
+class DifferentialDriveDebug(leftMotor: MotorController, rightMotor: MotorController) :
     DifferentialDrive(leftMotor, rightMotor) {
 
     private var m_rightSideInvertMultiplier = -1.0

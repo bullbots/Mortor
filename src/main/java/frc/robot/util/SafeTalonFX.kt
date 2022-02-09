@@ -6,19 +6,19 @@ import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX
 import kotlin.math.abs
 
-class SafeTalonFX (deviceNumber: Int) : WPI_TalonFX(deviceNumber) {
+/**
+ * Wrapper used to prevent Falcon 500 from burning out or being damaged
+ * @param deviceNumber Int
+ * @param usePID Boolean: By default this value is false.
+ */
+class SafeTalonFX (deviceNumber: Int, private var usePID: Boolean = false) : WPI_TalonFX(deviceNumber) {
 
-    private var usePID: Boolean = false
     private val currentLimit = 40
     private val currentThreshold = 0
     private val currentThresholdTime = 0.0 // In Milliseconds
     private val maxSpeed = 21000
 
     private val deadBand = 0.05
-
-    constructor(deviceNumber: Int, usePID: Boolean) : this(deviceNumber) {
-        this.usePID = usePID
-    }
 
     init {
         configFactoryDefault()

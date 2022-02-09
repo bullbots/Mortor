@@ -11,13 +11,12 @@ class JoystickDrive (
     private var joyY: DoubleSupplier,
     private var joyX: DoubleSupplier,
     private var joyZ: DoubleSupplier = DoubleSupplier { 1.0 }
-) :
-    CommandBase() {
-    init {
-        addRequirements(m_drivetrain)
-    }
+) : CommandBase() {
+    
+    init { addRequirements(m_drivetrain) }
 
     override fun initialize() {}
+
     override fun execute() {
         var _joyY = joyY.asDouble
         var _joyX = joyX.asDouble

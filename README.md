@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 #   TODO List 
+=======
+#   TODO List
+>>>>>>> Shooter-&-Intake
 Greatest Priority to The Lowest Priority
 1. Program the LiDAR (Kanin)
 2. Program the Climber when mechanical is finished (Kanin)
@@ -10,5 +14,9 @@ Greatest Priority to The Lowest Priority
 8. Program Color sensor (Hyrum)
 9. Utilize LEDs for functionality (Hyrum)
 10. Drivetrain programmed correctly (Kanin)
+<<<<<<< HEAD
 11. Learn vision (Everyone in Programming)
 
+=======
+11. Learn vision (Everyone in Programming)
+>>>>>>> Shooter-&-Intake

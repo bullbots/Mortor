@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.InstantCommand
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup
 import edu.wpi.first.wpilibj2.command.button.JoystickButton
 import frc.robot.commands.Drivetrain_Commands.JoystickDrive
 import frc.robot.commands.Intake_Commands.IntakeGroup
@@ -36,6 +37,7 @@ class RobotContainer {
         private val shooterMode = SendableChooser<ShooterMode>()
     }
 
+    // Subsystems
     private val drivetrain = DrivetrainFalcon()
     private val intake = Intake()
     private val staticShooter = StaticShooter()
@@ -89,6 +91,7 @@ class RobotContainer {
         fun getValue(): Int { return value!! }
 
     }
+    var staticChooser = SendableChooser<Double>()
 
     private enum class ShooterMode {
         STATIC,
@@ -102,6 +105,7 @@ class RobotContainer {
         DriverStation.silenceJoystickConnectionWarning(true)
         // Configure the button bindings
         configureButtonBindings()
+
         // initializeTrajectory must come before configureButtonBindings
 
         drivetrain.defaultCommand = JoystickDrive(
@@ -111,11 +115,18 @@ class RobotContainer {
         ) { (stick.z - 1) / -2.0 }
 
         initializeAutonomousOptions()
+        initializeStaticShooterVel()
 
 //        shooterMode.setDefaultOption("Competition Shooting", ShooterMode.COMPETITION)
 //        shooterMode.addOption("Demo Shooting", ShooterMode.DEMO)
 //        SmartDashboard.putData(shooterMode)
     }
+
+    /**
+     * Adds the staticShooter velocity values to the SmartDashboard.
+     * You are able to adjust the value inside the SmartDashboard to change velocity
+     */
+    private fun initializeStaticShooterVel() { SmartDashboard.putNumber("staticChooser", 0.3) }
 
     private fun initializeAutonomousOptions() {
         // Add commands to the autonomous command chooser
@@ -220,17 +231,11 @@ class RobotContainer {
 
     }
 
-    fun getAutonomousCommand(): Command {
-        return m_chooser.selected
-    }
+    fun getAutonomousCommand(): Command { return m_chooser.selected }
 
-    fun stopAllSubsystems() {
-        drivetrain.stop()
-    }
+    fun stopAllSubsystems() { drivetrain.stop() }
 
-    fun periodic() {
-        drivetrain.periodic()
-    }
+    fun periodic() { drivetrain.periodic() }
 
 
 

@@ -19,14 +19,17 @@ class LiDAR {
 
     val off = 10.0
 
-    @JvmName("getDistance")
+
+    @JvmName("getDist1")
     fun getDist(): Double {
-        if(m_LiDAR.get() < 1) {
-            dist = 0.0
-        } else {
-            dist = (m_LiDAR.period * 1000000.0 / 10.0) - off
-            SmartDashboard.putNumber("LiDAR_Distance", dist)
-        }
+        dist = m_LiDAR.get().toDouble()
+//        if(m_LiDAR.get() < 1) {
+//            dist = 0.0
+//        } else {
+//            dist = (m_LiDAR.period * 1000000.0 / 10.0) - off
+//            SmartDashboard.putNumber("LiDAR_Distance", dist)
+//        }
+
         return dist
     }
 

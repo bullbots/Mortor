@@ -16,6 +16,7 @@ import frc.robot.commands.Shooter_Commands.ShooterGroup
 import frc.robot.subsystems.DrivetrainFalcon
 import frc.robot.subsystems.Intake
 import frc.robot.subsystems.StaticShooter
+import frc.robot.util.LiDAR
 import frc.robot.util.PIDControllerDebug
 import java.util.concurrent.atomic.AtomicReference
 
@@ -41,6 +42,9 @@ class RobotContainer {
     private val drivetrain = DrivetrainFalcon()
     private val intake = Intake()
     private val staticShooter = StaticShooter()
+
+    // Util
+    private val lidar = LiDAR()
 
     var m_chooser = SendableChooser<Command>()
 
@@ -114,6 +118,7 @@ class RobotContainer {
             { stick.x }
         ) { (stick.z - 1) / -2.0 }
 
+        lidar.robotPeriodic()
         initializeAutonomousOptions()
         initializeStaticShooterVel()
 

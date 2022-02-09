@@ -46,9 +46,6 @@ class RobotContainer {
     // private val staticShooter = StaticShooter()
     private val dynamicShooter = DynamicShooter()
 
-    // Util
-    private val lidar = LiDAR()
-
     var m_chooser = SendableChooser<Command>()
 
     enum class Color(value: Int) {

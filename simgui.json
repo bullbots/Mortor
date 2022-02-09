@@ -3,6 +3,7 @@
     "types": {
       "/FMSInfo": "FMSInfo",
       "/LiveWindow/DrivetrainFalcon": "Subsystem",
+      "/LiveWindow/DynamicShooter": "Subsystem",
       "/LiveWindow/Intake": "Subsystem",
       "/LiveWindow/StaticShooter": "Subsystem",
       "/LiveWindow/Ungrouped/DifferentialDrive[1]": "DifferentialDrive",

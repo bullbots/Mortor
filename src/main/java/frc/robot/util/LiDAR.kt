@@ -5,12 +5,12 @@ import edu.wpi.first.wpilibj.TimedRobot
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 
 
-class LiDAR : TimedRobot() {
+class LiDAR {
 
-    lateinit var m_LiDAR: Counter
+    private var m_LiDAR: Counter = Counter(0)
+    var dist: Double = 0.0
 
-    override fun robotInit() {
-        m_LiDAR = Counter(0)
+    init {
         m_LiDAR.setMaxPeriod(1.00)
         m_LiDAR.setSemiPeriodMode(true)
         m_LiDAR.reset()
@@ -18,14 +18,15 @@ class LiDAR : TimedRobot() {
 
     val off = 10.0
 
-    override fun robotPeriodic() {
-        var dist: Double
+    @JvmName("getDistance")
+    fun getDist(): Double {
         if(m_LiDAR.get() < 1) {
             dist = 0.0
         } else {
             dist = (m_LiDAR.period * 1000000.0 / 10.0) - off
             SmartDashboard.putNumber("LiDAR_Distance", dist)
         }
+        return dist
     }
 
 }

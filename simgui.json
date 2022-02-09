@@ -23,6 +23,11 @@
           "visible": true
         }
       },
+      "/SmartDashboard/RobotContainer$configureButtonBindings$1": {
+        "window": {
+          "visible": true
+        }
+      },
       "/SmartDashboard/SendableChooser[2]": {
         "window": {
           "visible": true

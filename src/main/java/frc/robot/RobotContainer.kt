@@ -12,8 +12,10 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup
 import edu.wpi.first.wpilibj2.command.button.JoystickButton
 import frc.robot.commands.Drivetrain_Commands.JoystickDrive
 import frc.robot.commands.Intake_Commands.IntakeGroup
+import frc.robot.commands.Shooter_Commands.DynamicShooterGroup
 import frc.robot.commands.Shooter_Commands.ShooterGroup
 import frc.robot.subsystems.DrivetrainFalcon
+import frc.robot.subsystems.DynamicShooter
 import frc.robot.subsystems.Intake
 import frc.robot.subsystems.StaticShooter
 import frc.robot.util.LiDAR
@@ -42,6 +44,7 @@ class RobotContainer {
     private val drivetrain = DrivetrainFalcon()
     private val intake = Intake()
     private val staticShooter = StaticShooter()
+    private val dynamicShooter = DynamicShooter()
 
     // Util
     private val lidar = LiDAR()
@@ -118,7 +121,6 @@ class RobotContainer {
             { stick.x }
         ) { (stick.z - 1) / -2.0 }
 
-        lidar.robotPeriodic()
         initializeAutonomousOptions()
         initializeStaticShooterVel()
 
@@ -208,6 +210,8 @@ class RobotContainer {
 
         button2.whileHeld(ShooterGroup(staticShooter))
 
+        button4.whileHeld(DynamicShooterGroup(dynamicShooter))
+
         button5.whileHeld(IntakeGroup(intake, -0.3))
 
         SmartDashboard.putData(object : InstantCommand(
@@ -240,7 +244,9 @@ class RobotContainer {
 
     fun stopAllSubsystems() { drivetrain.stop() }
 
-    fun periodic() { drivetrain.periodic() }
+    private fun periodic() {
+        drivetrain.periodic()
+    }
 
 
 

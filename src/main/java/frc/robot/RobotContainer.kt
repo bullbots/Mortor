@@ -200,7 +200,7 @@ class RobotContainer {
 
         button1.whileHeld(IntakeGroup(intake))
 
-        button2.whileHeld(ShooterGroup(staticShooter, lidar.dist))
+        button2.whileHeld(ShooterGroup(staticShooter) { lidar.dist })
 
 //        button4.whileHeld(DynamicShooterGroup(dynamicShooter))
 

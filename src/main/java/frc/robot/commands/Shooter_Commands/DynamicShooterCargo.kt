@@ -15,7 +15,7 @@ class DynamicShooterCargo(private var dynamicShooter: DynamicShooter) : CommandB
 
     // Called when the command i sinitially scheduled.
     override fun initialize() {
-        var dynamicShooterVel = lidar.getDist()
+        var dynamicShooterVel = lidar.dist
         // dynamicShooter.shooterSpinner.set(dynamicShooterVel)
         println(dynamicShooterVel)
     }

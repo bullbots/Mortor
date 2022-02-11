@@ -8,7 +8,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 class LiDAR {
 
     private var m_LiDAR: Counter
+
     var dist: Double = 0.0
+        private set
+        get() = m_LiDAR.distance
 
     init {
         m_LiDAR = Counter(0)
@@ -20,17 +23,17 @@ class LiDAR {
     val off = 10.0
 
 
-    @JvmName("getDist1")
-    fun getDist(): Double {
-        dist = m_LiDAR.get().toDouble()
+
+//    fun getDist(): Double {
+//        dist = m_LiDAR.get()
 //        if(m_LiDAR.get() < 1) {
 //            dist = 0.0
 //        } else {
 //            dist = (m_LiDAR.period * 1000000.0 / 10.0) - off
 //            SmartDashboard.putNumber("LiDAR_Distance", dist)
 //        }
-
-        return dist
-    }
+//
+//        return dist
+//    }
 
 }

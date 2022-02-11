@@ -8,11 +8,11 @@ import frc.robot.subsystems.StaticShooter
  * Used to run ShooterCargo
  * @param staticShooter: StaticShooter
  */
-class ShooterGroup(staticShooter: StaticShooter) : SequentialCommandGroup() {
+class ShooterGroup(staticShooter: StaticShooter, velocity: Double) : SequentialCommandGroup() {
 
 
     init {
-        addCommands(ShooterCargos(staticShooter))
+        addCommands(ShooterCargos(staticShooter, velocity))
 
     }
 

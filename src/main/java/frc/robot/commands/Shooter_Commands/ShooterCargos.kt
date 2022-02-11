@@ -8,7 +8,7 @@ import frc.robot.subsystems.StaticShooter
  * ShooterCargo initialize the velocity of the staticShooter
  * @param staticShooter: StaticShooter
  */
-class ShooterCargos(private var staticShooter: StaticShooter) : CommandBase() {
+class ShooterCargos(private var staticShooter: StaticShooter, private var velocity: Double) : CommandBase() {
 
     // Use addRequirements() here to declare subsystem dependencies.
     init {
@@ -19,7 +19,8 @@ class ShooterCargos(private var staticShooter: StaticShooter) : CommandBase() {
     // Called when the command is initially scheduled.
     override fun initialize() {
         var shooterVel = SmartDashboard.getNumber("staticChooser", 0.3)
-        staticShooter.shooterSpinner.set(shooterVel)
+        staticShooter.shooterSpinner.set(velocity)
+        println(velocity)
     }
 
     // Called every time the scheduler runs while the command is scheduled.

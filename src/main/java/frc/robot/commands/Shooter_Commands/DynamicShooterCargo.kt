@@ -1,9 +1,8 @@
 package frc.robot.commands.Shooter_Commands
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.CommandBase
 import frc.robot.subsystems.DynamicShooter
-import frc.robot.util.LiDAR
+import frc.robot.subsystems.LiDAR
 
 class DynamicShooterCargo(private var dynamicShooter: DynamicShooter) : CommandBase() {
 

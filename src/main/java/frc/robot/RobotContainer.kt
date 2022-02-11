@@ -8,17 +8,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.InstantCommand
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup
 import edu.wpi.first.wpilibj2.command.button.JoystickButton
 import frc.robot.commands.Drivetrain_Commands.JoystickDrive
 import frc.robot.commands.Intake_Commands.IntakeGroup
 import frc.robot.commands.Shooter_Commands.DynamicShooterGroup
 import frc.robot.commands.Shooter_Commands.ShooterGroup
-import frc.robot.subsystems.DrivetrainFalcon
-import frc.robot.subsystems.DynamicShooter
-import frc.robot.subsystems.Intake
-import frc.robot.subsystems.StaticShooter
-import frc.robot.util.LiDAR
+import frc.robot.subsystems.*
 import frc.robot.util.PIDControllerDebug
 import java.util.concurrent.atomic.AtomicReference
 
@@ -43,8 +38,8 @@ class RobotContainer {
     // Subsystems
     private val drivetrain = DrivetrainFalcon()
     private val intake = Intake()
-    // private val staticShooter = StaticShooter()
-    private val dynamicShooter = DynamicShooter()
+    private val staticShooter = StaticShooter()
+    private val lidar = LiDAR()
 
     var m_chooser = SendableChooser<Command>()
 
@@ -205,9 +200,9 @@ class RobotContainer {
 
         button1.whileHeld(IntakeGroup(intake))
 
-        // button2.whileHeld(ShooterGroup(staticShooter))
+        button2.whileHeld(ShooterGroup(staticShooter, lidar.getDist()))
 
-        button4.whileHeld(DynamicShooterGroup(dynamicShooter))
+//        button4.whileHeld(DynamicShooterGroup(dynamicShooter))
 
         button5.whileHeld(IntakeGroup(intake, -0.3))
 

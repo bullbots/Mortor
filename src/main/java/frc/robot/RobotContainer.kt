@@ -38,7 +38,7 @@ class RobotContainer {
     // Subsystems
     private val drivetrain = DrivetrainFalcon()
     private val intake = Intake()
-    private val staticShooter = StaticShooter()
+    private val shooter = Shooter()
     private val lidar = LiDAR()
 
     var m_chooser = SendableChooser<Command>()
@@ -114,7 +114,7 @@ class RobotContainer {
         ) { (stick.z - 1) / -2.0 }
 
         initializeAutonomousOptions()
-        initializeStaticShooterVel()
+        // initializeStaticShooterVel()
 
 //        shooterMode.setDefaultOption("Competition Shooting", ShooterMode.COMPETITION)
 //        shooterMode.addOption("Demo Shooting", ShooterMode.DEMO)
@@ -198,13 +198,13 @@ class RobotContainer {
      */
     private fun configureButtonBindings() {
 
-        button1.whileHeld(IntakeGroup(intake, 0.3, staticShooter))
+        button1.whileHeld(IntakeGroup(intake, 0.3, shooter))
 
-        button2.whileHeld(ShooterGroup(staticShooter) { lidar.dist })
+        button2.whileHeld(ShooterGroup(shooter) { lidar.dist })
 
-//        button4.whileHeld(DynamicShooterGroup(dynamicShooter))
+        button4.whileHeld(ShooterGroup(shooter) {0.3})
 
-        button5.whileHeld(IntakeGroup(intake, -0.3, staticShooter) {0.0})
+        button5.whileHeld(IntakeGroup(intake, -0.3, shooter) {0.0})
 
         SmartDashboard.putData(object : InstantCommand(
             { drivetrain.resetEncoders() },

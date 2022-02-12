@@ -10,7 +10,7 @@ import frc.robot.util.SafeSparkMax
  * The shooterSpinner spins from a static velocity taking in
  * inputs from the SmartDashboard to change its values
  */
-class StaticShooter : SubsystemBase() {
+class Shooter : SubsystemBase() {
     var shooterSpinner: SafeSparkMax
 
     init {

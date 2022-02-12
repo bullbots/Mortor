@@ -1,17 +1,17 @@
 package frc.robot.commands.Shooter_Commands
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup
-import frc.robot.subsystems.StaticShooter
+import frc.robot.subsystems.Shooter
 
 /**
  * Used to run ShooterCargo
- * @param staticShooter: StaticShooter
+ * @param shooter: StaticShooter
  */
-class ShooterGroup(staticShooter: StaticShooter, velocity: ()->Double) : SequentialCommandGroup() {
+class ShooterGroup(shooter: Shooter, velocity: ()->Double) : SequentialCommandGroup() {
 
 
     init {
-        addCommands(ShooterCargos(staticShooter, velocity))
+        addCommands(ShooterCargos(shooter, velocity))
 
     }
 

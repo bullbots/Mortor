@@ -77,7 +77,7 @@ class DrivetrainFalcon : SubsystemBase() {
             leftMasterFalcon.inverted = false;
             leftSlaveFalcon.setInverted(InvertType.FollowMaster);
 
-            setCoastMode(CoastMode.Coast);
+            setCoastMode(CoastMode.Brake);
 
             // leftMasterFalcon.configClosedloopRamp(Constants.DRIVETRAIN_RAMP);
             // rightMasterFalcon.configClosedloopRamp(Constants.DRIVETRAIN_RAMP);
@@ -106,7 +106,7 @@ class DrivetrainFalcon : SubsystemBase() {
         SmartDashboard.putData("Field", m_fieldSim);
     }
 
-    fun setCoastMode(coastMode: CoastMode) {
+    private fun setCoastMode(coastMode: CoastMode) {
         // Sets neutralMode to Coast or Brake depending on coastMode
         var neutralMode = NeutralMode.Coast // By default this is Coast
         if(coastMode == CoastMode.Coast) {

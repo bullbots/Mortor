@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand
 import edu.wpi.first.wpilibj2.command.button.JoystickButton
 import frc.robot.commands.Drivetrain_Commands.JoystickDrive
 import frc.robot.commands.Intake_Commands.IntakeGroup
-import frc.robot.commands.Shooter_Commands.DynamicShooterGroup
 import frc.robot.commands.Shooter_Commands.ShooterGroup
 import frc.robot.subsystems.*
 import frc.robot.util.PIDControllerDebug

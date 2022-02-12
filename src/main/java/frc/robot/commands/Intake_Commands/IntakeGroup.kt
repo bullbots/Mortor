@@ -15,7 +15,7 @@ class IntakeGroup(intake: Intake, intakeVel: Double, shooter: Shooter, velocity:
     init {
         addCommands(
             IntakeCargos(intake, intakeVel),
-            ShooterCargos(shooter, velocity)
+            ShooterCargos(shooter, true, velocity)
         )
 
     }

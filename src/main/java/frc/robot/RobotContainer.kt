@@ -198,13 +198,13 @@ class RobotContainer {
      */
     private fun configureButtonBindings() {
 
-        button1.whileHeld(IntakeGroup(intake))
+        button1.whileHeld(IntakeGroup(intake, 0.3, staticShooter))
 
         button2.whileHeld(ShooterGroup(staticShooter) { lidar.dist })
 
 //        button4.whileHeld(DynamicShooterGroup(dynamicShooter))
 
-        button5.whileHeld(IntakeGroup(intake, -0.3))
+        button5.whileHeld(IntakeGroup(intake, -0.3, staticShooter) {0.0})
 
         SmartDashboard.putData(object : InstantCommand(
             { drivetrain.resetEncoders() },

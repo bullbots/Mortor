@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.InstantCommand
 import edu.wpi.first.wpilibj2.command.button.JoystickButton
+import frc.robot.commands.Climber_Commands.ClimberGroup
 import frc.robot.commands.Drivetrain_Commands.JoystickDrive
 import frc.robot.commands.Intake_Commands.IntakeGroup
 import frc.robot.commands.Shooter_Commands.ShooterGroup
@@ -28,6 +29,7 @@ class RobotContainer {
         private val button5 = JoystickButton(stick, 5)
         private val button6 = JoystickButton(stick, 6)
         private val button10 = JoystickButton(stick, 10)
+        private val button11 = JoystickButton(stick, 11)
 
         private val pathColor = AtomicReference<Color>(Color.UNLOADED)
 
@@ -38,6 +40,7 @@ class RobotContainer {
     private val drivetrain = DrivetrainFalcon()
     private val intake = Intake()
     private val shooter = Shooter()
+    private val climber = Climber()
     private val lidar = LiDAR()
 
     var m_chooser = SendableChooser<Command>()
@@ -204,6 +207,9 @@ class RobotContainer {
         button4.whileHeld(ShooterGroup(shooter, true) {0.3})
 
         button5.whileHeld(IntakeGroup(intake, -0.3, shooter))
+
+        button10.whileHeld(ClimberGroup(climber, -0.1))
+        button11.whileHeld(ClimberGroup(climber))
 
         SmartDashboard.putData(object : InstantCommand(
             { drivetrain.resetEncoders() },

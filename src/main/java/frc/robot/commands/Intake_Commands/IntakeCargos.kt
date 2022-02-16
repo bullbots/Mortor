@@ -12,7 +12,6 @@ class IntakeCargos(private var intake: Intake, var intakeVel: Double) : CommandB
     // Use addRequirements() here to declare subsystem dependencies.
     init {
         addRequirements(intake)
-        this.intake = intake
     }
 
     // Called when the command is initially scheduled.

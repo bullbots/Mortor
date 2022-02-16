@@ -5,23 +5,25 @@ class Constants {
 
     companion object {
         // Drivetrain Ports
-        const val RIGHT_MASTER_PORT = 1;
-        const val RIGHT_SLAVE_PORT = 2;
-        const val LEFT_MASTER_PORT = 3;
-        const val LEFT_SLAVE_PORT = 4;
+        const val RIGHT_MASTER_PORT = 1
+        const val RIGHT_SLAVE_PORT = 2
+        const val LEFT_MASTER_PORT = 3
+        const val LEFT_SLAVE_PORT = 4
 
         // Shooter Ports
         const val SHOOTER_PORT = 5;
 
+        // Climber Ports
+        const val CLIMBER_PORT = 7
+
         // Unassigned Falcons
-        const val unassigned1 = 6;
-        const val unassigned2 = 7;
+        const val unassigned1 = 6
 
         // Intake Ports
-        const val INTAKE_SPINNER_PORT = 8;
+        const val INTAKE_SPINNER_PORT = 8
 
         // Unassigned NEOs
-        const val unassigned3 = 9
+        const val unassigned2 = 9
 
         /**
          * ALL DRIVETRAIN RELATED CONSTANTS GO HERE

@@ -204,12 +204,12 @@ class RobotContainer {
 
         button2.whileHeld(ShooterGroup(shooter, false) { lidar.dist })
 
-        button4.whileHeld(ShooterGroup(shooter, true) {0.3})
+        button4.whileHeld(ShooterGroup(shooter, true) {0.35})
 
         button5.whileHeld(IntakeGroup(intake, -0.3, shooter))
 
-        button10.whileHeld(ClimberGroup(climber, -0.1))
-        button11.whileHeld(ClimberGroup(climber))
+        button10.whileHeld(ClimberGroup(climber, -0.5))
+        button11.whileHeld(ClimberGroup(climber, 0.5))
 
         SmartDashboard.putData(object : InstantCommand(
             { drivetrain.resetEncoders() },

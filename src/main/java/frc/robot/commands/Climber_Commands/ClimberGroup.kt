@@ -7,6 +7,7 @@ class ClimberGroup(climber: Climber, climberVel: Double = 0.1) : SequentialComma
 
     init {
         addCommands(
+
             ClimberCommand(climber, climberVel)
         )
     }

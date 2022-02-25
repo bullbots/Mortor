@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.InstantCommand
 import edu.wpi.first.wpilibj2.command.button.JoystickButton
 import frc.robot.commands.Climber_Commands.ClimberGroup
+import frc.robot.commands.Climber_Commands.Grenade
 import frc.robot.commands.Drivetrain_Commands.JoystickDrive
 import frc.robot.commands.Intake_Commands.IntakeGroup
 import frc.robot.commands.Shooter_Commands.ShooterGroup
@@ -41,7 +42,7 @@ class RobotContainer {
     private val intake = Intake()
     private val shooter = Shooter()
     private val climber = Climber()
-    private val lidar = LiDAR()
+//    private val lidar = LiDAR()
 
     var m_chooser = SendableChooser<Command>()
 
@@ -200,9 +201,11 @@ class RobotContainer {
      */
     private fun configureButtonBindings() {
 
+        button2.whenPressed(Grenade(climber))
+
         button1.whileHeld(IntakeGroup(intake, 0.6, shooter) { -0.12 })
 
-        button2.whileHeld(ShooterGroup(intake, -0.1, shooter, false) { lidar.dist })
+    //    button2.whileHeld(ShooterGroup(intake, -0.1, shooter, false) { lidar.dist })
 
         button4.whileHeld(ShooterGroup(intake, -0.1, shooter, true) {0.45})
 

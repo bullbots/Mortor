@@ -13,6 +13,7 @@ class Grenade(private var climber: Climber) : CommandBase() {
     }
 
     override fun initialize() {
+        println("I got called.")
         climber.climberMotor.set(TalonFXControlMode.MotionMagic, Constants.CLIMBER_DOWN)
 
     }
@@ -23,7 +24,7 @@ class Grenade(private var climber: Climber) : CommandBase() {
     override fun end(interrupted: Boolean) { climber.stop() }
 
     override fun isFinished(): Boolean {
-        return abs(climber.climberMotor.getClosedLoopError(Constants.kPIDLoopIdx)) < 10
+        return abs(climber.climberMotor.getClosedLoopError(Constants.kPIDLoopIdx)) < 100
 
     }
 

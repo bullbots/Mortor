@@ -2,7 +2,6 @@ package frc.robot
 
 class Constants {
 
-
     companion object {
         // Drivetrain Ports
         const val RIGHT_MASTER_PORT = 1
@@ -11,7 +10,7 @@ class Constants {
         const val LEFT_SLAVE_PORT = 4
 
         // Shooter Ports
-        const val SHOOTER_PORT = 5;
+        const val SHOOTER_PORT = 5
 
         // Climber Ports
         const val CLIMBER_PORT = 7
@@ -71,15 +70,14 @@ class Constants {
         const val CLIMBER_LIMIT_THRESHOLD = 1000
         const val kPIDLoopIdx = 0
 
-        const val climberkP = 0.2
+        const val climberkP = 0.0
         const val climberkI = 0.0
         const val climberkD = 0.0
-        const val climberkF = 0.2
+        const val climberkF = 2048.0 / 21000.0
         const val climberkIzone = 0.0
         const val climberkPeakOutput = 1.0
 
         const val kSlotIdx = 0
-
 
         /**
          * MISCELLANEOUS CONSTANTS

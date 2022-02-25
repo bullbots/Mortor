@@ -112,7 +112,7 @@ class RobotContainer {
         drivetrain.defaultCommand = JoystickDrive(
             drivetrain,
             { -stick.y * if (button3.get()) -1.0 else 1.0 },  // Because Negative Y is forward on the joysticks
-            { stick.x }
+            { stick.x * 0.75}
         ) { (stick.z - 1) / -2.0 }
 
         initializeAutonomousOptions()
@@ -199,16 +199,19 @@ class RobotContainer {
      * edu.wpi.first.wpilibj2.command.button.JoystickButton
      */
     private fun configureButtonBindings() {
-
-        button1.whileHeld(IntakeGroup(intake, 0.3, shooter) { -0.05 })
-
-        button2.whileHeld(ShooterGroup(shooter, false) { lidar.dist })
-
-        button4.whileHeld(ShooterGroup(shooter, true) {0.35})
-
-        button5.whileHeld(IntakeGroup(intake, -0.3, shooter))
-
+        //intake the ball
+        button1.whileHeld(IntakeGroup(intake, 0.6, shooter) {-0.12})
+        //lidar shooter
+        button2.whileHeld(ShooterGroup(shooter, false, intake) { lidar.dist })
+        //static shooter
+        button4.whileHeld(ShooterGroup(shooter, true, intake) {0.45})
+        //spit out the ball out the intake
+        button5.whileHeld(IntakeGroup(intake, -0.3, shooter) {-0.1})
+        //spit it out the top
+        button6.whileHeld(IntakeGroup(intake, 0.3, shooter) {0.2})
+        //climb arms down
         button10.whileHeld(ClimberGroup(climber, -0.5))
+        //climb arms up
         button11.whileHeld(ClimberGroup(climber, 0.5))
 
         SmartDashboard.putData(object : InstantCommand(

@@ -68,6 +68,10 @@ class DrivetrainFalcon : SubsystemBase() {
 
     init {
         if (RobotBase.isReal()) {
+            leftMasterFalcon.configFactoryDefault()
+            rightMasterFalcon.configFactoryDefault()
+            leftSlaveFalcon.configFactoryDefault()
+            rightSlaveFalcon.configFactoryDefault()
 
             leftSlaveFalcon.follow(leftMasterFalcon);
             rightSlaveFalcon.follow(rightMasterFalcon);

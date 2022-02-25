@@ -200,15 +200,18 @@ class RobotContainer {
      */
     private fun configureButtonBindings() {
 
-        button1.whileHeld(IntakeGroup(intake, 0.3, shooter) { -0.05 })
+        button1.whileHeld(IntakeGroup(intake, 0.6, shooter) { -0.12 })
 
         button2.whileHeld(ShooterGroup(intake, -0.1, shooter, false) { lidar.dist })
 
-        button4.whileHeld(ShooterGroup(intake, -0.1, shooter, true) {0.35})
+        button4.whileHeld(ShooterGroup(intake, -0.1, shooter, true) {0.45})
 
-        button5.whileHeld(IntakeGroup(intake, -0.3, shooter))
+        button5.whileHeld(IntakeGroup(intake, -0.3, shooter) {-0.1})
+
+        button6.whileHeld(IntakeGroup(intake, 0.3, shooter) { 0.2 })
 
         button10.whileHeld(ClimberGroup(climber, -0.5))
+
         button11.whileHeld(ClimberGroup(climber, 0.5))
 
         SmartDashboard.putData(object : InstantCommand(

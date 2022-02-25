@@ -21,6 +21,7 @@ class Shooter : SubsystemBase() {
 
         // shooterSpinner = SafeSparkMax(Constants.SHOOTER_PORT)
         shooterSpinner = SafeTalonFX(Constants.SHOOTER_PORT, true)
+        shooterSpinner.configFactoryDefault()
 
         configurePID()
 

@@ -66,12 +66,25 @@ class Constants {
         /**
          * ALL CLIMB RELATED CONSTANTS GO HERE
          */
+        const val CLIMBER_DOWN = -100.0
+        const val CLIMBER_UP = 100000.0
+        const val CLIMBER_LIMIT_THRESHOLD = 1000
+        const val kPIDLoopIdx = 0
+
+        const val climberkP = 0.2
+        const val climberkI = 0.0
+        const val climberkD = 0.0
+        const val climberkF = 0.2
+        const val climberkIzone = 0.0
+        const val climberkPeakOutput = 1.0
+
+        const val kSlotIdx = 0
+
 
         /**
          * MISCELLANEOUS CONSTANTS
          */
-        const val kTIMEOUT_MS = 0
-        const val VISION_OUTER_ALIGN_THRESHOLD = 100
-        const val VISION_INNER_ALIGN_THRESHOLD = 80
+        const val kTIMEOUT_MS = 30
+
     }
 }

@@ -1,20 +1,13 @@
 package frc.robot
 
-import edu.wpi.first.math.controller.PIDController
 import edu.wpi.first.wpilibj.DriverStation
 import edu.wpi.first.wpilibj.Joystick
-import edu.wpi.first.wpilibj.RobotBase
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.Command
-import edu.wpi.first.wpilibj2.command.InstantCommand
 import edu.wpi.first.wpilibj2.command.button.JoystickButton
-import frc.robot.commands.Climber_Commands.ClimberGroup
-import frc.robot.commands.Drivetrain_Commands.JoystickDrive
-import frc.robot.commands.Intake_Commands.IntakeGroup
-import frc.robot.commands.Shooter_Commands.ShooterGroup
-import frc.robot.subsystems.*
-import frc.robot.util.PIDControllerDebug
+import frc.robot.commands.Climber_Commands.AutoClimber
+import frc.robot.subsystems.Climber
 import java.util.concurrent.atomic.AtomicReference
 
 class RobotContainer {
@@ -25,11 +18,8 @@ class RobotContainer {
         private val button1 = JoystickButton(stick, 1)
         private val button2 = JoystickButton(stick, 2)
         private val button3 = JoystickButton(stick, 3)
-        private val button4 = JoystickButton(stick, 4)
-        private val button5 = JoystickButton(stick, 5)
-        private val button6 = JoystickButton(stick, 6)
-        private val button10 = JoystickButton(stick, 10)
-        private val button11 = JoystickButton(stick, 11)
+
+
 
         private val pathColor = AtomicReference<Color>(Color.UNLOADED)
 
@@ -37,11 +27,8 @@ class RobotContainer {
     }
 
     // Subsystems
-    private val drivetrain = DrivetrainFalcon()
-    private val intake = Intake()
-    private val shooter = Shooter()
     private val climber = Climber()
-    private val lidar = LiDAR()
+//    private val lidar = LiDAR()
 
     var m_chooser = SendableChooser<Command>()
 
@@ -109,11 +96,7 @@ class RobotContainer {
 
         // initializeTrajectory must come before configureButtonBindings
 
-        drivetrain.defaultCommand = JoystickDrive(
-            drivetrain,
-            { -stick.y * if (button3.get()) -1.0 else 1.0 },  // Because Negative Y is forward on the joysticks
-            { stick.x * 0.75}
-        ) { (stick.z - 1) / -2.0 }
+
 
         initializeAutonomousOptions()
         // initializeStaticShooterVel()
@@ -199,53 +182,27 @@ class RobotContainer {
      * edu.wpi.first.wpilibj2.command.button.JoystickButton
      */
     private fun configureButtonBindings() {
-        //intake the ball
-        button1.whileHeld(IntakeGroup(intake, 0.6, shooter) {-0.12})
-        //lidar shooter
-        button2.whileHeld(ShooterGroup(shooter, false, intake) { lidar.dist })
-        //static shooter
-        button4.whileHeld(ShooterGroup(shooter, true, intake) {0.45})
-        //spit out the ball out the intake
-        button5.whileHeld(IntakeGroup(intake, -0.3, shooter) {-0.1})
-        //spit it out the top
-        button6.whileHeld(IntakeGroup(intake, 0.3, shooter) {0.2})
-        //climb arms down
-        button10.whileHeld(ClimberGroup(climber, -0.5))
-        //climb arms up
-        button11.whileHeld(ClimberGroup(climber, 0.5))
 
-        SmartDashboard.putData(object : InstantCommand(
-            { drivetrain.resetEncoders() },
-            drivetrain
-        ) {
-            override fun initialize() {
-                super.initialize()
-                name = "Reset Encoders"
-            }
+        button1.whileHeld(AutoClimber(climber, isGrenade = true, isDown = true))
+        button2.whileHeld(AutoClimber(climber, isGrenade = false, isDown = true))
+        button3.whileHeld(AutoClimber(climber, isGrenade = false, isDown = false))
 
-            override fun runsWhenDisabled(): Boolean {
-                return true
-            }
-        })
+
 
 
 
 
         // PIDController pidcontroller = new PIDControllerDebug(0.0006, 0.0005, 0.0);
-        val pidcontroller: PIDController = PIDControllerDebug(0.002, 0.001, 0.0)
-        pidcontroller.setIntegratorRange(-0.15, 0.15)
-        if (RobotBase.isSimulation()) {
-            SmartDashboard.putNumber("TargetX", 0.0)
-        }
+
 
     }
 
     fun getAutonomousCommand(): Command { return m_chooser.selected }
 
-    fun stopAllSubsystems() { drivetrain.stop() }
+    fun stopAllSubsystems() { }
 
     private fun periodic() {
-        drivetrain.periodic()
+
     }
 
 

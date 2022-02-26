@@ -1,9 +1,8 @@
 package frc.robot.util
 
-import com.ctre.phoenix.motorcontrol.ControlMode
-import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration
-import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice
+import com.ctre.phoenix.motorcontrol.*
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX
+import frc.robot.Constants
 import kotlin.math.abs
 
 /**
@@ -11,24 +10,21 @@ import kotlin.math.abs
  * @param deviceNumber Int
  * @param usePID Boolean: By default this value is false.
  */
+
+
 class SafeTalonFX (deviceNumber: Int, private var usePID: Boolean = false) : WPI_TalonFX(deviceNumber) {
 
-    private val currentLimit = 40
-    private val currentThreshold = 0
-    private val currentThresholdTime = 0.0 // In Milliseconds
-    private val maxSpeed = 21000
-
+    private val maxSpeed = 21000.0
     private val deadBand = 0.05
 
     init {
         configFactoryDefault()
-        val config = StatorCurrentLimitConfiguration(
-            true,
-            currentLimit.toDouble(),
-            currentThreshold.toDouble(),
-            currentThresholdTime
-        )
+        configStatorCurrentLimit(StatorCurrentLimitConfiguration(true, 20.0, 25.0, 1.0))
+        configSupplyCurrentLimit(SupplyCurrentLimitConfiguration(true, 10.0, 15.0,0.5))
         configNeutralDeadband(deadBand)
+
+        setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, Constants.kTIMEOUT_MS)
+        setStatusFramePeriod(StatusFrame.Status_10_MotionMagic, 10, Constants.kTIMEOUT_MS)
 
         // configStatorCurrentLimit(config);
         configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 30)

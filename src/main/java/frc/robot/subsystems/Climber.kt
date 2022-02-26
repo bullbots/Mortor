@@ -39,7 +39,7 @@ class Climber : SubsystemBase() {
         climberMotor.config_kD(Constants.kSlotIdx, Constants.climberkD, Constants.kTIMEOUT_MS)
 
         climberMotor.configMotionCruiseVelocity(15000.0, Constants.kTIMEOUT_MS)
-        climberMotor.configMotionAcceleration(6000.0, Constants.kTIMEOUT_MS)
+        climberMotor.configMotionAcceleration(15000.0, Constants.kTIMEOUT_MS)
         climberMotor.setSelectedSensorPosition(0.0, Constants.kPIDLoopIdx, Constants.kTIMEOUT_MS)
 
 
@@ -60,12 +60,13 @@ class Climber : SubsystemBase() {
 
     override fun periodic() {
         loopIdx++
-        if (loopIdx == 10) {
+        if (loopIdx == 1) {
             loopIdx = 0
             SmartDashboard.putNumber("Climber PID Error", climberMotor.getClosedLoopError(Constants.kPIDLoopIdx))
             SmartDashboard.putNumber("Climber Velocity", climberMotor.getSelectedSensorVelocity(Constants.kPIDLoopIdx))
             SmartDashboard.putNumber("Climber Position", climberMotor.getSelectedSensorPosition(Constants.kPIDLoopIdx))
             SmartDashboard.putNumber("Climber Current", climberMotor.statorCurrent)
+            SmartDashboard.putNumber("Climber Active Traj Pos", climberMotor.getActiveTrajectoryPosition())
         }
 
 //        checkHallEffectSoftLimits()

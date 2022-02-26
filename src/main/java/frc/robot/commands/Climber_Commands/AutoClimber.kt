@@ -7,29 +7,33 @@ import frc.robot.subsystems.Climber
 import kotlin.math.abs
 
 class AutoClimber(private var climber: Climber, private var isGrenade: Boolean, private var isDown: Boolean) : CommandBase() {
+    private var targetTraj = 0.0
 
-    init { addRequirements(climber) }
-
-    override fun initialize() {
-        println("INFO: Grenade initialize")
-        if(isGrenade) {
-            climber.climberMotor.set(TalonFXControlMode.MotionMagic, Constants.CLIMBER_DOWN)
-        } else if (!isGrenade) {
+    init { addRequirements(climber)
+        targetTraj = if(isGrenade) {
+            Constants.CLIMBER_DOWN
+        } else {
             if (isDown) {
-                climber.climberMotor.set(TalonFXControlMode.MotionMagic, Constants.CLIMBER_DOWN)
-            } else if (!isDown) {
-                climber.climberMotor.set(TalonFXControlMode.MotionMagic, Constants.CLIMBER_UP)
+                Constants.CLIMBER_DOWN
+            } else {
+                Constants.CLIMBER_UP
             }
         }
     }
 
+    override fun initialize() {
+        println("INFO: Grenade initialize")
+        climber.climberMotor.set(TalonFXControlMode.MotionMagic, targetTraj)
+    }
+
     override fun execute() {
-        println("INFO: Climber Executed")
+//        println("INFO: Climber Executed")
     }
 
     override fun isFinished(): Boolean {
+        val traj_pos_error = targetTraj - climber.climberMotor.getSelectedSensorPosition(Constants.kPIDLoopIdx)
         return if (isGrenade) {
-            abs(climber.climberMotor.getClosedLoopError(Constants.kPIDLoopIdx)) < 100
+            abs(traj_pos_error) < 1000
         } else {
             false
         }

@@ -183,18 +183,11 @@ class RobotContainer {
      */
     private fun configureButtonBindings() {
 
-        button1.whileHeld(AutoClimber(climber, isGrenade = true, isDown = true))
-        button2.whileHeld(AutoClimber(climber, isGrenade = false, isDown = true))
-        button3.whileHeld(AutoClimber(climber, isGrenade = false, isDown = false))
-
-
-
-
-
+        button1.whenPressed(AutoClimber(climber, isGrenade=true, isDown=true))
+        button2.whenPressed(AutoClimber(climber, isGrenade=false, isDown=true))
+        button3.whenPressed(AutoClimber(climber, isGrenade=false, isDown=false))
 
         // PIDController pidcontroller = new PIDControllerDebug(0.0006, 0.0005, 0.0);
-
-
     }
 
     fun getAutonomousCommand(): Command { return m_chooser.selected }

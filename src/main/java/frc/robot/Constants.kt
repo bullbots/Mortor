@@ -70,9 +70,9 @@ class Constants {
         const val CLIMBER_LIMIT_THRESHOLD = 1000
         const val kPIDLoopIdx = 0
 
-        const val climberkP = 0.0
+        const val climberkP = 0.05
         const val climberkI = 0.0
-        const val climberkD = 0.0
+        const val climberkD = 0.005 // kP / 10
         const val climberkF = 2048.0 / 21000.0
         const val climberkIzone = 0.0
         const val climberkPeakOutput = 1.0

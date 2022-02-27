@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.InstantCommand
 import edu.wpi.first.wpilibj2.command.button.JoystickButton
 import frc.robot.commands.Climber_Commands.ClimberGroup
-import frc.robot.commands.Climber_Commands.Grenade
+import frc.robot.commands.Climber_Commands.AutoClimber
 import frc.robot.commands.Drivetrain_Commands.JoystickDrive
 import frc.robot.commands.Intake_Commands.IntakeGroup
 import frc.robot.commands.Shooter_Commands.ShooterGroup
@@ -29,6 +29,9 @@ class RobotContainer {
         private val button4 = JoystickButton(stick, 4)
         private val button5 = JoystickButton(stick, 5)
         private val button6 = JoystickButton(stick, 6)
+        private val button7 = JoystickButton(stick, 7)
+        private val button8 = JoystickButton(stick, 8)
+        private val button9 = JoystickButton(stick, 9)
         private val button10 = JoystickButton(stick, 10)
         private val button11 = JoystickButton(stick, 11)
 
@@ -201,21 +204,26 @@ class RobotContainer {
      */
     private fun configureButtonBindings() {
 
-        button2.whenPressed(Grenade(climber))
 
         button1.whileHeld(IntakeGroup(intake, 0.6, shooter) { -0.12 })
 
-    //    button2.whileHeld(ShooterGroup(intake, -0.1, shooter, false) { lidar.dist })
+//        button2.whileHeld(ShooterGroup(intake, -0.1, shooter, false) { lidar.dist })
 
-        button4.whileHeld(ShooterGroup(intake, -0.1, shooter, true) {0.45})
+        button4.whileHeld(ShooterGroup(intake, -0.1, shooter, true) { 0.45 })
 
-        button5.whileHeld(IntakeGroup(intake, -0.3, shooter) {-0.1})
+        button5.whileHeld(IntakeGroup(intake, -0.3, shooter) { -0.1 })
 
-        button6.whileHeld(IntakeGroup(intake, 0.3, shooter) { 0.2 })
+        button6.whileHeld(ClimberGroup(climber, 0.5))
 
-        button10.whileHeld(ClimberGroup(climber, -0.5))
+        button7.whileHeld(ClimberGroup(climber, -0.5))
 
-        button11.whileHeld(ClimberGroup(climber, 0.5))
+        button8.whileHeld(IntakeGroup(intake, 0.3, shooter) { 0.2 })
+
+        button9.whenPressed(AutoClimber(climber, isGrenade = true, isDown = true))
+
+        button10.whenPressed(AutoClimber(climber, isGrenade = false, isDown = true))
+
+        button11.whenPressed(AutoClimber(climber, isGrenade = false, isDown = false))
 
         SmartDashboard.putData(object : InstantCommand(
             { drivetrain.resetEncoders() },

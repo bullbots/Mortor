@@ -20,20 +20,4 @@ class LiDAR {
         m_LiDAR.reset()
     }
 
-
-
-
-
-//    fun getDist(): Double {
-//        dist = m_LiDAR.get()
-//        if(m_LiDAR.get() < 1) {
-//            dist = 0.0
-//        } else {
-//            dist = (m_LiDAR.period * 1000000.0 / 10.0) - off
-//            SmartDashboard.putNumber("LiDAR_Distance", dist)
-//        }
-//
-//        return dist
-//    }
-
 }

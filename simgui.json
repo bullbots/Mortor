@@ -19,6 +19,7 @@
       "/SmartDashboard/Field": "Field2d",
       "/SmartDashboard/RobotContainer$configureButtonBindings$1": "Command",
       "/SmartDashboard/RobotContainer$configureButtonBindings$4": "Command",
+      "/SmartDashboard/RobotContainer$configureButtonBindings$6": "Command",
       "/SmartDashboard/SendableChooser[2]": "String Chooser",
       "/SmartDashboard/Velocity Chooser": "String Chooser"
     },

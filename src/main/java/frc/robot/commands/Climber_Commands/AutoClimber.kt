@@ -32,11 +32,12 @@ class AutoClimber(private var climber: Climber, private var isGrenade: Boolean, 
 
     override fun isFinished(): Boolean {
         val traj_pos_error = targetTraj - climber.climberMotor.getSelectedSensorPosition(Constants.kPIDLoopIdx)
-        return if (isGrenade) {
-            abs(traj_pos_error) < 1000
-        } else {
-            false
-        }
+//        return if (isGrenade) {
+//            abs(traj_pos_error) < 1000
+//        } else {
+//            false
+//        }
+        return false
     }
 
     override fun end(interrupted: Boolean) {

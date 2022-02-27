@@ -37,6 +37,7 @@ class Climber : SubsystemBase() {
         climberMotor.config_kP(Constants.kSlotIdx, Constants.climberkP, Constants.kTIMEOUT_MS)
         climberMotor.config_kI(Constants.kSlotIdx, Constants.climberkI, Constants.kTIMEOUT_MS)
         climberMotor.config_kD(Constants.kSlotIdx, Constants.climberkD, Constants.kTIMEOUT_MS)
+        climberMotor.config_IntegralZone(Constants.kSlotIdx, Constants.climberkIzone, Constants.kTIMEOUT_MS)
 
         climberMotor.configMotionCruiseVelocity(15000.0, Constants.kTIMEOUT_MS)
         climberMotor.configMotionAcceleration(15000.0, Constants.kTIMEOUT_MS)

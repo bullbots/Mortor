@@ -72,10 +72,10 @@ class Constants {
 
         const val climberkP = 0.05
         const val climberkI = 0.0
-        const val climberkD = 0.005
+        const val climberkD = 0.035
         const val climberkF = 2048.0 / 21000.0
-        const val climberkIzone = 0.0
-        const val climberkPeakOutput = 1.0
+        const val climberkIzone = 500.0
+        const val climberkPeakOutput = 0.0
 
         const val kSlotIdx = 0
 

@@ -28,7 +28,7 @@ class Climber : SubsystemBase() {
 //        configureShuffleBoard()
 
         // Initializing Motor(s)
-        climberMotor = SafeTalonFX(Constants.CLIMBER_PORT)
+        climberMotor = SafeTalonFX(Constants.CLIMBER_PORT, isDrivetrain=false)
 
         climberMotor.setNeutralMode(NeutralMode.Brake)
 

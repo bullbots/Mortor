@@ -65,8 +65,8 @@ class Constants {
         /**
          * ALL CLIMB RELATED CONSTANTS GO HERE
          */
-        const val CLIMBER_DOWN = -10000.0
-        const val CLIMBER_UP = 100000.0
+        const val CLIMBER_DOWN = -40000.0
+        const val CLIMBER_UP = 405000.0
         const val CLIMBER_LIMIT_THRESHOLD = 1000
         const val kPIDLoopIdx = 0
 

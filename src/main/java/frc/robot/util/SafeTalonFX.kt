@@ -9,16 +9,24 @@ import kotlin.math.abs
  * Wrapper used to prevent Falcon 500 from burning out or being damaged
  * @param deviceNumber Int
  * @param usePID Boolean: By default this value is false.
+ * @param isDrivetrain Boolean: By default this value is true.
  */
-class SafeTalonFX (deviceNumber: Int, private var usePID: Boolean = false) : WPI_TalonFX(deviceNumber) {
+class SafeTalonFX (deviceNumber: Int, private var isDrivetrain: Boolean = false, private var usePID: Boolean = false) : WPI_TalonFX(deviceNumber) {
 
     private val maxSpeed = 21000.0
     private val deadBand = 0.05
 
     init {
         configFactoryDefault()
-        configStatorCurrentLimit(StatorCurrentLimitConfiguration(true, 20.0, 25.0, 1.0))
-        configSupplyCurrentLimit(SupplyCurrentLimitConfiguration(true, 10.0, 15.0,0.5))
+
+        if (isDrivetrain) {
+            configStatorCurrentLimit(StatorCurrentLimitConfiguration(true, 20.0, 25.0, 1.0))
+            configSupplyCurrentLimit(SupplyCurrentLimitConfiguration(true, 10.0, 15.0,0.5))
+        } else {
+            configStatorCurrentLimit(StatorCurrentLimitConfiguration(true, 40.0, 45.0, 1.0))
+            configSupplyCurrentLimit(SupplyCurrentLimitConfiguration(true, 20.0, 30.0,0.5))
+        }
+
         configNeutralDeadband(deadBand)
 
         setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, Constants.kTIMEOUT_MS)

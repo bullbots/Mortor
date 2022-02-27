@@ -8,17 +8,21 @@ import kotlin.math.abs
 
 class AutoClimber(private var climber: Climber, private var isGrenade: Boolean, private var isDown: Boolean) : CommandBase() {
     private var targetTraj = 0.0
-
+    private var isReleased: Boolean
 
     init { addRequirements(climber)
-        targetTraj = if (isGrenade) {
-            Constants.CLIMBER_DOWN
-        } else {
-            if (isDown) {
+        isReleased = false
+        if (isGrenade) {
+            targetTraj = Constants.CLIMBER_DOWN
+            isReleased = true
+        } else if(isReleased) {
+            targetTraj = if (isDown) {
                 Constants.CLIMBER_DOWN
             } else {
                 Constants.CLIMBER_UP
             }
+        } else {
+            println("PULL GRENADE PIN")
         }
     }
 

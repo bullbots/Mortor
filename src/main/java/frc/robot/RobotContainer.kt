@@ -1,7 +1,14 @@
 package frc.robot
 
 import edu.wpi.first.math.controller.PIDController
+import edu.wpi.first.math.geometry.Pose2d
+import edu.wpi.first.math.geometry.Rotation2d
+import edu.wpi.first.math.geometry.Translation2d
+import edu.wpi.first.math.trajectory.Trajectory
+import edu.wpi.first.math.trajectory.TrajectoryConfig
+import edu.wpi.first.math.trajectory.TrajectoryGenerator
 import edu.wpi.first.wpilibj.DriverStation
+import edu.wpi.first.wpilibj.IterativeRobotBase
 import edu.wpi.first.wpilibj.Joystick
 import edu.wpi.first.wpilibj.RobotBase
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
@@ -9,14 +16,18 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.InstantCommand
 import edu.wpi.first.wpilibj2.command.button.JoystickButton
-import frc.robot.commands.Climber_Commands.ClimberGroup
 import frc.robot.commands.Climber_Commands.AutoClimber
+import frc.robot.commands.Climber_Commands.ClimberGroup
+import frc.robot.commands.Drivetrain_Commands.AlignShooter
 import frc.robot.commands.Drivetrain_Commands.JoystickDrive
 import frc.robot.commands.Intake_Commands.IntakeGroup
 import frc.robot.commands.Shooter_Commands.ShooterGroup
 import frc.robot.subsystems.*
+import frc.robot.util.NavX
 import frc.robot.util.PIDControllerDebug
+import java.util.List
 import java.util.concurrent.atomic.AtomicReference
+import java.util.function.DoubleConsumer
 
 class RobotContainer {
 
@@ -35,6 +46,19 @@ class RobotContainer {
         private val button10 = JoystickButton(stick, 10)
         private val button11 = JoystickButton(stick, 11)
 
+        private val coStick = Joystick(1)
+        private val coButton1 = JoystickButton(coStick, 1)
+        private val coButton2 = JoystickButton(coStick, 2)
+        private val coButton3 = JoystickButton(coStick, 3)
+        private val coButton4 = JoystickButton(coStick, 4)
+        private val coButton5 = JoystickButton(coStick, 5)
+        private val coButton6 = JoystickButton(coStick, 6)
+        private val coButton7 = JoystickButton(coStick, 7)
+        private val coButton8 = JoystickButton(coStick, 8)
+        private val coButton9 = JoystickButton(coStick, 9)
+        private val coButton10 = JoystickButton(coStick, 10)
+        private val coButton11 = JoystickButton(coStick, 11)
+
         private val pathColor = AtomicReference<Color>(Color.UNLOADED)
 
         private val shooterMode = SendableChooser<ShooterMode>()
@@ -46,6 +70,12 @@ class RobotContainer {
     private val shooter = Shooter()
     private val climber = Climber()
 //    private val lidar = LiDAR()
+
+    // Util
+    private val pidController = PIDControllerDebug(0.02, 0.0, 0.0)
+    private val imu = NavX()
+
+    private lateinit var trajectory: Trajectory
 
     var m_chooser = SendableChooser<Command>()
 
@@ -120,6 +150,16 @@ class RobotContainer {
         ) { (stick.z - 1) / -2.0 }
 
         initializeAutonomousOptions()
+
+        pidController.setTolerance(1.0)
+        pidController.enableContinuousInput(-180.0, 180.0)
+
+        trajectory = TrajectoryGenerator.generateTrajectory(
+            Pose2d(2.0, 2.0, Rotation2d()),
+            listOf<Translation2d>(),
+            Pose2d(6.0, 4.0, Rotation2d()),
+            TrajectoryConfig(2.0, 2.0)
+        )
         // initializeStaticShooterVel()
 
 //        shooterMode.setDefaultOption("Competition Shooting", ShooterMode.COMPETITION)
@@ -205,25 +245,31 @@ class RobotContainer {
     private fun configureButtonBindings() {
 
 
+        // Drivers Button Binding
         button1.whileHeld(IntakeGroup(intake, 0.6, shooter) { -0.12 })
 
-//        button2.whileHeld(ShooterGroup(intake, -0.1, shooter, false) { lidar.dist })
+//        button2.whileHeld(ShooterGroup(intake, -0.1, shooter, false) { lidar.dist() })
 
         button4.whileHeld(ShooterGroup(intake, -0.1, shooter, true) { 0.45 })
 
         button5.whileHeld(IntakeGroup(intake, -0.3, shooter) { -0.1 })
 
-        button6.whileHeld(ClimberGroup(climber, 0.5))
+        button6.whileHeld(IntakeGroup(intake, 0.3, shooter) { 0.2 })
 
-        button7.whileHeld(ClimberGroup(climber, -0.5))
+        button7.whenPressed(AlignShooter(pidController, imu::getAngle, drivetrain::calculateHeading,
+            DoubleConsumer { output: Double -> drivetrain.drive(0.0, output) }, drivetrain))
 
-        button8.whileHeld(IntakeGroup(intake, 0.3, shooter) { 0.2 })
+        // CO-Drivers Button Binding
 
-        button9.whenPressed(AutoClimber(climber, isGrenade = true, isDown = true))
+        coButton6.whileHeld(ClimberGroup(climber, 0.5))
 
-        button10.whenPressed(AutoClimber(climber, isGrenade = false, isDown = true))
+        coButton7.whileHeld(ClimberGroup(climber, -0.5))
 
-        button11.whenPressed(AutoClimber(climber, isGrenade = false, isDown = false))
+        coButton9.whenPressed(AutoClimber(climber, isGrenade = true, isDown = true))
+
+        coButton10.whenPressed(AutoClimber(climber, isGrenade = false, isDown = true))
+
+        coButton11.whenPressed(AutoClimber(climber, isGrenade = false, isDown = false))
 
         SmartDashboard.putData(object : InstantCommand(
             { drivetrain.resetEncoders() },
@@ -259,7 +305,7 @@ class RobotContainer {
         drivetrain.periodic()
     }
 
-
+    fun simulationPeriodic() { drivetrain.simulationPeriodic()}
 
 
 

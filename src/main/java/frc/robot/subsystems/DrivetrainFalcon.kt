@@ -3,11 +3,16 @@ package frc.robot.subsystems
 import com.ctre.phoenix.motorcontrol.ControlMode
 import com.ctre.phoenix.motorcontrol.InvertType
 import com.ctre.phoenix.motorcontrol.NeutralMode
+import edu.wpi.first.math.controller.SimpleMotorFeedforward
 import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.math.geometry.Rotation2d
+import edu.wpi.first.math.kinematics.ChassisSpeeds
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry
+import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds
 import edu.wpi.first.networktables.NetworkTableEntry
 import edu.wpi.first.wpilibj.RobotBase
+import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import edu.wpi.first.wpilibj.smartdashboard.Field2d
@@ -16,7 +21,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase
 import frc.robot.Constants
 import frc.robot.util.DifferentialDriveDebug
 import frc.robot.util.NavX
+import frc.robot.util.PIDControllerDebug
 import frc.robot.util.SafeTalonFX
+import kotlin.math.atan2
 
 /**
  * Initializes the drivetrain using falcon500
@@ -31,15 +38,25 @@ class DrivetrainFalcon : SubsystemBase() {
     // private val max_ticks_per_hundred_milliseconds: Double = ticks_per_foot * Constants.MAX_SPEED_LOW_GEAR / 10
 
     // Initializing Master Falcon Motors
-    private val leftMasterFalcon = SafeTalonFX(Constants.LEFT_MASTER_PORT, false) // change to false for no PID?
-    private val rightMasterFalcon = SafeTalonFX(Constants.RIGHT_MASTER_PORT, false)
+    private val leftMasterFalcon = SafeTalonFX(Constants.LEFT_MASTER_PORT, isDrivetrain=true) // change to false for no PID?
+    private val rightMasterFalcon = SafeTalonFX(Constants.RIGHT_MASTER_PORT, isDrivetrain=true)
 
     // Initializing Slave Falcon Motors
-    private val leftSlaveFalcon = SafeTalonFX(Constants.LEFT_SLAVE_PORT, false)
-    private val rightSlaveFalcon = SafeTalonFX(Constants.RIGHT_SLAVE_PORT, false)
+    private val leftSlaveFalcon = SafeTalonFX(Constants.LEFT_SLAVE_PORT, isDrivetrain=true)
+    private val rightSlaveFalcon = SafeTalonFX(Constants.RIGHT_SLAVE_PORT, isDrivetrain=true)
 
+    private val leftGroup = MotorControllerGroup(leftMasterFalcon, leftSlaveFalcon)
+    private val rightGroup = MotorControllerGroup(rightMasterFalcon, rightSlaveFalcon)
+
+    private val kinematics = DifferentialDriveKinematics(Constants.TRACK_WIDTH)
     private val diffDrive = DifferentialDriveDebug(leftMasterFalcon, rightMasterFalcon)
-    private val gyro = NavX()
+    private val imu = NavX()
+
+    private val leftPIDController = PIDControllerDebug(8.5, 0.0, 0.0)
+    private val rightPIDController = PIDControllerDebug(8.5, 0.0, 0.0)
+
+    // TODO: ks and kv values need to be determined for the robot
+    private val feedforward = SimpleMotorFeedforward(1.0, 3.0)
 
     lateinit var leftCurrent: NetworkTableEntry
     lateinit var leftPosition: NetworkTableEntry
@@ -50,12 +67,12 @@ class DrivetrainFalcon : SubsystemBase() {
     lateinit var rightVelocity: NetworkTableEntry
 
     private val shiftThreshold = 0.8
-    private val firstGearSlope = 1 / shiftThreshold
-    private val secondGearSlope = ( (21000 - 9240) / (1 - shiftThreshold)) / 21000
+//    private val firstGearSlope = 1 / shiftThreshold
+//    private val secondGearSlope = ( (21000 - 9240) / (1 - shiftThreshold)) / 21000
 
     private var m_flippedOdometry = false
 
-    private val m_odometry = DifferentialDriveOdometry(gyro.rotation2d)
+    private val m_odometry = DifferentialDriveOdometry(imu.rotation2d)
 
     // Any static variables or cases must go here
     companion object {
@@ -73,15 +90,15 @@ class DrivetrainFalcon : SubsystemBase() {
             leftSlaveFalcon.configFactoryDefault()
             rightSlaveFalcon.configFactoryDefault()
 
-            leftSlaveFalcon.follow(leftMasterFalcon);
-            rightSlaveFalcon.follow(rightMasterFalcon);
+            leftSlaveFalcon.follow(leftMasterFalcon)
+            rightSlaveFalcon.follow(rightMasterFalcon)
 
-            rightMasterFalcon.inverted = true;
-            rightSlaveFalcon.setInverted(InvertType.FollowMaster);
-            leftMasterFalcon.inverted = false;
-            leftSlaveFalcon.setInverted(InvertType.FollowMaster);
+            rightMasterFalcon.inverted = true
+            rightSlaveFalcon.setInverted(InvertType.FollowMaster)
+            leftMasterFalcon.inverted = false
+            leftSlaveFalcon.setInverted(InvertType.FollowMaster)
 
-            setCoastMode(CoastMode.Brake);
+            setCoastMode(CoastMode.Brake)
 
             // leftMasterFalcon.configClosedloopRamp(Constants.DRIVETRAIN_RAMP);
             // rightMasterFalcon.configClosedloopRamp(Constants.DRIVETRAIN_RAMP);
@@ -93,11 +110,11 @@ class DrivetrainFalcon : SubsystemBase() {
             // orchestra.addInstrument(rightSlaveFalcon);
 
             // orchestra.loadMusic("test.chrp");
-            diffDrive.setDeadband(0.05);
+            diffDrive.setDeadband(0.05)
         }
 
         // diffDrive.setRightSideInverted(false);
-        diffDrive.isSafetyEnabled = false;
+        diffDrive.isSafetyEnabled = false
 
         // shifter.shiftLow();
 
@@ -107,8 +124,11 @@ class DrivetrainFalcon : SubsystemBase() {
 
         configureSmartDashBoard()
 
-        SmartDashboard.putData("Field", m_fieldSim);
+        resetEncoders()
+
+        SmartDashboard.putData("Field", m_fieldSim)
     }
+
 
     private fun setCoastMode(coastMode: CoastMode) {
         // Sets neutralMode to Coast or Brake depending on coastMode
@@ -126,7 +146,7 @@ class DrivetrainFalcon : SubsystemBase() {
 
     fun setOdometryDirection(invert: Boolean) { m_flippedOdometry = invert }
 
-    fun updateOdometry() {
+    private fun updateOdometry() {
         var leftDist = leftMasterFalcon.selectedSensorPosition / ticks_per_foot
         var rightDist = rightMasterFalcon.selectedSensorPosition / ticks_per_foot
 
@@ -140,7 +160,7 @@ class DrivetrainFalcon : SubsystemBase() {
         // SmartDashboard.putNumber("Left Distance", m_leftDist!!)
         // SmartDashboard.putNumber("Right Distance", m_rightDist!!)
 
-        var rotation2d = gyro.rotation2d
+        var rotation2d = imu.rotation2d
 
         if (m_flippedOdometry) {
             rotation2d.rotateBy(Rotation2d.fromDegrees(180.0))
@@ -154,12 +174,12 @@ class DrivetrainFalcon : SubsystemBase() {
         leftMasterFalcon.selectedSensorPosition = 0.0
         rightMasterFalcon.selectedSensorPosition = 0.0
 
-        m_odometry.resetPosition(pose, gyro.rotation2d)
+        m_odometry.resetPosition(pose, imu.rotation2d)
     }
 
-    fun resetGyro() { gyro.reset() }
+    fun resetGyro() { imu.reset() }
 
-    fun resetGyro180() { gyro.reset180() }
+    fun resetGyro180() { imu.reset180() }
 
     fun getPose(): Pose2d { return m_odometry.poseMeters }
 
@@ -216,6 +236,7 @@ class DrivetrainFalcon : SubsystemBase() {
 //        SmartDashboard.putNumber("Left Slave Current", leftSlaveFalcon.statorCurrent)
 
         updateOdometry()
+        m_fieldSim
 
         if(RobotBase.isReal()) {
             leftCurrent.setNumber(leftMasterFalcon.statorCurrent)
@@ -262,6 +283,52 @@ class DrivetrainFalcon : SubsystemBase() {
         leftMasterFalcon.selectedSensorPosition = 0.0
         rightMasterFalcon.selectedSensorPosition = 0.0
     }
+
+    fun getYaw(): Double { return imu.yaw.toDouble() }
+
+    /**
+     * @return atanDegree: The heading the robot needs to face towards the goal
+     */
+    fun calculateHeading(): Double {
+        val x = m_odometry.poseMeters.x
+        val y = m_odometry.poseMeters.y
+        val delta = ((m_odometry.poseMeters.rotation.degrees % 360) + 360) % 360 - 180 // delta % 360 is to set the input between -360 and 360
+        val atanDegree = Math.toDegrees(atan2(y, x))
+
+        println("INFO: X Position: $x, Y Position: $y, Delta: $delta, Heading: $atanDegree")
+
+        return atanDegree
+    }
+
+    fun setSpeeds(speeds: DifferentialDriveWheelSpeeds) {
+        val leftFeedforward = feedforward.calculate(speeds.leftMetersPerSecond)
+        val rightFeedforward = feedforward.calculate(speeds.rightMetersPerSecond)
+        val leftOutput =
+            leftPIDController.calculate(leftMasterFalcon.selectedSensorPosition, speeds.leftMetersPerSecond)
+        val rightOutput =
+            rightPIDController.calculate(rightMasterFalcon.selectedSensorPosition, speeds.rightMetersPerSecond)
+
+        leftGroup.setVoltage(leftOutput + leftFeedforward)
+        rightGroup.setVoltage(rightOutput + rightFeedforward)
+
+    }
+
+    /**
+     * Controls the robot using arcade drive.
+     *
+     * @param xSpeed: Double / The speed for the X axis
+     * @param rotation: Double / The rotation
+     */
+    fun drive(xSpeed: Double, rotation: Double) {
+        setSpeeds(kinematics.toWheelSpeeds(ChassisSpeeds(xSpeed, 0.0, rotation)))
+    }
+
+//    override fun simulationPeriodic() {
+//        drivetrainSim
+//    }
+
+
+
 
     /**
      * @return double array of positions [left, right]
@@ -316,5 +383,7 @@ class DrivetrainFalcon : SubsystemBase() {
     fun driveLeft(value: Double) { leftMasterFalcon.set(value) }
 
     fun driveRight(value: Double) { rightMasterFalcon.set(value) }
+
+
 
 }

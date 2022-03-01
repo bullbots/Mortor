@@ -46,6 +46,7 @@ class Constants {
         const val RIGHT_MASTER_ACCELERATION = 3300.0
         const val RIGHT_MASTER_VELOCITY = 3300.0
 
+        const val TRACK_WIDTH = 0.67945 // 26.75 Inches
         /**
          * ALL INTAKE RELATED CONSTANTS GO HERE
          */

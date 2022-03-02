@@ -1,6 +1,7 @@
 package frc.robot.util
 
 import com.kauailabs.navx.frc.AHRS
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 
 /**
  * Used to find the angle of the robot in its current position
@@ -15,6 +16,9 @@ class NavX : AHRS() {
     override fun getAngle(): Double {
         var angle = super.getAngle() - angleDelta
         angle = (angle + 180) % 360 - 180
+
+        SmartDashboard.putNumber("Yaw", angle)
+
         return angle
     }
 

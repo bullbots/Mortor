@@ -320,15 +320,13 @@ class DrivetrainFalcon : SubsystemBase() {
      * @param rotation: Double / The rotation
      */
     fun drive(xSpeed: Double, rotation: Double) {
-        setSpeeds(kinematics.toWheelSpeeds(ChassisSpeeds(xSpeed, 0.0, rotation)))
+//        setSpeeds(kinematics.toWheelSpeeds(ChassisSpeeds(xSpeed, 0.0, rotation)))
+        diffDrive.arcadeDrive(xSpeed, rotation)
     }
 
 //    override fun simulationPeriodic() {
 //        drivetrainSim
 //    }
-
-
-
 
     /**
      * @return double array of positions [left, right]

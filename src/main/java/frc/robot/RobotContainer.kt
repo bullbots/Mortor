@@ -28,6 +28,7 @@ import frc.robot.util.PIDControllerDebug
 import java.util.List
 import java.util.concurrent.atomic.AtomicReference
 import java.util.function.DoubleConsumer
+import java.util.function.DoubleSupplier
 
 class RobotContainer {
 
@@ -75,7 +76,7 @@ class RobotContainer {
     private val pidController = PIDControllerDebug(0.02, 0.0, 0.0)
     private val imu = NavX()
 
-    private lateinit var trajectory: Trajectory
+    private var trajectory: Trajectory
 
     var m_chooser = SendableChooser<Command>()
 
@@ -256,8 +257,8 @@ class RobotContainer {
 
         button6.whileHeld(IntakeGroup(intake, 0.3, shooter) { 0.2 })
 
-        button7.whenPressed(AlignShooter(pidController, imu::getAngle, drivetrain::calculateHeading,
-            DoubleConsumer { output: Double -> drivetrain.drive(0.0, output) }, drivetrain))
+        button7.whenPressed(AlignShooter(pidController, {-1.0 * imu.angle}, drivetrain::calculateHeading,
+            { output: Double -> drivetrain.drive(0.0, output) }, drivetrain))
 
         // CO-Drivers Button Binding
 
@@ -265,7 +266,8 @@ class RobotContainer {
 
         coButton7.whileHeld(ClimberGroup(climber, -0.5))
 
-        coButton9.whenPressed(AutoClimber(climber, isGrenade = true, isDown = true))
+//        coButton9.whenPressed(AutoClimber(climber, isGrenade = true, isDown = true))
+        coButton9.whenPressed(AutoClimber(isDown = true, isGrenade = true, climber = climber))
 
         coButton10.whenPressed(AutoClimber(climber, isGrenade = false, isDown = true))
 

@@ -7,7 +7,7 @@ import frc.robot.subsystems.DrivetrainFalcon
 import java.util.function.DoubleSupplier
 
 class JoystickDrive (
-    private var m_drivetrain: DrivetrainFalcon,
+    var m_drivetrain: DrivetrainFalcon,
     private var joyY: DoubleSupplier,
     private var joyX: DoubleSupplier,
     private var joyZ: DoubleSupplier = DoubleSupplier { 1.0 }

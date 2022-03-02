@@ -73,7 +73,7 @@ class RobotContainer {
 //    private val lidar = LiDAR()
 
     // Util
-    private val pidController = PIDControllerDebug(0.02, 0.0, 0.0)
+    private val pidController = PIDControllerDebug(0.01, 0.0, 0.0)
     private val imu = NavX()
 
     private var trajectory: Trajectory
@@ -257,7 +257,7 @@ class RobotContainer {
 
         button6.whileHeld(IntakeGroup(intake, 0.3, shooter) { 0.2 })
 
-        button7.whenPressed(AlignShooter(pidController, {-1.0 * imu.angle}, drivetrain::calculateHeading,
+        button7.whenPressed(AlignShooter(pidController, { -imu.angle }, drivetrain::calculateHeading,
             { output: Double -> drivetrain.drive(0.0, output) }, drivetrain))
 
         // CO-Drivers Button Binding
@@ -266,8 +266,8 @@ class RobotContainer {
 
         coButton7.whileHeld(ClimberGroup(climber, -0.5))
 
-//        coButton9.whenPressed(AutoClimber(climber, isGrenade = true, isDown = true))
-        coButton9.whenPressed(AutoClimber(isDown = true, isGrenade = true, climber = climber))
+        coButton9.whenPressed(AutoClimber(climber, isGrenade = true, isDown = true))
+//        coButton9.whenPressed(AutoClimber(isDown = true, isGrenade = true, climber = climber))
 
         coButton10.whenPressed(AutoClimber(climber, isGrenade = false, isDown = true))
 
@@ -303,8 +303,9 @@ class RobotContainer {
 
     fun stopAllSubsystems() { drivetrain.stop() }
 
-    private fun periodic() {
-        drivetrain.periodic()
+    fun periodic() {
+        SmartDashboard.putNumber("Yaw", -imu.angle)
+//        println("RobotContainer Periodic is being called")
     }
 
     fun simulationPeriodic() { drivetrain.simulationPeriodic()}

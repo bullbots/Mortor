@@ -20,7 +20,7 @@ class AlignShooter(controller: PIDController, measurementSource: DoubleSupplier,
     override fun execute() {
         var pidOut = m_controller.calculate(m_measurement.asDouble, m_setpoint.asDouble)
         m_useOutput.accept(pidOut)
-        println("INFO: Yaw: ${m_measurement.asDouble}, Heading: ${m_setpoint.asDouble}")
+        println("INFO: Yaw: ${m_measurement.asDouble}, Heading: ${m_setpoint.asDouble}, Output value: $pidOut")
     }
 
     override fun isFinished(): Boolean { return m_controller.atSetpoint() }

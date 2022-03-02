@@ -49,6 +49,7 @@ object Robot : TimedRobot() {
         // and running subsystem periodic() methods.  This must be called from the robot's periodic
         // block in order for anything in the Command-based framework to work.
         CommandScheduler.getInstance().run()
+        m_robotContainer!!.periodic()
     }
 
     /** This function is called once each time the robot enters Disabled mode.  */
@@ -77,7 +78,8 @@ object Robot : TimedRobot() {
     }
 
     /** This function is called periodically during operator control.  */
-    override fun teleopPeriodic() {}
+    override fun teleopPeriodic() {
+    }
     override fun testInit() {
         // Cancels all running commands at the start of test mode.
         CommandScheduler.getInstance().cancelAll()

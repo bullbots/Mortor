@@ -52,8 +52,8 @@ class DrivetrainFalcon : SubsystemBase() {
     private val diffDrive = DifferentialDriveDebug(leftMasterFalcon, rightMasterFalcon)
     private val imu = NavX()
 
-    private val leftPIDController = PIDControllerDebug(8.5, 0.0, 0.0)
-    private val rightPIDController = PIDControllerDebug(8.5, 0.0, 0.0)
+    private val leftPIDController = PIDControllerDebug(0.02, 0.0, 0.0)
+    private val rightPIDController = PIDControllerDebug(0.02, 0.0, 0.0)
 
     // TODO: ks and kv values need to be determined for the robot
     private val feedforward = SimpleMotorFeedforward(1.0, 3.0)
@@ -295,7 +295,7 @@ class DrivetrainFalcon : SubsystemBase() {
         val delta = ((m_odometry.poseMeters.rotation.degrees % 360) + 360) % 360 - 180 // delta % 360 is to set the input between -360 and 360
         val atanDegree = Math.toDegrees(atan2(y, x))
 
-        println("INFO: X Position: $x, Y Position: $y, Delta: $delta, Heading: $atanDegree")
+//        println("INFO: X Position: $x, Y Position: $y, Delta: $delta, Heading: $atanDegree")
 
         return atanDegree
     }

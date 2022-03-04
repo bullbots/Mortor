@@ -1,5 +1,6 @@
 package frc.robot
 
+import com.kauailabs.navx.frc.AHRS
 import edu.wpi.first.math.controller.PIDController
 import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.math.geometry.Rotation2d
@@ -15,6 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.InstantCommand
+import edu.wpi.first.wpilibj2.command.StartEndCommand
 import edu.wpi.first.wpilibj2.command.button.JoystickButton
 import frc.robot.commands.Climber_Commands.AutoClimber
 import frc.robot.commands.Climber_Commands.ClimberGroup
@@ -73,8 +75,8 @@ class RobotContainer {
 //    private val lidar = LiDAR()
 
     // Util
-    private val pidController = PIDControllerDebug(0.01, 0.0, 0.0)
-    private val imu = NavX()
+    private val pidController = PIDControllerDebug(0.005, 0.0, 0.0)
+    private val imu = AHRS()
 
     private var trajectory: Trajectory
 
@@ -249,7 +251,10 @@ class RobotContainer {
         // Drivers Button Binding
         button1.whileHeld(IntakeGroup(intake, 0.6, shooter) { -0.12 })
 
-//        button2.whileHeld(ShooterGroup(intake, -0.1, shooter, false) { lidar.dist() })
+        button2.whileHeld(StartEndCommand(
+            {drivetrain.isFullSpeed = 0.5},
+            {drivetrain.isFullSpeed = 1.0}
+        ))
 
         button4.whileHeld(ShooterGroup(intake, -0.1, shooter, true) { 0.45 })
 
@@ -258,7 +263,7 @@ class RobotContainer {
         button6.whileHeld(IntakeGroup(intake, 0.3, shooter) { 0.2 })
 
         button7.whenPressed(AlignShooter(pidController, { -imu.angle }, drivetrain::calculateHeading,
-            { output: Double -> drivetrain.drive(0.0, output) }, drivetrain))
+            { output: Double -> drivetrain.drive(0.0, -output) }, drivetrain))
 
         // CO-Drivers Button Binding
 
@@ -274,7 +279,7 @@ class RobotContainer {
         coButton11.whenPressed(AutoClimber(climber, isGrenade = false, isDown = false))
 
         SmartDashboard.putData(object : InstantCommand(
-            { drivetrain.resetEncoders() },
+            drivetrain::resetEncoders,
             drivetrain
         ) {
             override fun initialize() {
@@ -286,9 +291,6 @@ class RobotContainer {
                 return true
             }
         })
-
-
-
 
         // PIDController pidcontroller = new PIDControllerDebug(0.0006, 0.0005, 0.0);
         val pidcontroller: PIDController = PIDControllerDebug(0.002, 0.001, 0.0)
@@ -304,14 +306,9 @@ class RobotContainer {
     fun stopAllSubsystems() { drivetrain.stop() }
 
     fun periodic() {
-        SmartDashboard.putNumber("Yaw", -imu.angle)
+//        SmartDashboard.putNumber("Yaw", -imu.angle)
 //        println("RobotContainer Periodic is being called")
     }
 
-    fun simulationPeriodic() { drivetrain.simulationPeriodic()}
-
-
-
-
-
+    fun simulationPeriodic() { drivetrain.simulationPeriodic() }
 }

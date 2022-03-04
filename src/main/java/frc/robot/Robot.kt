@@ -4,6 +4,7 @@
 package frc.robot
 
 import edu.wpi.first.math.geometry.Pose2d
+import edu.wpi.first.networktables.NetworkTableInstance
 import edu.wpi.first.wpilibj.TimedRobot
 import edu.wpi.first.wpilibj.smartdashboard.Field2d
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
@@ -17,9 +18,9 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler
  * project.
  */
 object Robot : TimedRobot() {
-    private var m_autonomousCommand: Command? = null
-    private var m_robotContainer: RobotContainer? = null
-    private var m_field: Field2d? = null
+    private lateinit var m_autonomousCommand: Command
+    private lateinit var m_robotContainer: RobotContainer
+    private lateinit var m_field: Field2d
 
     /**
      * This function is run when the robot is first started up and should be used for any
@@ -32,7 +33,7 @@ object Robot : TimedRobot() {
         m_robotContainer = RobotContainer()
         m_field = Field2d()
         SmartDashboard.putData("Field", m_field)
-        m_field!!.robotPose = Pose2d()
+        m_field.robotPose = Pose2d()
     }
 
     /**
@@ -49,7 +50,8 @@ object Robot : TimedRobot() {
         // and running subsystem periodic() methods.  This must be called from the robot's periodic
         // block in order for anything in the Command-based framework to work.
         CommandScheduler.getInstance().run()
-        m_robotContainer!!.periodic()
+        m_robotContainer.periodic()
+//        NetworkTableInstance.getDefault().flush()
     }
 
     /** This function is called once each time the robot enters Disabled mode.  */
@@ -64,7 +66,7 @@ object Robot : TimedRobot() {
         // m_autonomousCommand = m_robotContainer.getAutonomousCommand()
 
         // schedule the autonomous command (example)
-        m_autonomousCommand?.schedule()
+        m_autonomousCommand.schedule()
     }
 
     /** This function is called periodically during autonomous.  */
@@ -74,7 +76,7 @@ object Robot : TimedRobot() {
         // teleop starts running. If you want the autonomous to
         // continue until interrupted by another command, remove
         // this line or comment it out.
-        m_autonomousCommand?.cancel()
+        m_autonomousCommand.cancel()
     }
 
     /** This function is called periodically during operator control.  */

@@ -31,8 +31,8 @@ import kotlin.math.atan2
 class DrivetrainFalcon : SubsystemBase() {
 
     // These values are used for Autonomous
-    private val ticks_per_wheel_revolution = 42700.0
-    private val ticks_per_foot = ticks_per_wheel_revolution / (0.5 * Math.PI) // .5 is diameter of wheel in feet
+    private val ticks_per_wheel_revolution = 26112.0
+    private val ticks_per_foot = ticks_per_wheel_revolution / (0.666 * Math.PI) // .8 inches is diameter of wheel in feet
 
     // NEED THIS FOR AUTONOMOUS
     // private val max_ticks_per_hundred_milliseconds: Double = ticks_per_foot * Constants.MAX_SPEED_LOW_GEAR / 10
@@ -48,7 +48,7 @@ class DrivetrainFalcon : SubsystemBase() {
     private val leftGroup = MotorControllerGroup(leftMasterFalcon, leftSlaveFalcon)
     private val rightGroup = MotorControllerGroup(rightMasterFalcon, rightSlaveFalcon)
 
-    private val kinematics = DifferentialDriveKinematics(Constants.TRACK_WIDTH)
+//    private val kinematics = DifferentialDriveKinematics(Constants.TRACK_WIDTH)
     private val diffDrive = DifferentialDriveDebug(leftMasterFalcon, rightMasterFalcon)
     private val imu = NavX()
 
@@ -66,11 +66,13 @@ class DrivetrainFalcon : SubsystemBase() {
     lateinit var rightPosition: NetworkTableEntry
     lateinit var rightVelocity: NetworkTableEntry
 
-    private val shiftThreshold = 0.8
+    var isFullSpeed = 1.0
 //    private val firstGearSlope = 1 / shiftThreshold
 //    private val secondGearSlope = ( (21000 - 9240) / (1 - shiftThreshold)) / 21000
 
     private var m_flippedOdometry = false
+
+    private var loopIdx = 0
 
     private val m_odometry = DifferentialDriveOdometry(imu.rotation2d)
 
@@ -122,7 +124,7 @@ class DrivetrainFalcon : SubsystemBase() {
         // configureMotionMagic();
         // configureSmartDashboard();
 
-        configureSmartDashBoard()
+//        configureSmartDashBoard()
 
         resetEncoders()
 
@@ -150,15 +152,13 @@ class DrivetrainFalcon : SubsystemBase() {
         var leftDist = leftMasterFalcon.selectedSensorPosition / ticks_per_foot
         var rightDist = rightMasterFalcon.selectedSensorPosition / ticks_per_foot
 
+//        println("INFO: Left Dist: $leftDist, Right Dist: $rightDist")
+
         if(m_flippedOdometry) {
             var temporary = -leftDist
             leftDist = -rightDist
             rightDist = temporary
         }
-
-        // Debugging values
-        // SmartDashboard.putNumber("Left Distance", m_leftDist!!)
-        // SmartDashboard.putNumber("Right Distance", m_rightDist!!)
 
         var rotation2d = imu.rotation2d
 
@@ -238,30 +238,39 @@ class DrivetrainFalcon : SubsystemBase() {
         updateOdometry()
         m_fieldSim
 
-        if(RobotBase.isReal()) {
-            leftCurrent.setNumber(leftMasterFalcon.statorCurrent)
-            // leftPosition!!.setNumber(leftMasterFalcon.selectedSensorPosition)
-            // leftVelocity!!.setNumber(leftMasterFalcon.selectedSensorVelocity)
+        loopIdx++
+        if (loopIdx == 10) {
+            loopIdx = 0
 
-            rightCurrent.setNumber(rightMasterFalcon.statorCurrent)
-            // rightPosition!!.setNumber(rightMasterFalcon.selectedSensorPosition)
-            // rightVelocity!!.setNumber(rightMasterFalcon.selectedSensorVelocity)
+            if (RobotBase.isReal()) {
+                SmartDashboard.putNumber("Left Encoder", leftMasterFalcon.selectedSensorPosition)
+                SmartDashboard.putNumber("Right Encoder", rightMasterFalcon.selectedSensorPosition)
+                SmartDashboard.putNumber("Heading", calculateHeading())
+
+                leftCurrent.setNumber(leftMasterFalcon.statorCurrent)
+                // leftPosition!!.setNumber(leftMasterFalcon.selectedSensorPosition)
+                // leftVelocity!!.setNumber(leftMasterFalcon.selectedSensorVelocity)
+
+                rightCurrent.setNumber(rightMasterFalcon.statorCurrent)
+                // rightPosition!!.setNumber(rightMasterFalcon.selectedSensorPosition)
+                // rightVelocity!!.setNumber(rightMasterFalcon.selectedSensorVelocity)
 
 
-        } else {
-            var curLeftCurrent = 0.0
+            } else {
+                var curLeftCurrent = 0.0
 
-            // if (simIter.hasNext()) {
-            //   curLeftCurrent = simIter.next();
-            // }
-            leftCurrent.setNumber(curLeftCurrent)
-            leftPosition.setNumber(0.0)
-            leftVelocity.setNumber(0.0)
+                // if (simIter.hasNext()) {
+                //   curLeftCurrent = simIter.next();
+                // }
+                leftCurrent.setNumber(curLeftCurrent)
+                leftPosition.setNumber(0.0)
+                leftVelocity.setNumber(0.0)
 
-            rightCurrent.setNumber(0.0)
-            rightPosition.setNumber(0.0)
-            rightVelocity.setNumber(0.0)
+                rightCurrent.setNumber(0.0)
+                rightPosition.setNumber(0.0)
+                rightVelocity.setNumber(0.0)
 
+            }
         }
     }
 
@@ -381,7 +390,4 @@ class DrivetrainFalcon : SubsystemBase() {
     fun driveLeft(value: Double) { leftMasterFalcon.set(value) }
 
     fun driveRight(value: Double) { rightMasterFalcon.set(value) }
-
-
-
 }

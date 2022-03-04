@@ -24,4 +24,8 @@ class AlignShooter(controller: PIDController, measurementSource: DoubleSupplier,
     }
 
     override fun isFinished(): Boolean { return m_controller.atSetpoint() }
+
+    override fun end(interrupted: Boolean) {
+        println("INFO: AlignShooter end")
+    }
 }

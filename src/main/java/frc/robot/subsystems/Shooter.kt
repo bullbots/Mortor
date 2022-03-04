@@ -21,15 +21,11 @@ class Shooter : SubsystemBase() {
 
         // shooterSpinner = SafeSparkMax(Constants.SHOOTER_PORT)
         shooterSpinner = SafeTalonFX(Constants.SHOOTER_PORT, true)
-        shooterSpinner.configFactoryDefault()
 
         configurePID()
 
         // shooterSpinner.idleMode = CANSparkMax.IdleMode.kCoast
         shooterSpinner.setNeutralMode(NeutralMode.Coast)
-
-        var inst = NetworkTableInstance.getDefault()
-
     }
 
     private fun configurePID() {
@@ -42,8 +38,6 @@ class Shooter : SubsystemBase() {
         shooterSpinner.config_kP(0, Constants.SHOOTER_P)
         shooterSpinner.config_kI(0, Constants.SHOOTER_I)
         shooterSpinner.config_kD(0, Constants.SHOOTER_D)
-
-
     }
 
     private fun configureShuffleBoard() {}

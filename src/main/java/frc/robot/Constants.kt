@@ -21,10 +21,11 @@ class Constants {
 
         // Intake Ports
         const val INTAKE_SPINNER_PORT = 8
+        const val INTAKE_ARM_SPINNER_PORT = 9
         const val INTAKE_SPIN_PORT = 10
 
         // Unassigned NEOs
-        const val unassigned2 = 9
+        const val unassigned2 = 11
 
 
         /**

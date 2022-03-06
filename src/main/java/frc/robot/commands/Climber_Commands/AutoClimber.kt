@@ -18,13 +18,14 @@ class AutoClimber(private var climber: Climber, private var isGrenade: Boolean, 
                 Constants.CLIMBER_UP
             }
         } else {
-            Constants.CLIMBER_DOWN
+            Constants.CLIMBER_GRENADE
         }
     }
 
     override fun initialize() {
         if (isGrenade) {
             Climber.isReleased = true
+            climber.climberMotor.selectedSensorPosition = 0.0
             println("INFO: Grenade initialize")
         } else if (!Climber.isReleased) {
             println("PULL GRENADE PIN!!!!!!!!!!")

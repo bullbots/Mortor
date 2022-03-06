@@ -62,15 +62,15 @@ class Climber : SubsystemBase() {
     private fun configureShuffleBoard() {}
 
     override fun periodic() {
-//        loopIdx++
-//        if (loopIdx == 10) {
-//            loopIdx = 0
-//            SmartDashboard.putNumber("Climber PID Error", climberMotor.getClosedLoopError(Constants.kPIDLoopIdx))
-//            SmartDashboard.putNumber("Climber Velocity", climberMotor.getSelectedSensorVelocity(Constants.kPIDLoopIdx))
-//            SmartDashboard.putNumber("Climber Position", climberMotor.getSelectedSensorPosition(Constants.kPIDLoopIdx))
-//            SmartDashboard.putNumber("Climber Current", climberMotor.statorCurrent)
-//            SmartDashboard.putNumber("Climber Active Traj Pos", climberMotor.activeTrajectoryPosition)
-//        }
+        loopIdx++
+        if (loopIdx == 10) {
+            loopIdx = 0
+            SmartDashboard.putNumber("Climber PID Error", climberMotor.getClosedLoopError(Constants.kPIDLoopIdx))
+            SmartDashboard.putNumber("Climber Velocity", climberMotor.getSelectedSensorVelocity(Constants.kPIDLoopIdx))
+            SmartDashboard.putNumber("Climber Position", climberMotor.getSelectedSensorPosition(Constants.kPIDLoopIdx))
+            SmartDashboard.putNumber("Climber Current", climberMotor.statorCurrent)
+            SmartDashboard.putNumber("Climber Active Traj Pos", climberMotor.activeTrajectoryPosition)
+        }
 
 //        checkHallEffectSoftLimits()
     }

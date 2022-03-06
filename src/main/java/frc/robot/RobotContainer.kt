@@ -67,12 +67,12 @@ class RobotContainer {
     private val intake = Intake()
     private val shooter = Shooter()
     private val climber = Climber()
-//    private val lidar = LiDAR()
 
     // Util
     private val pidController = PIDControllerDebug(0.003, 0.0, 0.0)
     private val imu = NavX()
 
+    private var loopIdx = 0
     private var trajectory: Trajectory
 
     var m_chooser = SendableChooser<Command>()
@@ -314,7 +314,11 @@ class RobotContainer {
 
     fun periodic() {
 //        SmartDashboard.putNumber("Yaw", -imu.angle)
-        SmartDashboard.putNumber("Shooter Dist", drivetrain.calcDist())
+        loopIdx++
+        if (loopIdx == 10) {
+            loopIdx = 0
+            SmartDashboard.putNumber("Shooter Dist", drivetrain.calcDist())
+        }
 //        println("RobotContainer Periodic is being called")
     }
 

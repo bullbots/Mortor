@@ -6,9 +6,7 @@ import frc.robot.subsystems.Climber
 class ClimberCommand(private var climber: Climber, var climberVel: Double) : CommandBase() {
 
     // Use addRequirements() here to declare subsystem dependencies.
-    init {
-        addRequirements(climber)
-    }
+    init { addRequirements(climber) }
 
     // Called when the command is initially scheduled.
     override fun initialize() {
@@ -19,15 +17,10 @@ class ClimberCommand(private var climber: Climber, var climberVel: Double) : Com
         } else {
             climber.climberMotor.set(climberVel)
         }
-
-        println("This is being called over and over")
-
     }
 
     // Called every time the scheduler runs while the command is scheduled.
-    override fun execute() {
-
-    }
+    override fun execute() {}
 
     override fun end(interrupted: Boolean) { climber.stop() }
 

@@ -23,6 +23,7 @@ class ShooterCargos(private var shooter: Shooter, private var static: Boolean, p
             velocity = dist()
             shooter.shooterSpinner.set(dist())
         } else {
+            // dist() is in feet
             velocity = when (dist()) {
                 in 1.0..6.0 -> {
                     println("This value is between 1.0 and 6.0")
@@ -32,14 +33,14 @@ class ShooterCargos(private var shooter: Shooter, private var static: Boolean, p
                     println("This value is between 6.0 and 7.0")
                     0.0
                 }
-                in 10.0..12.0 -> MathUtil.interpolate(0.46, 0.50, (dist()-10 / 2))
+                in 10.0..12.0 -> MathUtil.interpolate(0.46, 0.50, (dist()-10 / 2)) // Template
                 in 14.0..16.0 -> MathUtil.interpolate(0.50, 0.56, (dist()-14) / 2)
                 else -> 0.0
             }
 
 
         }
-        println(velocity)
+//        println(velocity) // Debugging Values
     }
 
     // Called every time the scheduler runs while the command is scheduled.

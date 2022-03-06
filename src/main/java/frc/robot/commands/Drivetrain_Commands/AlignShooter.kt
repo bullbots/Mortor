@@ -17,7 +17,6 @@ class AlignShooter(controller: PIDController, measurementSource: DoubleSupplier,
 
     override fun initialize() {
         super.initialize()
-
         println("INFO: AlignShooter is being called")
     }
 
@@ -33,13 +32,15 @@ class AlignShooter(controller: PIDController, measurementSource: DoubleSupplier,
 //        m_useOutput.accept(0.6)
         m_useOutput.accept(pidOut + ff)
 
-//        println("INFO: Yaw: ${m_measurement.asDouble}, Heading: ${m_setpoint.asDouble}, Output value: ${pidOut + ff}")
-        loopIdx++
-        if (loopIdx == 10) {
-            loopIdx = 0
+//        // Debugging values
+//        loopIdx++
+//        if (loopIdx == 10) {
+//            loopIdx = 0
 //            println("INFO: Yaw: ${m_measurement.asDouble}, Heading: ${m_setpoint.asDouble}, PidOut: $pidOut, FF: $ff, TotalOut: ${pidOut+ff}")
 //            println("INFO: Yaw: ${m_measurement.asDouble}, Heading: ${m_setpoint.asDouble}, Delta: $delta")
-        }
+//            println("INFO: Yaw: ${m_measurement.asDouble}, Heading: ${m_setpoint.asDouble}, Output value: ${pidOut + ff}")
+//
+//        }
     }
 
     override fun isFinished(): Boolean { return m_controller.atSetpoint() }

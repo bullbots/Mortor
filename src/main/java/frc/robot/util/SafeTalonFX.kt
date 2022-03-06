@@ -48,7 +48,7 @@ class SafeTalonFX (deviceNumber: Int, private var isDrivetrain: Boolean = false,
     override fun set(percentOutput: Double) {
         if (usePID && abs(percentOutput) > 0.1) {
             super.set(ControlMode.Velocity, percentOutput * maxSpeed)
-            println("INFO: velocity: ${percentOutput * maxSpeed}")
+//            println("INFO: velocity: ${percentOutput * maxSpeed}")
         } else {
             super.set(percentOutput)
         }

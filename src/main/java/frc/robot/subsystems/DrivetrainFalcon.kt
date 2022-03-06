@@ -240,7 +240,7 @@ class DrivetrainFalcon : SubsystemBase() {
             if (RobotBase.isReal()) {
 //                SmartDashboard.putNumber("Left Encoder", leftMasterFalcon.selectedSensorPosition)
 //                SmartDashboard.putNumber("Right Encoder", rightMasterFalcon.selectedSensorPosition)
-                SmartDashboard.putNumber("Heading", calcHeading())
+//                SmartDashboard.putNumber("Heading", calcHeading())
 
 //                leftCurrent.setNumber(leftMasterFalcon.statorCurrent)
                 // leftPosition!!.setNumber(leftMasterFalcon.selectedSensorPosition)

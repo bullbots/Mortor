@@ -29,9 +29,9 @@ class PIDControllerDebug(private val m_kp: Double, private val m_ki: Double, kd:
         } catch (e: SecurityException) {
             e.printStackTrace()
         }
-        SmartDashboard.putNumber("PID Position Output", 0.0)
-        SmartDashboard.putNumber("PID Integral Output", 0.0)
-        SmartDashboard.putNumber("PID output", 0.0)
+//        SmartDashboard.putNumber("PID Position Output", 0.0)
+//        SmartDashboard.putNumber("PID Integral Output", 0.0)
+//        SmartDashboard.putNumber("PID output", 0.0)
     }
 
 //    override fun calculate(measurement: Double): Double {

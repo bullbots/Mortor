@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler
  * project.
  */
 object Robot : TimedRobot() {
-    private lateinit var m_autonomousCommand: Command
+    private var m_autonomousCommand: Command? = null
     private lateinit var m_robotContainer: RobotContainer
     private lateinit var m_field: Field2d
 
@@ -34,6 +34,7 @@ object Robot : TimedRobot() {
         m_field = Field2d()
         SmartDashboard.putData("Field", m_field)
         m_field.robotPose = Pose2d()
+//        m_autonomousCommand = m_robotContainer.getAutonomousCommand()
     }
 
     /**
@@ -51,7 +52,7 @@ object Robot : TimedRobot() {
         // block in order for anything in the Command-based framework to work.
         CommandScheduler.getInstance().run()
         m_robotContainer.periodic()
-//        NetworkTableInstance.getDefault().flush()
+        NetworkTableInstance.getDefault().flush()
     }
 
     /** This function is called once each time the robot enters Disabled mode.  */
@@ -63,10 +64,9 @@ object Robot : TimedRobot() {
 
     /** This autonomous runs the autonomous command selected by your [RobotContainer] class.  */
     override fun autonomousInit() {
-        // m_autonomousCommand = m_robotContainer.getAutonomousCommand()
 
         // schedule the autonomous command (example)
-        m_autonomousCommand.schedule()
+//        m_autonomousCommand.schedule()
     }
 
     /** This function is called periodically during autonomous.  */
@@ -76,7 +76,7 @@ object Robot : TimedRobot() {
         // teleop starts running. If you want the autonomous to
         // continue until interrupted by another command, remove
         // this line or comment it out.
-        m_autonomousCommand.cancel()
+//        m_autonomousCommand.cancel()
     }
 
     /** This function is called periodically during operator control.  */

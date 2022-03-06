@@ -12,6 +12,7 @@ class Constants {
         // Shooter Ports
         const val SHOOTER_PORT = 5
 
+
         // Climber Ports
         const val CLIMBER_PORT = 7
 
@@ -20,9 +21,11 @@ class Constants {
 
         // Intake Ports
         const val INTAKE_SPINNER_PORT = 8
+        const val INTAKE_SPIN_PORT = 10
 
         // Unassigned NEOs
         const val unassigned2 = 9
+
 
         /**
          * ALL DRIVETRAIN RELATED CONSTANTS GO HERE
@@ -56,17 +59,17 @@ class Constants {
          */
 
         // TODO: These values need to be tuned
-        const val  SHOOTER_FF = 0.0473 // 0
-        const val SHOOTER_P = 0.15 // 0
+        const val  SHOOTER_FF = 0.0473 // Normalize to 1023 (Max Speed)
+        const val SHOOTER_P = 0.05 // 0
         const val SHOOTER_I = 0.0 // 1e-6
-        const val SHOOTER_D = 0.0 // 0
+        const val SHOOTER_D = 0.005 // 0
 
         const val NEO_MAX_RPM = 5676.0 // http://www.revrobotics.com/rev-21-1650/ "Empirical Free Speed"
 
         /**
          * ALL CLIMB RELATED CONSTANTS GO HERE
          */
-        const val CLIMBER_DOWN = -40000.0
+        const val CLIMBER_DOWN = -10000.0
         const val CLIMBER_UP = 405000.0
         const val CLIMBER_LIMIT_THRESHOLD = 1000
         const val kPIDLoopIdx = 0

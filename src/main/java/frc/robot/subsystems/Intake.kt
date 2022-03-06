@@ -17,7 +17,6 @@ class Intake : SubsystemBase() {
         configureShuffleBoard()
 
         intakeSpinner = SafeSparkMax(Constants.INTAKE_SPINNER_PORT, CANSparkMaxLowLevel.MotorType.kBrushless)
-        intakeSpinner.restoreFactoryDefaults()
         intakeSpinner.idleMode = CANSparkMax.IdleMode.kBrake
     }
 

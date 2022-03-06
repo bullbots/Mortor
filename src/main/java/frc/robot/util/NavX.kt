@@ -1,6 +1,7 @@
 package frc.robot.util
 
 import com.kauailabs.navx.frc.AHRS
+import edu.wpi.first.math.MathUtil
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 
 /**
@@ -13,16 +14,16 @@ class NavX : AHRS() {
 
     init { angleDelta = angle }
 
-//    override fun getAngle(): Double {
-//        var angle = super.getAngle() - angleDelta
-//        angle = (angle + 180) % 360 - 180
-//
-////        SmartDashboard.putNumber("Yaw", -angle)
-//
-//        return angle
-//    }
+    override fun getAngle(): Double {
+        var angle = super.getAngle() - angleDelta
+        angle = MathUtil.inputModulus(angle, -180.0, 180.0)
 
-    override fun reset() { angleDelta = angle }
+//        SmartDashboard.putNumber("Yaw", -angle)
+
+        return angle
+    }
+
+    override fun reset() { angleDelta = super.getAngle() }
 
     fun reset180() { angleDelta = angle + 180 }
 }

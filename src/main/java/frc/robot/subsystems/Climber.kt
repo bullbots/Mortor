@@ -18,17 +18,21 @@ class Climber : SubsystemBase() {
 
     var currentState = State.RELEASE
 
+
+
     companion object{
         enum class State {
             BOTTOM, RELEASE, TOP
         }
+
+        var isReleased = false
     }
 
     init {
 //        configureShuffleBoard()
 
         // Initializing Motor(s)
-        climberMotor = SafeTalonFX(Constants.CLIMBER_PORT, isDrivetrain=false)
+        climberMotor = SafeTalonFX(Constants.CLIMBER_PORT, isDrivetrain=false, usePID=false)
 
         climberMotor.setNeutralMode(NeutralMode.Brake)
 
@@ -40,7 +44,6 @@ class Climber : SubsystemBase() {
 
         climberMotor.configMotionCruiseVelocity(15000.0, Constants.kTIMEOUT_MS)
         climberMotor.configMotionAcceleration(15000.0, Constants.kTIMEOUT_MS)
-        climberMotor.setSelectedSensorPosition(0.0, Constants.kPIDLoopIdx, Constants.kTIMEOUT_MS)
 
 
         hallEffectTop = Counter(Counter.Mode.kPulseLength)

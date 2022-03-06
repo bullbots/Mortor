@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase
 import frc.robot.subsystems.DrivetrainFalcon
 import java.util.function.DoubleSupplier
 import kotlin.math.pow
+import kotlin.math.sign
 
 class JoystickDrive (
     var m_drivetrain: DrivetrainFalcon,
@@ -19,11 +20,11 @@ class JoystickDrive (
     override fun initialize() {}
 
     override fun execute() {
-        var _joyY = joyY.asDouble.pow(0.5) * m_drivetrain.isFullSpeed
-        var _joyX = joyX.asDouble.pow(0.5) * m_drivetrain.isFullSpeed
+        var _joyY = sign(joyY.asDouble)*joyY.asDouble.pow(2) * m_drivetrain.isFullSpeed
+        var _joyX = sign(joyX.asDouble)* joyX.asDouble.pow(2) * m_drivetrain.isFullSpeed
         val turnInPlace = true
-        // double _joyZ = joyZ.getAsDouble();
         m_drivetrain.curvatureDrive(_joyY, _joyX, turnInPlace)
+//        SmartDashboard.putNumber("JoyX", joyX.asDouble)
     }
 
     override fun end(interrupted: Boolean) {

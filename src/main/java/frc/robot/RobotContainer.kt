@@ -1,6 +1,5 @@
 package frc.robot
 
-import com.kauailabs.navx.frc.AHRS
 import edu.wpi.first.math.controller.PIDController
 import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.math.geometry.Rotation2d
@@ -9,7 +8,6 @@ import edu.wpi.first.math.trajectory.Trajectory
 import edu.wpi.first.math.trajectory.TrajectoryConfig
 import edu.wpi.first.math.trajectory.TrajectoryGenerator
 import edu.wpi.first.wpilibj.DriverStation
-import edu.wpi.first.wpilibj.IterativeRobotBase
 import edu.wpi.first.wpilibj.Joystick
 import edu.wpi.first.wpilibj.RobotBase
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
@@ -27,10 +25,7 @@ import frc.robot.commands.Shooter_Commands.ShooterGroup
 import frc.robot.subsystems.*
 import frc.robot.util.NavX
 import frc.robot.util.PIDControllerDebug
-import java.util.List
 import java.util.concurrent.atomic.AtomicReference
-import java.util.function.DoubleConsumer
-import java.util.function.DoubleSupplier
 
 class RobotContainer {
 
@@ -75,8 +70,8 @@ class RobotContainer {
 //    private val lidar = LiDAR()
 
     // Util
-    private val pidController = PIDControllerDebug(0.005, 0.0, 0.0)
-    private val imu = AHRS()
+    private val pidController = PIDControllerDebug(0.003, 0.0, 0.0)
+    private val imu = NavX()
 
     private var trajectory: Trajectory
 
@@ -163,7 +158,7 @@ class RobotContainer {
             Pose2d(6.0, 4.0, Rotation2d()),
             TrajectoryConfig(2.0, 2.0)
         )
-        // initializeStaticShooterVel()
+         initializeStaticShooterVel()
 
 //        shooterMode.setDefaultOption("Competition Shooting", ShooterMode.COMPETITION)
 //        shooterMode.addOption("Demo Shooting", ShooterMode.DEMO)
@@ -249,34 +244,46 @@ class RobotContainer {
 
 
         // Drivers Button Binding
-        button1.whileHeld(IntakeGroup(intake, 0.6, shooter) { -0.12 })
+        button1.whileHeld(IntakeGroup(intake, 0.6, shooter) { -0.15 })
 
         button2.whileHeld(StartEndCommand(
             {drivetrain.isFullSpeed = 0.5},
             {drivetrain.isFullSpeed = 1.0}
         ))
 
-        button4.whileHeld(ShooterGroup(intake, -0.1, shooter, true) { 0.45 })
+//        button4.whileHeld(ShooterGroup(intake, -0.1, shooter, true) { 0.6 })
+        button4.whileHeld(ShooterGroup(intake, -0.1, shooter, false, drivetrain::calcDist))
 
         button5.whileHeld(IntakeGroup(intake, -0.3, shooter) { -0.1 })
 
-        button6.whileHeld(IntakeGroup(intake, 0.3, shooter) { 0.2 })
+        button6.whileHeld(ShooterGroup(intake, -0.1, shooter, true) { SmartDashboard.getNumber("staticChooser", 0.0) })
 
-        button7.whenPressed(AlignShooter(pidController, { -imu.angle }, drivetrain::calculateHeading,
-            { output: Double -> drivetrain.drive(0.0, -output) }, drivetrain))
+        button7.whenPressed(AlignShooter(pidController, { -imu.angle }, drivetrain::calcHeading,
+            { output: Double -> drivetrain.drive(0.0, -output) }, drivetrain).withTimeout(1.0))
+
+        button8.whenPressed(InstantCommand(
+            {
+                drivetrain.resetEncoders()
+                imu.reset()
+                drivetrain.resetOdometry(Pose2d(3.1, 0.0, Rotation2d.fromDegrees(0.0)))
+                println("INFO: THE POSE IS RESET!!!")
+            }
+        ))
+
+        button10.whileHeld(ClimberGroup(climber, -0.5))
+
+        button11.whileHeld(ClimberGroup(climber, 0.5))
 
         // CO-Drivers Button Binding
 
-        coButton6.whileHeld(ClimberGroup(climber, 0.5))
+        coButton1.whenPressed(AutoClimber(climber, isGrenade = false, isDown = true))
 
-        coButton7.whileHeld(ClimberGroup(climber, -0.5))
+        coButton2.whenPressed(AutoClimber(climber, isGrenade = false, isDown = false))
 
-        coButton9.whenPressed(AutoClimber(climber, isGrenade = true, isDown = true))
+        coButton4.whileHeld(IntakeGroup(intake, 0.3, shooter) { 0.2 })
+
+        coButton6.whenPressed(AutoClimber(climber, isGrenade = true, isDown = true))
 //        coButton9.whenPressed(AutoClimber(isDown = true, isGrenade = true, climber = climber))
-
-        coButton10.whenPressed(AutoClimber(climber, isGrenade = false, isDown = true))
-
-        coButton11.whenPressed(AutoClimber(climber, isGrenade = false, isDown = false))
 
         SmartDashboard.putData(object : InstantCommand(
             drivetrain::resetEncoders,
@@ -307,6 +314,7 @@ class RobotContainer {
 
     fun periodic() {
 //        SmartDashboard.putNumber("Yaw", -imu.angle)
+        SmartDashboard.putNumber("Shooter Dist", drivetrain.calcDist())
 //        println("RobotContainer Periodic is being called")
     }
 

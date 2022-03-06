@@ -6,8 +6,6 @@ import com.ctre.phoenix.motorcontrol.NeutralMode
 import edu.wpi.first.math.controller.SimpleMotorFeedforward
 import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.math.geometry.Rotation2d
-import edu.wpi.first.math.kinematics.ChassisSpeeds
-import edu.wpi.first.math.kinematics.DifferentialDriveKinematics
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds
 import edu.wpi.first.networktables.NetworkTableEntry
@@ -24,6 +22,7 @@ import frc.robot.util.NavX
 import frc.robot.util.PIDControllerDebug
 import frc.robot.util.SafeTalonFX
 import kotlin.math.atan2
+import kotlin.math.hypot
 
 /**
  * Initializes the drivetrain using falcon500
@@ -87,10 +86,6 @@ class DrivetrainFalcon : SubsystemBase() {
 
     init {
         if (RobotBase.isReal()) {
-            leftMasterFalcon.configFactoryDefault()
-            rightMasterFalcon.configFactoryDefault()
-            leftSlaveFalcon.configFactoryDefault()
-            rightSlaveFalcon.configFactoryDefault()
 
             leftSlaveFalcon.follow(leftMasterFalcon)
             rightSlaveFalcon.follow(rightMasterFalcon)
@@ -243,15 +238,15 @@ class DrivetrainFalcon : SubsystemBase() {
             loopIdx = 0
 
             if (RobotBase.isReal()) {
-                SmartDashboard.putNumber("Left Encoder", leftMasterFalcon.selectedSensorPosition)
-                SmartDashboard.putNumber("Right Encoder", rightMasterFalcon.selectedSensorPosition)
-                SmartDashboard.putNumber("Heading", calculateHeading())
+//                SmartDashboard.putNumber("Left Encoder", leftMasterFalcon.selectedSensorPosition)
+//                SmartDashboard.putNumber("Right Encoder", rightMasterFalcon.selectedSensorPosition)
+                SmartDashboard.putNumber("Heading", calcHeading())
 
-                leftCurrent.setNumber(leftMasterFalcon.statorCurrent)
+//                leftCurrent.setNumber(leftMasterFalcon.statorCurrent)
                 // leftPosition!!.setNumber(leftMasterFalcon.selectedSensorPosition)
                 // leftVelocity!!.setNumber(leftMasterFalcon.selectedSensorVelocity)
 
-                rightCurrent.setNumber(rightMasterFalcon.statorCurrent)
+//                rightCurrent.setNumber(rightMasterFalcon.statorCurrent)
                 // rightPosition!!.setNumber(rightMasterFalcon.selectedSensorPosition)
                 // rightVelocity!!.setNumber(rightMasterFalcon.selectedSensorVelocity)
 
@@ -293,12 +288,19 @@ class DrivetrainFalcon : SubsystemBase() {
         rightMasterFalcon.selectedSensorPosition = 0.0
     }
 
-    fun getYaw(): Double { return imu.yaw.toDouble() }
+    fun calcDist(): Double {
+        val x = m_odometry.poseMeters.x
+        val y = m_odometry.poseMeters.y
 
+        val dist = hypot(x, y)
+
+
+        return dist
+    }
     /**
      * @return atanDegree: The heading the robot needs to face towards the goal
      */
-    fun calculateHeading(): Double {
+    fun calcHeading(): Double {
         val x = m_odometry.poseMeters.x
         val y = m_odometry.poseMeters.y
         val delta = ((m_odometry.poseMeters.rotation.degrees % 360) + 360) % 360 - 180 // delta % 360 is to set the input between -360 and 360

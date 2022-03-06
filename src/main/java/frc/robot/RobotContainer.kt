@@ -14,11 +14,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.InstantCommand
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup
 import edu.wpi.first.wpilibj2.command.StartEndCommand
 import edu.wpi.first.wpilibj2.command.button.JoystickButton
 import frc.robot.commands.Climber_Commands.AutoClimber
 import frc.robot.commands.Climber_Commands.ClimberGroup
 import frc.robot.commands.Drivetrain_Commands.AlignShooter
+import frc.robot.commands.Drivetrain_Commands.Drive
 import frc.robot.commands.Drivetrain_Commands.JoystickDrive
 import frc.robot.commands.Intake_Commands.IntakeGroup
 import frc.robot.commands.Shooter_Commands.ShooterGroup
@@ -173,6 +175,14 @@ class RobotContainer {
 
     private fun initializeAutonomousOptions() {
         // Add commands to the autonomous command chooser
+        m_chooser.setDefaultOption("Taxi Out", InstantCommand(
+            { drivetrain.curvatureDrive(0.3, 0.0, false)}
+        ).withTimeout(3.0))
+
+        m_chooser.addOption("Taxi Out & Shoot", SequentialCommandGroup(
+            Drive(drivetrain, 0.3).withTimeout(3.0),
+            ShooterGroup(intake, -0.1, shooter, true) { 0.3 }.withTimeout(1.0)
+        ))
 //        m_chooser.setDefaultOption("Bounce Piece", new SequentialCommandGroup(
 //                new TrajectoryBase(drivetrain, "/BOUNCE-1", false, true), // ... boolean isBackwards, boolean resetGyro
 //                new TrajectoryBase(drivetrain, "/BOUNCE-2", true, false),

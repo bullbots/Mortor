@@ -9,7 +9,6 @@ import kotlin.math.abs
 class AutoClimber(private var climber: Climber, private var isGrenade: Boolean, private var isDown: Boolean) : CommandBase() {
     private var targetTraj = 0.0
 
-
     init { addRequirements(climber)
         targetTraj = if(!isGrenade) {
             if (isDown) {
@@ -24,9 +23,9 @@ class AutoClimber(private var climber: Climber, private var isGrenade: Boolean, 
 
     override fun initialize() {
         if (isGrenade) {
-            Climber.isReleased = true
+            climber.isReleased = true
             println("INFO: Grenade initialize")
-        } else if (!Climber.isReleased) {
+        } else if (!climber.isReleased) {
             println("PULL GRENADE PIN!!!!!!!!!!")
             return
         }

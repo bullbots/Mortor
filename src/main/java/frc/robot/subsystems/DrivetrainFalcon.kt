@@ -44,8 +44,8 @@ class DrivetrainFalcon : SubsystemBase() {
     private val leftSlaveFalcon = SafeTalonFX(Constants.LEFT_SLAVE_PORT, isDrivetrain=true)
     private val rightSlaveFalcon = SafeTalonFX(Constants.RIGHT_SLAVE_PORT, isDrivetrain=true)
 
-    private val leftGroup = MotorControllerGroup(leftMasterFalcon, leftSlaveFalcon)
-    private val rightGroup = MotorControllerGroup(rightMasterFalcon, rightSlaveFalcon)
+    val leftGroup = MotorControllerGroup(leftMasterFalcon, leftSlaveFalcon)
+    val rightGroup = MotorControllerGroup(rightMasterFalcon, rightSlaveFalcon)
 
 //    private val kinematics = DifferentialDriveKinematics(Constants.TRACK_WIDTH)
     private val diffDrive = DifferentialDriveDebug(leftMasterFalcon, rightMasterFalcon)

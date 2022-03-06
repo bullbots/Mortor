@@ -32,7 +32,7 @@ class ShooterCargos(private var shooter: Shooter, private var static: Boolean, p
                     println("This value is between 6.0 and 7.0")
                     0.0
                 }
-                in 10.0..12.0 -> MathUtil.interpolate(0.46, 0.50, (dist()-10 / 2))
+                in 10.0..12.0 -> MathUtil.interpolate(0.45, 0.47, (dist()-10 / 2))
                 in 14.0..16.0 -> MathUtil.interpolate(0.50, 0.56, (dist()-14) / 2)
                 else -> 0.0
             }

@@ -20,6 +20,7 @@ import frc.robot.commands.Climber_Commands.AutoClimber
 import frc.robot.commands.Climber_Commands.ClimberGroup
 import frc.robot.commands.Drivetrain_Commands.AlignShooter
 import frc.robot.commands.Drivetrain_Commands.JoystickDrive
+import frc.robot.commands.Intake_Commands.IntakeArm
 import frc.robot.commands.Intake_Commands.IntakeGroup
 import frc.robot.commands.Shooter_Commands.ShooterGroup
 import frc.robot.subsystems.*
@@ -280,10 +281,13 @@ class RobotContainer {
 
         coButton2.whenPressed(AutoClimber(climber, isGrenade = false, isDown = false))
 
+        coButton3.whileHeld(IntakeArm(intake, armVel = 0.5)) // Intake Arm Up
+
         coButton4.whileHeld(IntakeGroup(intake, 0.3, shooter) { 0.2 })
 
+        coButton5.whileHeld(IntakeArm(intake, armVel = -0.5)) // Intake Arm Down
+
         coButton6.whenPressed(AutoClimber(climber, isGrenade = true, isDown = true))
-//        coButton9.whenPressed(AutoClimber(isDown = true, isGrenade = true, climber = climber))
 
         SmartDashboard.putData(object : InstantCommand(
             drivetrain::resetEncoders,

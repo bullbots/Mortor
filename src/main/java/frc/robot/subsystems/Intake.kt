@@ -12,16 +12,19 @@ import frc.robot.util.SafeSparkMax
  */
 class Intake : SubsystemBase() {
     var intakeSpinner: SafeSparkMax
-    var armSpinner: SafeSparkMax // TODO: Set the CAN ID to 9!!!
+    var armSpinner: SafeSparkMax // CAN ID 11
+    var raiseLowerSpinner: SafeSparkMax // CAN ID 9
 
     init {
         configureShuffleBoard()
 
         intakeSpinner = SafeSparkMax(Constants.INTAKE_SPINNER_PORT, CANSparkMaxLowLevel.MotorType.kBrushless)
         armSpinner = SafeSparkMax(Constants.INTAKE_ARM_SPINNER_PORT, CANSparkMaxLowLevel.MotorType.kBrushless)
+        raiseLowerSpinner = SafeSparkMax(Constants.RAISE_LOWER_ARM_PORT, CANSparkMaxLowLevel.MotorType.kBrushless)
 
         intakeSpinner.idleMode = CANSparkMax.IdleMode.kBrake
         armSpinner.idleMode = CANSparkMax.IdleMode.kBrake
+        raiseLowerSpinner.idleMode = CANSparkMax.IdleMode.kBrake
     }
 
     fun set(speed: Double) {
@@ -36,6 +39,7 @@ class Intake : SubsystemBase() {
     fun stop() {
         intakeSpinner.set(0.0)
         armSpinner.set(0.0)
+        raiseLowerSpinner.set(0.0)
     }
 
 }

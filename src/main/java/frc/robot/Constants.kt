@@ -21,17 +21,17 @@ class Constants {
 
         // Intake Ports
         const val INTAKE_SPINNER_PORT = 8
-        const val INTAKE_ARM_SPINNER_PORT = 9
+        const val RAISE_LOWER_ARM_PORT = 9
         const val INTAKE_SPIN_PORT = 10
+        const val INTAKE_ARM_SPINNER_PORT = 11
+
 
         // Unassigned NEOs
-        const val unassigned2 = 11
 
 
         /**
          * ALL DRIVETRAIN RELATED CONSTANTS GO HERE
          */
-
         // TODO: These values need to be tuned
         const val LEFT_VELOCITY_P = 0.05
         const val LEFT_VELOCITY_I = 0.0

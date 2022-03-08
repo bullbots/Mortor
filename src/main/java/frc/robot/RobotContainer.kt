@@ -14,11 +14,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.InstantCommand
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup
 import edu.wpi.first.wpilibj2.command.StartEndCommand
 import edu.wpi.first.wpilibj2.command.button.JoystickButton
 import frc.robot.commands.Climber_Commands.AutoClimber
 import frc.robot.commands.Climber_Commands.ClimberGroup
 import frc.robot.commands.Drivetrain_Commands.AlignShooter
+import frc.robot.commands.Drivetrain_Commands.Drive
 import frc.robot.commands.Drivetrain_Commands.JoystickDrive
 import frc.robot.commands.Intake_Commands.IntakeArm
 import frc.robot.commands.Intake_Commands.IntakeGroup
@@ -58,7 +60,7 @@ class RobotContainer {
         private val coButton10 = JoystickButton(coStick, 10)
         private val coButton11 = JoystickButton(coStick, 11)
 
-        private val pathColor = AtomicReference<Color>(Color.UNLOADED)
+//        private val pathColor = AtomicReference<Color>(Color.UNLOADED)
 
         private val shooterMode = SendableChooser<ShooterMode>()
     }
@@ -78,54 +80,54 @@ class RobotContainer {
 
     var m_chooser = SendableChooser<Command>()
 
-    enum class Color(value: Int) {
-        UNLOADED(0),
-        RED(1),
-        BLUE(2);
+//    enum class Color(value: Int) {
+//        UNLOADED(0),
+//        RED(1),
+//        BLUE(2);
+//
+//        private var value: Int? = null
+//        companion object {
+//            private var map = HashMap<Int, Color>()
+//
+//            // In replace of static {}
+//            fun addColor() {
+//                for (color in Color.values()) {
+//                    map[color.value!!.toInt()] = color
+//                }
+//            }
+//
+//            fun valueOf(color: Int): Color { return map[color]!! }
+//        }
+//
+//        fun getValue(): Int { return value!! }
+//
+//    }
 
-        private var value: Int? = null
-        companion object {
-            private var map = HashMap<Int, Color>()
-
-            // In replace of static {}
-            fun addColor() {
-                for (color in Color.values()) {
-                    map[color.value!!.toInt()] = color
-                }
-            }
-
-            fun valueOf(color: Int): Color { return map[color]!! }
-        }
-
-        fun getValue(): Int { return value!! }
-
-    }
-
-    private enum class Letter(value: Int) {
-        UNLOADED(0),
-        A(1),
-        B(2);
-
-        private var value: Int? = null
-
-        companion object {
-
-            private val map = HashMap<Int, Letter>()
-
-            fun addLetter() {
-                for (letter in Letter.values()) {
-                    map[letter.value!!] = letter
-                }
-            }
-
-            fun valueOf(letter: Int): Letter { return map[letter]!! }
-
-        }
-
-        fun getValue(): Int { return value!! }
-
-    }
-    var staticChooser = SendableChooser<Double>()
+//    private enum class Letter(value: Int) {
+//        UNLOADED(0),
+//        A(1),
+//        B(2);
+//
+//        private var value: Int? = null
+//
+//        companion object {
+//
+//            private val map = HashMap<Int, Letter>()
+//
+//            fun addLetter() {
+//                for (letter in Letter.values()) {
+//                    map[letter.value!!] = letter
+//                }
+//            }
+//
+//            fun valueOf(letter: Int): Letter { return map[letter]!! }
+//
+//        }
+//
+//        fun getValue(): Int { return value!! }
+//
+//    }
+//    var staticChooser = SendableChooser<Double>()
 
     private enum class ShooterMode {
         STATIC,
@@ -174,6 +176,15 @@ class RobotContainer {
 
     private fun initializeAutonomousOptions() {
         // Add commands to the autonomous command chooser
+        m_chooser.setDefaultOption("Taxi Out", InstantCommand(
+            { drivetrain.curvatureDrive(0.3, 0.0, false)}
+        ).withTimeout(3.0))
+
+        m_chooser.addOption("Taxi Out & Shoot", SequentialCommandGroup(
+            Drive(drivetrain, 0.3).withTimeout(3.0),
+            ShooterGroup(intake, -0.1, shooter, true) { 0.3 }.withTimeout(1.0)
+        ))
+        SmartDashboard.putData(m_chooser);
 //        m_chooser.setDefaultOption("Bounce Piece", new SequentialCommandGroup(
 //                new TrajectoryBase(drivetrain, "/BOUNCE-1", false, true), // ... boolean isBackwards, boolean resetGyro
 //                new TrajectoryBase(drivetrain, "/BOUNCE-2", true, false),
@@ -221,7 +232,6 @@ class RobotContainer {
 //                new TrajectoryBase(drivetrain, "/BACKWARD-DISTANCE", true, false)
 //        ));
 //
-//        SmartDashboard.putData(m_chooser);
 //
 //        // NetworkTableInstance inst = NetworkTableInstance.getDefault();
 //

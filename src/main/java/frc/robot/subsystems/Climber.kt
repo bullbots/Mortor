@@ -19,12 +19,10 @@ class Climber : SubsystemBase() {
     var currentState = State.RELEASE
 
 
-
     companion object{
         enum class State {
             BOTTOM, RELEASE, TOP
         }
-
         var isReleased = false
     }
 
@@ -62,15 +60,15 @@ class Climber : SubsystemBase() {
     private fun configureShuffleBoard() {}
 
     override fun periodic() {
-//        loopIdx++
-//        if (loopIdx == 10) {
-//            loopIdx = 0
-//            SmartDashboard.putNumber("Climber PID Error", climberMotor.getClosedLoopError(Constants.kPIDLoopIdx))
-//            SmartDashboard.putNumber("Climber Velocity", climberMotor.getSelectedSensorVelocity(Constants.kPIDLoopIdx))
-//            SmartDashboard.putNumber("Climber Position", climberMotor.getSelectedSensorPosition(Constants.kPIDLoopIdx))
-//            SmartDashboard.putNumber("Climber Current", climberMotor.statorCurrent)
-//            SmartDashboard.putNumber("Climber Active Traj Pos", climberMotor.activeTrajectoryPosition)
-//        }
+        loopIdx++
+        if (loopIdx == 10) {
+            loopIdx = 0
+            SmartDashboard.putNumber("Climber PID Error", climberMotor.getClosedLoopError(Constants.kPIDLoopIdx))
+            SmartDashboard.putNumber("Climber Velocity", climberMotor.getSelectedSensorVelocity(Constants.kPIDLoopIdx))
+            SmartDashboard.putNumber("Climber Position", climberMotor.getSelectedSensorPosition(Constants.kPIDLoopIdx))
+            SmartDashboard.putNumber("Climber Current", climberMotor.statorCurrent)
+            SmartDashboard.putNumber("Climber Active Traj Pos", climberMotor.activeTrajectoryPosition)
+        }
 
 //        checkHallEffectSoftLimits()
     }
@@ -98,5 +96,17 @@ class Climber : SubsystemBase() {
                 hallEffectTop.reset()
             }
         }
+    }
+
+    fun setManual(percentOutput: Double) {
+        if (climberMotor.selectedSensorPosition <= -14000) {
+            climberMotor.stopMotor()
+            println("WARNING: THE CLIMBER IS TO LOW!!!!!!")
+        } else {
+            climberMotor.set(percentOutput)
+        }
+    }
+    fun encoderSoftLimits() {
+
     }
 }

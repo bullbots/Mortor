@@ -15,10 +15,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.InstantCommand
 import edu.wpi.first.wpilibj2.command.StartEndCommand
+import edu.wpi.first.wpilibj2.command.WaitCommand
 import edu.wpi.first.wpilibj2.command.button.JoystickButton
 import frc.robot.commands.Climber_Commands.AutoClimber
 import frc.robot.commands.Climber_Commands.ClimberGroup
 import frc.robot.commands.Drivetrain_Commands.AlignShooter
+import frc.robot.commands.Drivetrain_Commands.DriveForDistanceCommand
+import frc.robot.commands.Drivetrain_Commands.DriveForTimeCommand
 import frc.robot.commands.Drivetrain_Commands.JoystickDrive
 import frc.robot.commands.Intake_Commands.DropArmCommand
 import frc.robot.commands.Intake_Commands.HoldArmCommand
@@ -174,69 +177,14 @@ class RobotContainer {
      * Adds the staticShooter velocity values to the SmartDashboard.
      * You are able to adjust the value inside the SmartDashboard to change velocity
      */
-    private fun initializeStaticShooterVel() { SmartDashboard.putNumber("staticChooser", 0.3) }
+    private fun initializeStaticShooterVel() { SmartDashboard.putNumber("staticChooser", 0.46) }
 
     private fun initializeAutonomousOptions() {
         // Add commands to the autonomous command chooser
-//        m_chooser.setDefaultOption("Bounce Piece", new SequentialCommandGroup(
-//                new TrajectoryBase(drivetrain, "/BOUNCE-1", false, true), // ... boolean isBackwards, boolean resetGyro
-//                new TrajectoryBase(drivetrain, "/BOUNCE-2", true, false),
-//                new TrajectoryBase(drivetrain, "/BOUNCE-3", false, false),
-//                new TrajectoryBase(drivetrain, "/BOUNCE-4", true, false)
-//        ));
-//        m_chooser.addOption("Bounce Path", new SequentialCommandGroup(
-//                new TrajectoryBase(drivetrain, "/BOUNCE-1", false, true), // ... boolean isBackwards, boolean resetGyro
-//                new TrajectoryBase(drivetrain, "/BOUNCE-2", true, false),
-//                new TrajectoryBase(drivetrain, "/BOUNCE-3", false, false),
-//                new TrajectoryBase(drivetrain, "/BOUNCE-4", true, false)
-//        ));
-//        m_chooser.addOption("Slalom Path",
-//                new TrajectoryBase(drivetrain, "/SLALOM")
-//        );
-//
-//        System.out.println("Path Color: " + pathColor.get());
-//        m_chooser.addOption("Galactic Search Challenge",
-//                new ParallelCommandGroup(
-//                        new AutonomousGSC(
-//                                drivetrain,
-//                                harm,
-//                                () -> ((int) SmartDashboard.getNumber("isRed", 0) != 0), //&& pathLetter.get() != Letter.UNLOADED),
-//                                () -> ((int) SmartDashboard.getNumber("isRed", 0) == 1),
-//                                () -> (pathLetter.get() == Letter.A)
-//                        )
-//                ));
-//
-//        m_chooser.addOption("Galactic Red",
-//                new ParallelCommandGroup(
-//                        new TrajectoryBase(drivetrain, "/RED-COMBINED", true, false).deadlineWith(
-//                                new IntakeGroup(harm))
-//                )
-//        );
-//
-//        // m_chooser.addOption("Galactic Search Challenge B", new AutonomousGSC_B(
-//        //   drivetrain,
-//        //   harm,
-//        //   () -> (pathColor.get() != Color.UNLOADED),
-//        //   () -> (pathColor.get() == Color.RED)
-//        // ));
-//
-//        m_chooser.addOption("Forward Then Backward Path", new SequentialCommandGroup(
-//                new TrajectoryBase(drivetrain, "/FORWARD-DISTANCE", false, true), // ... boolean isBackwards, boolean resetGyro
-//                new TrajectoryBase(drivetrain, "/BACKWARD-DISTANCE", true, false)
-//        ));
-//
-//        SmartDashboard.putData(m_chooser);
-//
-//        // NetworkTableInstance inst = NetworkTableInstance.getDefault();
-//
-//        // NetworkTable table = inst.getTable("SmartDashboard");
-//
-//        // table.addEntryListener("isRed",
-//        //   (local_table, key, entry, value, flags) -> {
-//        //     pathColor.set(Color.valueOf((int) value.getValue()));
-//        //   },
-//        //   EntryListenerFlags.kNew | EntryListenerFlags.kUpdate
-//        // );
+        m_chooser.setDefaultOption("Leave Tarmac Timed", DriveForTimeCommand(drivetrain, 2.0))
+        m_chooser.addOption("Leave Tarmac Distance", DriveForDistanceCommand(drivetrain, 0.5, 14.0))
+        println("INFO: initialize Autonomous Options")
+        SmartDashboard.putData(m_chooser)
     }
 
     /**
@@ -249,7 +197,7 @@ class RobotContainer {
 
 
         // Drivers Button Binding
-        button1.whileHeld(IntakeGroup(intake, 0.6, shooter) { -0.15 })
+        button1.whileHeld(IntakeGroup(intake, 0.6, shooter) { -0.25 })
 
         button2.whileHeld(StartEndCommand(
             {drivetrain.isFullSpeed = 0.5},

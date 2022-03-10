@@ -123,7 +123,7 @@ class DrivetrainFalcon : SubsystemBase() {
 
         resetEncoders()
 
-        SmartDashboard.putData("Field", m_fieldSim)
+//        SmartDashboard.putData("Field", m_fieldSim)
     }
 
 
@@ -142,6 +142,12 @@ class DrivetrainFalcon : SubsystemBase() {
     }
 
     fun setOdometryDirection(invert: Boolean) { m_flippedOdometry = invert }
+
+    fun getAverageDist() : Double {
+        val leftDist = leftMasterFalcon.selectedSensorPosition / ticks_per_foot
+        val rightDist = rightMasterFalcon.selectedSensorPosition / ticks_per_foot
+        return (leftDist + rightDist) * 0.5
+    }
 
     private fun updateOdometry() {
         var leftDist = leftMasterFalcon.selectedSensorPosition / ticks_per_foot
@@ -211,24 +217,6 @@ class DrivetrainFalcon : SubsystemBase() {
     }
 
     override fun periodic() {
-//        println("DrivetrainFalcon periodic")
-//        SmartDashboard.putNumber("Encoder Ticks - Left", leftMasterFalcon.selectedSensorPosition)
-//        SmartDashboard.putNumber("Encoder Ticks - Right", rightMasterFalcon.selectedSensorPosition)
-//        SmartDashboard.putNumber(
-//            "Encoder Rate (Normalized) - Left",
-//            leftMasterFalcon.selectedSensorVelocity / max_ticks_per_hundred_milliseconds
-//        )
-//        SmartDashboard.putNumber(
-//            "Encoder Rate (Normalized) - Right",
-//            rightMasterFalcon.selectedSensorVelocity / max_ticks_per_hundred_milliseconds
-//        )
-//
-//        SmartDashboard.putNumber("NavX Angle", gyro.rotation2d.degrees)
-//
-//        SmartDashboard.putNumber("Right Master Current", rightMasterFalcon.statorCurrent)
-//        SmartDashboard.putNumber("Right Slave Current", rightSlaveFalcon.statorCurrent)
-//        SmartDashboard.putNumber("Left Master Current", leftMasterFalcon.statorCurrent)
-//        SmartDashboard.putNumber("Left Slave Current", leftSlaveFalcon.statorCurrent)
 
         updateOdometry()
         m_fieldSim
@@ -240,15 +228,21 @@ class DrivetrainFalcon : SubsystemBase() {
             if (RobotBase.isReal()) {
 //                SmartDashboard.putNumber("Left Encoder", leftMasterFalcon.selectedSensorPosition)
 //                SmartDashboard.putNumber("Right Encoder", rightMasterFalcon.selectedSensorPosition)
+                SmartDashboard.putNumber("Left Drive Speed", leftMasterFalcon.selectedSensorVelocity / 22000)
+                SmartDashboard.putNumber("Right Drive Speed", rightMasterFalcon.selectedSensorVelocity / 22000)
+                SmartDashboard.putNumber("Left Drive Stator Current", leftMasterFalcon.statorCurrent)
+                SmartDashboard.putNumber("Right Drive Stator Current", rightMasterFalcon.statorCurrent)
+                SmartDashboard.putNumber("Left Drive Supply Current", leftMasterFalcon.supplyCurrent)
+                SmartDashboard.putNumber("Right Drive Supply Current", rightMasterFalcon.supplyCurrent)
 //                SmartDashboard.putNumber("Heading", calcHeading())
 
 //                leftCurrent.setNumber(leftMasterFalcon.statorCurrent)
                 // leftPosition!!.setNumber(leftMasterFalcon.selectedSensorPosition)
-                // leftVelocity!!.setNumber(leftMasterFalcon.selectedSensorVelocity)
+//                 leftVelocity!!.setNumber(leftMasterFalcon.selectedSensorVelocity)
 
 //                rightCurrent.setNumber(rightMasterFalcon.statorCurrent)
                 // rightPosition!!.setNumber(rightMasterFalcon.selectedSensorPosition)
-                // rightVelocity!!.setNumber(rightMasterFalcon.selectedSensorVelocity)
+//                 rightVelocity!!.setNumber(rightMasterFalcon.selectedSensorVelocity)
 
 
             } else {
@@ -277,6 +271,7 @@ class DrivetrainFalcon : SubsystemBase() {
 
     fun curvatureDrive(speed: Double, rotation: Double, isQuickTurn: Boolean) {
         diffDrive.curvatureDrive(speed, rotation, isQuickTurn)
+//        diffDrive.arcadeDrive(speed, rotation, squareInputs=false)
     }
 
     /**

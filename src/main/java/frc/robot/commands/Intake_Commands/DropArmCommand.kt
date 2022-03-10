@@ -26,6 +26,7 @@ class DropArmCommand(private val intake: Intake, private var armVel: Double = 0.
 //            println("INFO: dropping arm")
 //        }
         intake.armSpinner.set(0.3)
+        intake.raiseLowerSpinner.set(0.0)
     }
 
     override fun isFinished(): Boolean {
@@ -34,7 +35,7 @@ class DropArmCommand(private val intake: Intake, private var armVel: Double = 0.
     }
 
     override fun end(interrupted: Boolean) {
-        println("INFO: DropArmCommand: end")
+//        println("INFO: DropArmCommand: end")
         intake.armSpinner.stopMotor()
     }
 }

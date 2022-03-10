@@ -26,5 +26,7 @@ class HoldArmCommand(private val intake: Intake) : CommandBase() {
         return false
     }
 
-    override fun end(interrupted: Boolean) {}
+    override fun end(interrupted: Boolean) {
+        intake.stopArm()
+    }
 }

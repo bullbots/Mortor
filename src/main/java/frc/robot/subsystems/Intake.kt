@@ -51,7 +51,6 @@ class Intake : SubsystemBase() {
             SmartDashboard.putNumber("Arm Encoder", raiseLowerSpinner.encoder.position)
             SmartDashboard.putNumber("Arm Current", raiseLowerSpinner.outputCurrent)
 //            println("INFO: Arm Encoder Pos: ${raiseLowerSpinner.encoder.position}")
-
         }
     }
 
@@ -60,5 +59,4 @@ class Intake : SubsystemBase() {
         armSpinner.set(0.0)
         raiseLowerSpinner.set(0.0)
     }
-
 }

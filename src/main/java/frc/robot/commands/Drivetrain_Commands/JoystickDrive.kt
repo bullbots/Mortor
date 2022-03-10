@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.CommandBase
 import frc.robot.subsystems.DrivetrainFalcon
 import java.util.function.DoubleSupplier
+import kotlin.math.abs
 import kotlin.math.pow
 import kotlin.math.sign
 
@@ -22,9 +23,11 @@ class JoystickDrive (
     override fun execute() {
         var _joyY = sign(joyY.asDouble)*joyY.asDouble.pow(2) * m_drivetrain.isFullSpeed
         var _joyX = sign(joyX.asDouble)* joyX.asDouble.pow(2) * m_drivetrain.isFullSpeed
-        val turnInPlace = true
-        m_drivetrain.curvatureDrive(_joyY, _joyX, turnInPlace)
-//        SmartDashboard.putNumber("JoyX", joyX.asDouble)
+//        _joyX = if (abs(_joyX) < 0.2 && abs(_joyY) > 0.25) 0.0 else _joyX  // Drive straight at high speeds
+        m_drivetrain.curvatureDrive(_joyY, _joyX, isQuickTurn=true)
+//        m_drivetrain.arcadeDrive(_joyY, _joyX, squareInputs = false)
+        SmartDashboard.putNumber("JoyX", _joyX)
+        SmartDashboard.putNumber("JoyY", _joyY)
     }
 
     override fun end(interrupted: Boolean) {

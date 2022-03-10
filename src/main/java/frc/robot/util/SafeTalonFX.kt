@@ -20,8 +20,10 @@ class SafeTalonFX (deviceNumber: Int, private var isDrivetrain: Boolean = false,
         configFactoryDefault()
 
         if (isDrivetrain) {
-            configStatorCurrentLimit(StatorCurrentLimitConfiguration(true, 20.0, 25.0, 1.0))
-            configSupplyCurrentLimit(SupplyCurrentLimitConfiguration(true, 10.0, 15.0,0.5))
+//            configStatorCurrentLimit(StatorCurrentLimitConfiguration(true, 20.0, 25.0, 1.0))
+//            configSupplyCurrentLimit(SupplyCurrentLimitConfiguration(true, 10.0, 15.0,0.5))
+//            configStatorCurrentLimit(StatorCurrentLimitConfiguration(true, 40.0, 25.0, 1.0))
+//            configSupplyCurrentLimit(SupplyCurrentLimitConfiguration(true, 20.0, 15.0,0.5))
         } else {
             configStatorCurrentLimit(StatorCurrentLimitConfiguration(true, 40.0, 45.0, 1.0))
             configSupplyCurrentLimit(SupplyCurrentLimitConfiguration(true, 20.0, 30.0,0.5))

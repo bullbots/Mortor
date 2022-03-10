@@ -20,6 +20,8 @@ import frc.robot.commands.Climber_Commands.AutoClimber
 import frc.robot.commands.Climber_Commands.ClimberGroup
 import frc.robot.commands.Drivetrain_Commands.AlignShooter
 import frc.robot.commands.Drivetrain_Commands.JoystickDrive
+import frc.robot.commands.Intake_Commands.DropArmCommand
+import frc.robot.commands.Intake_Commands.HoldArmCommand
 import frc.robot.commands.Intake_Commands.IntakeArm
 import frc.robot.commands.Intake_Commands.IntakeGroup
 import frc.robot.commands.Shooter_Commands.ShooterGroup
@@ -147,6 +149,8 @@ class RobotContainer {
             { -stick.y * if (button3.get()) -1.0 else 1.0 },  // Because Negative Y is forward on the joysticks
             { stick.x }
         ) { (stick.z - 1) / -2.0 }
+
+        intake.defaultCommand = HoldArmCommand(intake)
 
         initializeAutonomousOptions()
 
@@ -281,11 +285,11 @@ class RobotContainer {
 
         coButton2.whenPressed(AutoClimber(climber, isGrenade = false, isDown = false))
 
-        coButton3.whileHeld(IntakeArm(intake, armVel = 0.5)) // Intake Arm Up
+        coButton3.whileHeld(IntakeArm(intake, armVel = 0.3)) // Intake Arm Up
 
-        coButton4.whileHeld(IntakeGroup(intake, 0.3, shooter) { 0.2 })
+        coButton4.whileHeld(IntakeGroup(intake, 0.3, shooter) { 0.25 })
 
-        coButton5.whileHeld(IntakeArm(intake, armVel = -0.5)) // Intake Arm Down
+        coButton5.whileHeld(DropArmCommand(intake, armVel = 0.2)) // Intake Arm Down
 
         coButton6.whenPressed(AutoClimber(climber, isGrenade = true, isDown = true))
 

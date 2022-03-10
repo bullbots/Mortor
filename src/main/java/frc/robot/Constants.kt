@@ -54,6 +54,9 @@ class Constants {
         /**
          * ALL INTAKE RELATED CONSTANTS GO HERE
          */
+        const val INTAKE_ARM_HOLD_THRESHOLD = -1.0
+        const val INTAKE_ARM_DROP_THRESHOLD = 1.0
+        const val INTAKE_HOLD_ARM = 0.05
 
         /**
          *  ALL SHOOTER RELATED CONSTANTS GO HERE

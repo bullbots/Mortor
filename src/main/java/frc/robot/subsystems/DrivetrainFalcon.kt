@@ -37,12 +37,12 @@ class DrivetrainFalcon : SubsystemBase() {
     // private val max_ticks_per_hundred_milliseconds: Double = ticks_per_foot * Constants.MAX_SPEED_LOW_GEAR / 10
 
     // Initializing Master Falcon Motors
-    private val leftMasterFalcon = SafeTalonFX(Constants.LEFT_MASTER_PORT, isDrivetrain=true) // change to false for no PID?
-    private val rightMasterFalcon = SafeTalonFX(Constants.RIGHT_MASTER_PORT, isDrivetrain=true)
+    private val leftMasterFalcon = SafeTalonFX(Constants.LEFT_MASTER_PORT, isDrivetrain=true, usePID = true) // change to false for no PID?
+    private val rightMasterFalcon = SafeTalonFX(Constants.RIGHT_MASTER_PORT, isDrivetrain=true, usePID = true)
 
     // Initializing Slave Falcon Motors
-    private val leftSlaveFalcon = SafeTalonFX(Constants.LEFT_SLAVE_PORT, isDrivetrain=true)
-    private val rightSlaveFalcon = SafeTalonFX(Constants.RIGHT_SLAVE_PORT, isDrivetrain=true)
+    private val leftSlaveFalcon = SafeTalonFX(Constants.LEFT_SLAVE_PORT, isDrivetrain=true, usePID = true)
+    private val rightSlaveFalcon = SafeTalonFX(Constants.RIGHT_SLAVE_PORT, isDrivetrain=true, usePID = true)
 
     private val leftGroup = MotorControllerGroup(leftMasterFalcon, leftSlaveFalcon)
     private val rightGroup = MotorControllerGroup(rightMasterFalcon, rightSlaveFalcon)
@@ -107,7 +107,7 @@ class DrivetrainFalcon : SubsystemBase() {
             // orchestra.addInstrument(rightSlaveFalcon);
 
             // orchestra.loadMusic("test.chrp");
-            diffDrive.setDeadband(0.05)
+            diffDrive.setDeadband(0.02)
         }
 
         // diffDrive.setRightSideInverted(false);
@@ -115,7 +115,7 @@ class DrivetrainFalcon : SubsystemBase() {
 
         // shifter.shiftLow();
 
-        // configurePID();
+         configurePID();
         // configureMotionMagic();
         // configureSmartDashboard();
 

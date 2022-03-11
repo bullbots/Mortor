@@ -14,6 +14,7 @@ class DriveForDistanceCommand(private val drivetrainFalcon: DrivetrainFalcon,
 
     override fun initialize() {
         drivetrainFalcon.arcadeDrive(speed, 0.0, squareInputs=false)
+//        drivetrainFalcon.arcadeDrive(speed, -0.03, squareInputs=false)
         println("INFO: DriveForDistanceCommand initialize")
     }
 

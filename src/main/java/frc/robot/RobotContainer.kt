@@ -14,6 +14,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.InstantCommand
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup
 import edu.wpi.first.wpilibj2.command.StartEndCommand
 import edu.wpi.first.wpilibj2.command.WaitCommand
 import edu.wpi.first.wpilibj2.command.button.JoystickButton
@@ -23,10 +26,7 @@ import frc.robot.commands.Drivetrain_Commands.AlignShooter
 import frc.robot.commands.Drivetrain_Commands.DriveForDistanceCommand
 import frc.robot.commands.Drivetrain_Commands.DriveForTimeCommand
 import frc.robot.commands.Drivetrain_Commands.JoystickDrive
-import frc.robot.commands.Intake_Commands.DropArmCommand
-import frc.robot.commands.Intake_Commands.HoldArmCommand
-import frc.robot.commands.Intake_Commands.IntakeArm
-import frc.robot.commands.Intake_Commands.IntakeGroup
+import frc.robot.commands.Intake_Commands.*
 import frc.robot.commands.Shooter_Commands.ShooterGroup
 import frc.robot.subsystems.*
 import frc.robot.util.NavX
@@ -182,7 +182,17 @@ class RobotContainer {
     private fun initializeAutonomousOptions() {
         // Add commands to the autonomous command chooser
         m_chooser.setDefaultOption("Leave Tarmac Timed", DriveForTimeCommand(drivetrain, 2.0))
-        m_chooser.addOption("Leave Tarmac Distance", DriveForDistanceCommand(drivetrain, 0.5, 14.0))
+        m_chooser.addOption("Leave Tarmac Distance", DriveForDistanceCommand(drivetrain, 0.25, 9.0))
+        m_chooser.addOption("Leave Tarmac and Shoot", SequentialCommandGroup(
+            DriveForDistanceCommand(drivetrain, 0.25, 9.0),
+        ShooterGroup(intake, -0.1, shooter, true) { SmartDashboard.getNumber("staticChooser", 0.0) }.withTimeout(5.0)
+            ))
+        m_chooser.addOption("Leave Tarmac, Intake, and Shoot", SequentialCommandGroup(
+            DropArmCommand(intake, armVel = 0.2).withTimeout(0.5),
+            ParallelDeadlineGroup(DriveForDistanceCommand(drivetrain, 0.25, 9.0), //Distance is 9
+                IntakeGroup(intake, 0.6, shooter) {-0.4}),
+            ShooterGroup(intake, -0.1, shooter, true) { SmartDashboard.getNumber("staticChooser", 0.0) }.withTimeout(5.0)
+        ))
         println("INFO: initialize Autonomous Options")
         SmartDashboard.putData(m_chooser)
     }
@@ -197,7 +207,7 @@ class RobotContainer {
 
 
         // Drivers Button Binding
-        button1.whileHeld(IntakeGroup(intake, 0.6, shooter) { -0.25 })
+        button1.whileHeld(IntakeGroup(intake, 0.6, shooter) { -0.4 })
 
         button2.whileHeld(StartEndCommand(
             {drivetrain.isFullSpeed = 0.5},
@@ -222,10 +232,12 @@ class RobotContainer {
                 println("INFO: THE POSE IS RESET!!!")
             }
         ))
+//
+//        button9.whenPressed(IntakeCargos(intake, intakeVel).withTimeout(0.04)).withTimeout(0.04)
 
-        button10.whileHeld(ClimberGroup(climber, -0.5))
+        button10.whileHeld(ClimberGroup(climber, -0.8))
 
-        button11.whileHeld(ClimberGroup(climber, 0.5))
+        button11.whileHeld(ClimberGroup(climber, 0.8))
 
         // CO-Drivers Button Binding
 

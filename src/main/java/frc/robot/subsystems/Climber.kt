@@ -42,8 +42,8 @@ class Climber : SubsystemBase() {
         climberMotor.config_kI(Constants.kSlotIdx, Constants.climberkI, Constants.kTIMEOUT_MS)
         climberMotor.config_kD(Constants.kSlotIdx, Constants.climberkD, Constants.kTIMEOUT_MS)
 
-        climberMotor.configMotionCruiseVelocity(18900.0, Constants.kTIMEOUT_MS)
-        climberMotor.configMotionAcceleration(18900.0, Constants.kTIMEOUT_MS)
+        climberMotor.configMotionCruiseVelocity(21000.0, Constants.kTIMEOUT_MS)
+        climberMotor.configMotionAcceleration(21000.0, Constants.kTIMEOUT_MS)
 
 
         hallEffectTop = Counter(Counter.Mode.kPulseLength)

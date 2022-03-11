@@ -7,7 +7,12 @@
       "/FMSInfo": "FMSInfo",
       "/LiveWindow/DrivetrainFalcon": "Subsystem",
       "/LiveWindow/Ungrouped/DifferentialDrive[1]": "DifferentialDrive",
+      "/LiveWindow/Ungrouped/MotorControllerGroup[1]": "Motor Controller",
+      "/LiveWindow/Ungrouped/MotorControllerGroup[2]": "Motor Controller",
       "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[2]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[3]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[4]": "PIDController",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
       "/LiveWindow/Ungrouped/Talon FX [2]": "Motor Controller",
       "/LiveWindow/Ungrouped/Talon FX [4]": "Motor Controller",
@@ -15,7 +20,9 @@
       "/LiveWindow/Ungrouped/Talon FX [7]": "Motor Controller",
       "/LiveWindow/Ungrouped/navX-Sensor[4]": "Gyro",
       "/SmartDashboard/Field": "Field2d",
-      "/SmartDashboard/RobotContainer$configureButtonBindings$5": "Command"
+      "/SmartDashboard/RobotContainer$configureButtonBindings$12": "Command",
+      "/SmartDashboard/RobotContainer$configureButtonBindings$5": "Command",
+      "/SmartDashboard/SendableChooser[1]": "String Chooser"
     }
   },
   "NetworkTables Settings": {
@@ -26,12 +33,7 @@
     "Plot <0>": {
       "plots": [
         {
-          "axis": [
-            {
-              "autoFit": true
-            }
-          ],
-          "height": 218,
+          "height": 195,
           "series": [
             {
               "color": [
@@ -40,7 +42,22 @@
                 0.6901960968971252,
                 1.0
               ],
-              "id": "NT:/SmartDashboard/Climber PID Error"
+              "id": "NT:/SmartDashboard/JoyX"
+            }
+          ]
+        },
+        {
+          "height": 195,
+          "lockPrevX": true,
+          "series": [
+            {
+              "color": [
+                0.2980392277240753,
+                0.44705885648727417,
+                0.6901960968971252,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/JoyY"
             }
           ]
         },
@@ -50,7 +67,8 @@
               "autoFit": true
             }
           ],
-          "height": 218,
+          "height": 195,
+          "lockPrevX": true,
           "series": [
             {
               "color": [
@@ -59,7 +77,7 @@
                 0.6901960968971252,
                 1.0
               ],
-              "id": "NT:/SmartDashboard/PID Position Output"
+              "id": "NT:/SmartDashboard/Left Drive Speed"
             }
           ]
         },
@@ -69,7 +87,34 @@
               "autoFit": true
             }
           ],
-          "height": 218,
+          "height": 195,
+          "lockPrevX": true,
+          "series": [
+            {
+              "color": [
+                0.2980392277240753,
+                0.44705885648727417,
+                0.6901960968971252,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/Right Drive Speed"
+            }
+          ]
+        }
+      ],
+      "window": {
+        "name": "DriveTrain"
+      }
+    },
+    "Plot <1>": {
+      "plots": [
+        {
+          "axis": [
+            {
+              "autoFit": true
+            }
+          ],
+          "height": 260,
           "series": [
             {
               "color": [
@@ -81,8 +126,53 @@
               "id": "NT:/SmartDashboard/Climber Position"
             }
           ]
+        },
+        {
+          "axis": [
+            {
+              "lockMax": true,
+              "lockMin": true
+            }
+          ],
+          "height": 260,
+          "lockPrevX": true,
+          "series": [
+            {
+              "color": [
+                0.2980392277240753,
+                0.44705885648727417,
+                0.6901960968971252,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/Climber Current"
+            }
+          ]
+        },
+        {
+          "axis": [
+            {
+              "lockMax": true,
+              "lockMin": true
+            }
+          ],
+          "height": 260,
+          "lockPrevX": true,
+          "series": [
+            {
+              "color": [
+                0.2980392277240753,
+                0.44705885648727417,
+                0.6901960968971252,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/Arm Current"
+            }
+          ]
         }
-      ]
+      ],
+      "window": {
+        "visible": false
+      }
     }
   }
 }

@@ -107,7 +107,7 @@ class DrivetrainFalcon : SubsystemBase() {
             // orchestra.addInstrument(rightSlaveFalcon);
 
             // orchestra.loadMusic("test.chrp");
-            diffDrive.setDeadband(0.02)
+//            diffDrive.setDeadband(0.02)
         }
 
         // diffDrive.setRightSideInverted(false);
@@ -251,13 +251,13 @@ class DrivetrainFalcon : SubsystemBase() {
                 // if (simIter.hasNext()) {
                 //   curLeftCurrent = simIter.next();
                 // }
-                leftCurrent.setNumber(curLeftCurrent)
-                leftPosition.setNumber(0.0)
-                leftVelocity.setNumber(0.0)
-
-                rightCurrent.setNumber(0.0)
-                rightPosition.setNumber(0.0)
-                rightVelocity.setNumber(0.0)
+//                leftCurrent.setNumber(curLeftCurrent)
+//                leftPosition.setNumber(0.0)
+//                leftVelocity.setNumber(0.0)
+//
+//                rightCurrent.setNumber(0.0)
+//                rightPosition.setNumber(0.0)
+//                rightVelocity.setNumber(0.0)
 
             }
         }
@@ -288,7 +288,6 @@ class DrivetrainFalcon : SubsystemBase() {
         val y = m_odometry.poseMeters.y
 
         val dist = hypot(x, y)
-
 
         return dist
     }

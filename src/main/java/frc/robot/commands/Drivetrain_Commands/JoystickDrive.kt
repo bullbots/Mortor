@@ -24,8 +24,8 @@ class JoystickDrive (
         var _joyY = sign(joyY.asDouble)*joyY.asDouble.pow(2) * m_drivetrain.isFullSpeed
         var _joyX = sign(joyX.asDouble)* joyX.asDouble.pow(2) * m_drivetrain.isFullSpeed
 //        _joyX = if (abs(_joyX) < 0.2 && abs(_joyY) > 0.25) 0.0 else _joyX  // Drive straight at high speeds
-        m_drivetrain.curvatureDrive(_joyY, _joyX, isQuickTurn=true)
-//        m_drivetrain.arcadeDrive(_joyY, _joyX, squareInputs = false)
+//        m_drivetrain.curvatureDrive(_joyY, _joyX, isQuickTurn=true)
+        m_drivetrain.arcadeDrive(_joyY, _joyX, squareInputs = false)
         SmartDashboard.putNumber("JoyX", _joyX)
         SmartDashboard.putNumber("JoyY", _joyY)
     }

@@ -14,7 +14,7 @@ import kotlin.math.abs
 class SafeTalonFX (deviceNumber: Int, private var isDrivetrain: Boolean = false, private var usePID: Boolean = false) : WPI_TalonFX(deviceNumber) {
 
     private val maxSpeed = 21000.0
-    private val deadBand = 0.05
+    private val deadBand = 0.02
 
     init {
         configFactoryDefault()
@@ -48,7 +48,8 @@ class SafeTalonFX (deviceNumber: Int, private var isDrivetrain: Boolean = false,
      * @param percentOutput A double from -1 to 1
      */
     override fun set(percentOutput: Double) {
-        if (usePID && abs(percentOutput) > 0.1) {
+        if (usePID && abs(percentOutput) > 0.02) {
+//        if (usePID) {
             super.set(ControlMode.Velocity, percentOutput * maxSpeed)
 //            println("INFO: velocity: ${percentOutput * maxSpeed}")
         } else {

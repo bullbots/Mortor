@@ -23,9 +23,11 @@
       "/LiveWindow/Ungrouped/navX-Sensor[4]": "Gyro",
       "/SmartDashboard/Field": "Field2d",
       "/SmartDashboard/RobotContainer$configureButtonBindings$1": "Command",
+      "/SmartDashboard/RobotContainer$configureButtonBindings$12": "Command",
       "/SmartDashboard/RobotContainer$configureButtonBindings$4": "Command",
       "/SmartDashboard/RobotContainer$configureButtonBindings$6": "Command",
       "/SmartDashboard/RobotContainer$configureButtonBindings$8": "Command",
+      "/SmartDashboard/SendableChooser[1]": "String Chooser",
       "/SmartDashboard/SendableChooser[2]": "String Chooser",
       "/SmartDashboard/Velocity Chooser": "String Chooser"
     },

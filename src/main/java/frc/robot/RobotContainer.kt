@@ -103,7 +103,6 @@ class RobotContainer {
         }
 
         fun getValue(): Int { return value!! }
-
     }
 
     private enum class Letter(value: Int) {
@@ -130,7 +129,6 @@ class RobotContainer {
         fun getValue(): Int { return value!! }
 
     }
-    var staticChooser = SendableChooser<Double>()
 
     private enum class ShooterMode {
         STATIC,
@@ -177,23 +175,37 @@ class RobotContainer {
      * Adds the staticShooter velocity values to the SmartDashboard.
      * You are able to adjust the value inside the SmartDashboard to change velocity
      */
-    private fun initializeStaticShooterVel() { SmartDashboard.putNumber("staticChooser", 0.46) }
+    private fun initializeStaticShooterVel() { SmartDashboard.putNumber("StaticShooter", 0.46) }
 
-    private fun initializeAutonomousOptions() {
+    private fun initializeAutonomousOptions()
+    {
         // Add commands to the autonomous command chooser
-        m_chooser.setDefaultOption("Leave Tarmac Timed", DriveForTimeCommand(drivetrain, 2.0))
+        m_chooser.setDefaultOption("Leave Tarmac, Intake, and Shoot",
+            SequentialCommandGroup(
+                DropArmCommand(intake, armVel = 0.2).withTimeout(0.5),
+                ParallelDeadlineGroup(
+                    DriveForDistanceCommand(drivetrain, 0.25, 9.0), //Distance is 9
+                    IntakeGroup(intake, 0.6, shooter) { -0.4 }
+                ),
+                ShooterGroup(intake, -0.1, shooter, true) {
+                    SmartDashboard.getNumber("StaticShooter",0.0)
+                }.withTimeout(5.0)
+            )
+        )
+        m_chooser.addOption("Leave Tarmac Timed", DriveForTimeCommand(drivetrain, 2.0))
         m_chooser.addOption("Leave Tarmac Distance", DriveForDistanceCommand(drivetrain, 0.25, 9.0))
-        m_chooser.addOption("Leave Tarmac and Shoot", SequentialCommandGroup(
-            DriveForDistanceCommand(drivetrain, 0.25, 9.0),
-        ShooterGroup(intake, -0.1, shooter, true) { SmartDashboard.getNumber("staticChooser", 0.0) }.withTimeout(5.0)
-            ))
-        m_chooser.addOption("Leave Tarmac, Intake, and Shoot", SequentialCommandGroup(
-            DropArmCommand(intake, armVel = 0.2).withTimeout(0.5),
-            ParallelDeadlineGroup(DriveForDistanceCommand(drivetrain, 0.25, 9.0), //Distance is 9
-                IntakeGroup(intake, 0.6, shooter) {-0.4}),
-            ShooterGroup(intake, -0.1, shooter, true) { SmartDashboard.getNumber("staticChooser", 0.0) }.withTimeout(5.0)
-        ))
-        println("INFO: initialize Autonomous Options")
+        m_chooser.addOption("Leave Tarmac and Shoot",
+            SequentialCommandGroup(
+                DriveForDistanceCommand(drivetrain, 0.25, 9.0),
+                ShooterGroup(intake, -0.1, shooter, true) {
+                    SmartDashboard.getNumber(
+                        "StaticShooter",
+                        0.0
+                    )
+                }.withTimeout(5.0)
+            )
+        )
+        println("INFO: Initialize Autonomous Options")
         SmartDashboard.putData(m_chooser)
     }
 
@@ -219,7 +231,7 @@ class RobotContainer {
 
         button5.whileHeld(IntakeGroup(intake, -0.3, shooter) { -0.1 })
 
-        button6.whileHeld(ShooterGroup(intake, -0.1, shooter, true) { SmartDashboard.getNumber("staticChooser", 0.0) })
+        button6.whileHeld(ShooterGroup(intake, -0.1, shooter, true) { SmartDashboard.getNumber("StaticShooter", 0.0) })
 
         button7.whenPressed(AlignShooter(pidController, { -imu.angle }, drivetrain::calcHeading,
             { output: Double -> drivetrain.drive(0.0, -output) }, drivetrain).withTimeout(1.0))
@@ -235,9 +247,9 @@ class RobotContainer {
 //
 //        button9.whenPressed(IntakeCargos(intake, intakeVel).withTimeout(0.04)).withTimeout(0.04)
 
-        button10.whileHeld(ClimberGroup(climber, -0.8))
+        button10.whileHeld(ClimberGroup(climber, -1.0))
 
-        button11.whileHeld(ClimberGroup(climber, 0.8))
+        button11.whileHeld(ClimberGroup(climber, 1.0))
 
         // CO-Drivers Button Binding
 

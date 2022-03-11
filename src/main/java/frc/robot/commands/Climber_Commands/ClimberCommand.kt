@@ -20,7 +20,9 @@ class ClimberCommand(private var climber: Climber, var climberVel: Double) : Com
     }
 
     // Called every time the scheduler runs while the command is scheduled.
-    override fun execute() {}
+    override fun execute() {
+        climber.climberMotor.set(climberVel)
+    }
 
     override fun end(interrupted: Boolean) { climber.stop() }
 

@@ -23,7 +23,6 @@ class Shooter : SubsystemBase() {
         // shooterSpinner = SafeSparkMax(Constants.SHOOTER_PORT)
         shooterSpinner = SafeTalonFX(Constants.SHOOTER_PORT, isDrivetrain=false, usePID=true)
 
-
         configurePID()
 
         // shooterSpinner.idleMode = CANSparkMax.IdleMode.kCoast
@@ -40,8 +39,6 @@ class Shooter : SubsystemBase() {
         shooterSpinner.config_kP(Constants.kSlotIdx, Constants.SHOOTER_P, Constants.kTIMEOUT_MS)
         shooterSpinner.config_kI(Constants.kSlotIdx, Constants.SHOOTER_I, Constants.kTIMEOUT_MS)
         shooterSpinner.config_kD(Constants.kSlotIdx, Constants.SHOOTER_D, Constants.kTIMEOUT_MS)
-
-
     }
 
     private fun configureShuffleBoard() {}

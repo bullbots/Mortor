@@ -18,7 +18,7 @@ class ShooterCargos(private var shooter: Shooter, private var static: Boolean, p
 
     // Called when the command is initially scheduled.
     override fun initialize() {
-        // var shooterVel = SmartDashboard.getNumber("staticChooser", 0.3)
+        // var shooterVel = SmartDashboard.getNumber("StaticShooter", 0.3)
         if(static) {
             velocity = dist()
             shooter.shooterSpinner.set(dist())
@@ -37,8 +37,6 @@ class ShooterCargos(private var shooter: Shooter, private var static: Boolean, p
                 in 14.0..16.0 -> MathUtil.interpolate(0.50, 0.56, (dist()-14) / 2)
                 else -> 0.0
             }
-
-
         }
 //        println(velocity) // Debugging Values
     }
@@ -49,6 +47,4 @@ class ShooterCargos(private var shooter: Shooter, private var static: Boolean, p
     override fun end(interrupted: Boolean) { shooter.stop() }
 
     override fun isFinished(): Boolean { return false }
-
-
 }

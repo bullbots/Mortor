@@ -247,9 +247,9 @@ class RobotContainer {
 //
 //        button9.whenPressed(IntakeCargos(intake, intakeVel).withTimeout(0.04)).withTimeout(0.04)
 
-        button10.whileHeld(ClimberGroup(climber, -1.0))
+        button10.whileHeld(ClimberGroup(climber, -0.8))
 
-        button11.whileHeld(ClimberGroup(climber, 1.0))
+        button11.whileHeld(ClimberGroup(climber, 0.8))
 
         // CO-Drivers Button Binding
 

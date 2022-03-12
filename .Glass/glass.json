@@ -23,6 +23,13 @@
       "/SmartDashboard/RobotContainer$configureButtonBindings$12": "Command",
       "/SmartDashboard/RobotContainer$configureButtonBindings$5": "Command",
       "/SmartDashboard/SendableChooser[1]": "String Chooser"
+    },
+    "windows": {
+      "/SmartDashboard/SendableChooser[1]": {
+        "window": {
+          "visible": true
+        }
+      }
     }
   },
   "NetworkTables Settings": {
@@ -103,7 +110,8 @@
         }
       ],
       "window": {
-        "name": "DriveTrain"
+        "name": "DriveTrain",
+        "visible": false
       }
     },
     "Plot <1>": {
@@ -171,7 +179,7 @@
         }
       ],
       "window": {
-        "visible": false
+        "name": "Climber"
       }
     }
   }

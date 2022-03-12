@@ -68,7 +68,7 @@ class Climber : SubsystemBase() {
 //            SmartDashboard.putNumber("Climber PID Error", climberMotor.getClosedLoopError(Constants.kPIDLoopIdx))
 //            SmartDashboard.putNumber("Climber Velocity", climberMotor.getSelectedSensorVelocity(Constants.kPIDLoopIdx))
             SmartDashboard.putNumber("Climber Position", climberMotor.getSelectedSensorPosition(Constants.kPIDLoopIdx))
-            SmartDashboard.putNumber("Climber Current", climberMotor.statorCurrent)
+            SmartDashboard.putNumber("Climber Supply Current", climberMotor.supplyCurrent)
 //            SmartDashboard.putNumber("Climber Active Traj Pos", climberMotor.activeTrajectoryPosition)
         }
 

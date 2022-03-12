@@ -184,7 +184,7 @@ class RobotContainer {
             SequentialCommandGroup(
                 DropArmCommand(intake, armVel = 0.2).withTimeout(0.5),
                 ParallelDeadlineGroup(
-                    DriveForDistanceCommand(drivetrain, 0.25, 9.0), //Distance is 9
+                    DriveForDistanceCommand(drivetrain, 0.15, 9.0), //Distance is 9
                     IntakeGroup(intake, 0.6, shooter) { -0.4 }
                 ),
                 ShooterGroup(intake, -0.1, shooter, true) {
@@ -192,11 +192,25 @@ class RobotContainer {
                 }.withTimeout(5.0)
             )
         )
-        m_chooser.addOption("Leave Tarmac Timed", DriveForTimeCommand(drivetrain, 2.0))
-        m_chooser.addOption("Leave Tarmac Distance", DriveForDistanceCommand(drivetrain, 0.25, 9.0))
+        m_chooser.addOption("Short Tarmac, Intake, and Shoot",
+            SequentialCommandGroup(
+                DropArmCommand(intake, armVel = 0.2).withTimeout(0.5),
+                ParallelDeadlineGroup(
+                    DriveForDistanceCommand(drivetrain, 0.15, 7.5), //Distance is 7.5
+                    IntakeGroup(intake, 0.6, shooter) { -0.4 }
+                ),
+                ShooterGroup(intake, -0.1, shooter, true) {0.4}.withTimeout(5.0)
+            )
+        )
+        m_chooser.addOption("Leave Tarmac Timed", SequentialCommandGroup(
+            DropArmCommand(intake, armVel = 0.2).withTimeout(0.5),
+            DriveForTimeCommand(drivetrain, 2.0)))
+        m_chooser.addOption("Leave Tarmac Distance", SequentialCommandGroup(
+            DropArmCommand(intake, armVel = 0.2).withTimeout(0.5),
+            DriveForDistanceCommand(drivetrain, 0.25, 9.0)))
         m_chooser.addOption("Leave Tarmac and Shoot",
             SequentialCommandGroup(
-                DriveForDistanceCommand(drivetrain, 0.25, 9.0),
+                DriveForDistanceCommand(drivetrain, 0.15, 9.0),
                 ShooterGroup(intake, -0.1, shooter, true) {
                     SmartDashboard.getNumber(
                         "StaticShooter",

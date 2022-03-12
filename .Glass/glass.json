@@ -138,6 +138,7 @@
         {
           "axis": [
             {
+              "autoFit": true,
               "lockMax": true,
               "lockMin": true
             }
@@ -159,6 +160,7 @@
         {
           "axis": [
             {
+              "autoFit": true,
               "lockMax": true,
               "lockMin": true
             }

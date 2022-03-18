@@ -44,8 +44,8 @@ class DrivetrainFalcon : SubsystemBase() {
     private val leftSlaveFalcon = SafeTalonFX(Constants.LEFT_SLAVE_PORT, isDrivetrain=true, usePID = true)
     private val rightSlaveFalcon = SafeTalonFX(Constants.RIGHT_SLAVE_PORT, isDrivetrain=true, usePID = true)
 
-    private val leftGroup = MotorControllerGroup(leftMasterFalcon, leftSlaveFalcon)
-    private val rightGroup = MotorControllerGroup(rightMasterFalcon, rightSlaveFalcon)
+    val leftGroup = MotorControllerGroup(leftMasterFalcon, leftSlaveFalcon)
+    val rightGroup = MotorControllerGroup(rightMasterFalcon, rightSlaveFalcon)
 
 //    private val kinematics = DifferentialDriveKinematics(Constants.TRACK_WIDTH)
     private val diffDrive = DifferentialDriveDebug(leftMasterFalcon, rightMasterFalcon)
@@ -225,7 +225,7 @@ class DrivetrainFalcon : SubsystemBase() {
         if (loopIdx == 10) {
             loopIdx = 0
 
-            if (RobotBase.isReal()) {
+//            if (RobotBase.isReal()) {
 //                SmartDashboard.putNumber("Left Encoder", leftMasterFalcon.selectedSensorPosition)
 //                SmartDashboard.putNumber("Right Encoder", rightMasterFalcon.selectedSensorPosition)
                 SmartDashboard.putNumber("Left Drive Speed", leftMasterFalcon.selectedSensorVelocity / 22000)
@@ -245,12 +245,14 @@ class DrivetrainFalcon : SubsystemBase() {
 //                 rightVelocity!!.setNumber(rightMasterFalcon.selectedSensorVelocity)
 
 
+
             } else {
                 var curLeftCurrent = 0.0
 
                 // if (simIter.hasNext()) {
                 //   curLeftCurrent = simIter.next();
                 // }
+
 //                leftCurrent.setNumber(curLeftCurrent)
 //                leftPosition.setNumber(0.0)
 //                leftVelocity.setNumber(0.0)
@@ -259,7 +261,9 @@ class DrivetrainFalcon : SubsystemBase() {
 //                rightPosition.setNumber(0.0)
 //                rightVelocity.setNumber(0.0)
 
+
             }
+
         }
     }
 
@@ -297,7 +301,7 @@ class DrivetrainFalcon : SubsystemBase() {
     fun calcHeading(): Double {
         val x = m_odometry.poseMeters.x
         val y = m_odometry.poseMeters.y
-        val delta = ((m_odometry.poseMeters.rotation.degrees % 360) + 360) % 360 - 180 // delta % 360 is to set the input between -360 and 360
+//        val delta = ((m_odometry.poseMeters.rotation.degrees % 360) + 360) % 360 - 180 // delta % 360 is to set the input between -360 and 360
         val atanDegree = Math.toDegrees(atan2(y, x))
 
 //        println("INFO: X Position: $x, Y Position: $y, Delta: $delta, Heading: $atanDegree")

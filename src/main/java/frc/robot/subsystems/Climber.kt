@@ -19,12 +19,10 @@ class Climber : SubsystemBase() {
     var currentState = State.RELEASE
 
 
-
     companion object{
         enum class State {
             BOTTOM, RELEASE, TOP
         }
-
         var isReleased = false
     }
 
@@ -70,6 +68,9 @@ class Climber : SubsystemBase() {
             SmartDashboard.putNumber("Climber Position", climberMotor.getSelectedSensorPosition(Constants.kPIDLoopIdx))
             SmartDashboard.putNumber("Climber Supply Current", climberMotor.supplyCurrent)
 //            SmartDashboard.putNumber("Climber Active Traj Pos", climberMotor.activeTrajectoryPosition)
+
+            
+
         }
 
 //        checkHallEffectSoftLimits()
@@ -98,5 +99,17 @@ class Climber : SubsystemBase() {
                 hallEffectTop.reset()
             }
         }
+    }
+
+    fun setManual(percentOutput: Double) {
+        if (climberMotor.selectedSensorPosition <= -14000) {
+            climberMotor.stopMotor()
+            println("WARNING: THE CLIMBER IS TO LOW!!!!!!")
+        } else {
+            climberMotor.set(percentOutput)
+        }
+    }
+    fun encoderSoftLimits() {
+
     }
 }

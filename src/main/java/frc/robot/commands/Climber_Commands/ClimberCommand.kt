@@ -10,18 +10,23 @@ class ClimberCommand(private var climber: Climber, var climberVel: Double) : Com
 
     // Called when the command is initially scheduled.
     override fun initialize() {
-        if((climber.currentState == Climber.Companion.State.TOP && climberVel > 0) ||
-            climber.currentState == Climber.Companion.State.BOTTOM && climberVel < 0) {
+//        if((climber.currentState == Climber.Companion.State.TOP && climberVel > 0) ||
+//            climber.currentState == Climber.Companion.State.BOTTOM && climberVel < 0) {
+//
+//            climber.stop()
+//        } else {
+//            climber.setManual(climberVel)
+//        }
+        climber.setManual(climberVel)
 
-            climber.stop()
-        } else {
-            climber.climberMotor.set(climberVel)
-        }
+//        println("This is being called over and over")
+
     }
 
     // Called every time the scheduler runs while the command is scheduled.
     override fun execute() {
         climber.climberMotor.set(climberVel)
+
     }
 
     override fun end(interrupted: Boolean) { climber.stop() }

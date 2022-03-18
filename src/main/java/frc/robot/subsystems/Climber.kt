@@ -19,10 +19,12 @@ class Climber : SubsystemBase() {
     var currentState = State.RELEASE
 
 
+
     companion object{
         enum class State {
             BOTTOM, RELEASE, TOP
         }
+
         var isReleased = false
     }
 
@@ -40,8 +42,8 @@ class Climber : SubsystemBase() {
         climberMotor.config_kI(Constants.kSlotIdx, Constants.climberkI, Constants.kTIMEOUT_MS)
         climberMotor.config_kD(Constants.kSlotIdx, Constants.climberkD, Constants.kTIMEOUT_MS)
 
-        climberMotor.configMotionCruiseVelocity(15000.0, Constants.kTIMEOUT_MS)
-        climberMotor.configMotionAcceleration(15000.0, Constants.kTIMEOUT_MS)
+        climberMotor.configMotionCruiseVelocity(21000.0, Constants.kTIMEOUT_MS)
+        climberMotor.configMotionAcceleration(21000.0, Constants.kTIMEOUT_MS)
 
 
         hallEffectTop = Counter(Counter.Mode.kPulseLength)
@@ -63,11 +65,11 @@ class Climber : SubsystemBase() {
         loopIdx++
         if (loopIdx == 10) {
             loopIdx = 0
-            SmartDashboard.putNumber("Climber PID Error", climberMotor.getClosedLoopError(Constants.kPIDLoopIdx))
-            SmartDashboard.putNumber("Climber Velocity", climberMotor.getSelectedSensorVelocity(Constants.kPIDLoopIdx))
+//            SmartDashboard.putNumber("Climber PID Error", climberMotor.getClosedLoopError(Constants.kPIDLoopIdx))
+//            SmartDashboard.putNumber("Climber Velocity", climberMotor.getSelectedSensorVelocity(Constants.kPIDLoopIdx))
             SmartDashboard.putNumber("Climber Position", climberMotor.getSelectedSensorPosition(Constants.kPIDLoopIdx))
-            SmartDashboard.putNumber("Climber Current", climberMotor.statorCurrent)
-            SmartDashboard.putNumber("Climber Active Traj Pos", climberMotor.activeTrajectoryPosition)
+            SmartDashboard.putNumber("Climber Supply Current", climberMotor.supplyCurrent)
+//            SmartDashboard.putNumber("Climber Active Traj Pos", climberMotor.activeTrajectoryPosition)
         }
 
 //        checkHallEffectSoftLimits()

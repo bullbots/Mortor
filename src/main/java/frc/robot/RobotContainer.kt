@@ -14,16 +14,19 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.InstantCommand
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup
 import edu.wpi.first.wpilibj2.command.StartEndCommand
+import edu.wpi.first.wpilibj2.command.WaitCommand
 import edu.wpi.first.wpilibj2.command.button.JoystickButton
 import frc.robot.commands.Climber_Commands.AutoClimber
 import frc.robot.commands.Climber_Commands.ClimberGroup
 import frc.robot.commands.Drivetrain_Commands.AlignShooter
-import frc.robot.commands.Drivetrain_Commands.Drive
+import frc.robot.commands.Drivetrain_Commands.DriveForDistanceCommand
+import frc.robot.commands.Drivetrain_Commands.DriveForTimeCommand
 import frc.robot.commands.Drivetrain_Commands.JoystickDrive
-import frc.robot.commands.Intake_Commands.IntakeArm
-import frc.robot.commands.Intake_Commands.IntakeGroup
+import frc.robot.commands.Intake_Commands.*
 import frc.robot.commands.Shooter_Commands.ShooterGroup
 import frc.robot.subsystems.*
 import frc.robot.util.NavX
@@ -60,7 +63,7 @@ class RobotContainer {
         private val coButton10 = JoystickButton(coStick, 10)
         private val coButton11 = JoystickButton(coStick, 11)
 
-//        private val pathColor = AtomicReference<Color>(Color.UNLOADED)
+        private val pathColor = AtomicReference<Color>(Color.UNLOADED)
 
         private val shooterMode = SendableChooser<ShooterMode>()
     }
@@ -80,54 +83,52 @@ class RobotContainer {
 
     var m_chooser = SendableChooser<Command>()
 
-//    enum class Color(value: Int) {
-//        UNLOADED(0),
-//        RED(1),
-//        BLUE(2);
-//
-//        private var value: Int? = null
-//        companion object {
-//            private var map = HashMap<Int, Color>()
-//
-//            // In replace of static {}
-//            fun addColor() {
-//                for (color in Color.values()) {
-//                    map[color.value!!.toInt()] = color
-//                }
-//            }
-//
-//            fun valueOf(color: Int): Color { return map[color]!! }
-//        }
-//
-//        fun getValue(): Int { return value!! }
-//
-//    }
+    enum class Color(value: Int) {
+        UNLOADED(0),
+        RED(1),
+        BLUE(2);
 
-//    private enum class Letter(value: Int) {
-//        UNLOADED(0),
-//        A(1),
-//        B(2);
-//
-//        private var value: Int? = null
-//
-//        companion object {
-//
-//            private val map = HashMap<Int, Letter>()
-//
-//            fun addLetter() {
-//                for (letter in Letter.values()) {
-//                    map[letter.value!!] = letter
-//                }
-//            }
-//
-//            fun valueOf(letter: Int): Letter { return map[letter]!! }
-//
-//        }
-//
-//        fun getValue(): Int { return value!! }
-//
-//    }
-//    var staticChooser = SendableChooser<Double>()
+        private var value: Int? = null
+        companion object {
+            private var map = HashMap<Int, Color>()
+
+            // In replace of static {}
+            fun addColor() {
+                for (color in Color.values()) {
+                    map[color.value!!.toInt()] = color
+                }
+            }
+
+            fun valueOf(color: Int): Color { return map[color]!! }
+        }
+
+        fun getValue(): Int { return value!! }
+    }
+
+    private enum class Letter(value: Int) {
+        UNLOADED(0),
+        A(1),
+        B(2);
+
+        private var value: Int? = null
+
+        companion object {
+
+            private val map = HashMap<Int, Letter>()
+
+            fun addLetter() {
+                for (letter in Letter.values()) {
+                    map[letter.value!!] = letter
+                }
+            }
+
+            fun valueOf(letter: Int): Letter { return map[letter]!! }
+
+        }
+
+        fun getValue(): Int { return value!! }
+
+    }
 
     private enum class ShooterMode {
         STATIC,
@@ -149,6 +150,8 @@ class RobotContainer {
             { -stick.y * if (button3.get()) -1.0 else 1.0 },  // Because Negative Y is forward on the joysticks
             { stick.x }
         ) { (stick.z - 1) / -2.0 }
+
+        intake.defaultCommand = HoldArmCommand(intake)
 
         initializeAutonomousOptions()
 
@@ -172,77 +175,52 @@ class RobotContainer {
      * Adds the staticShooter velocity values to the SmartDashboard.
      * You are able to adjust the value inside the SmartDashboard to change velocity
      */
-    private fun initializeStaticShooterVel() { SmartDashboard.putNumber("staticChooser", 0.3) }
+    private fun initializeStaticShooterVel() { SmartDashboard.putNumber("StaticShooter", 0.46) }
 
-    private fun initializeAutonomousOptions() {
+    private fun initializeAutonomousOptions()
+    {
         // Add commands to the autonomous command chooser
-        m_chooser.setDefaultOption("Taxi Out", InstantCommand(
-            { drivetrain.curvatureDrive(0.3, 0.0, false)}
-        ).withTimeout(3.0))
-
-        m_chooser.addOption("Taxi Out & Shoot", SequentialCommandGroup(
-            Drive(drivetrain, 0.3).withTimeout(3.0),
-            ShooterGroup(intake, -0.1, shooter, true) { 0.3 }.withTimeout(1.0)
-        ))
-        SmartDashboard.putData(m_chooser);
-//        m_chooser.setDefaultOption("Bounce Piece", new SequentialCommandGroup(
-//                new TrajectoryBase(drivetrain, "/BOUNCE-1", false, true), // ... boolean isBackwards, boolean resetGyro
-//                new TrajectoryBase(drivetrain, "/BOUNCE-2", true, false),
-//                new TrajectoryBase(drivetrain, "/BOUNCE-3", false, false),
-//                new TrajectoryBase(drivetrain, "/BOUNCE-4", true, false)
-//        ));
-//        m_chooser.addOption("Bounce Path", new SequentialCommandGroup(
-//                new TrajectoryBase(drivetrain, "/BOUNCE-1", false, true), // ... boolean isBackwards, boolean resetGyro
-//                new TrajectoryBase(drivetrain, "/BOUNCE-2", true, false),
-//                new TrajectoryBase(drivetrain, "/BOUNCE-3", false, false),
-//                new TrajectoryBase(drivetrain, "/BOUNCE-4", true, false)
-//        ));
-//        m_chooser.addOption("Slalom Path",
-//                new TrajectoryBase(drivetrain, "/SLALOM")
-//        );
-//
-//        System.out.println("Path Color: " + pathColor.get());
-//        m_chooser.addOption("Galactic Search Challenge",
-//                new ParallelCommandGroup(
-//                        new AutonomousGSC(
-//                                drivetrain,
-//                                harm,
-//                                () -> ((int) SmartDashboard.getNumber("isRed", 0) != 0), //&& pathLetter.get() != Letter.UNLOADED),
-//                                () -> ((int) SmartDashboard.getNumber("isRed", 0) == 1),
-//                                () -> (pathLetter.get() == Letter.A)
-//                        )
-//                ));
-//
-//        m_chooser.addOption("Galactic Red",
-//                new ParallelCommandGroup(
-//                        new TrajectoryBase(drivetrain, "/RED-COMBINED", true, false).deadlineWith(
-//                                new IntakeGroup(harm))
-//                )
-//        );
-//
-//        // m_chooser.addOption("Galactic Search Challenge B", new AutonomousGSC_B(
-//        //   drivetrain,
-//        //   harm,
-//        //   () -> (pathColor.get() != Color.UNLOADED),
-//        //   () -> (pathColor.get() == Color.RED)
-//        // ));
-//
-//        m_chooser.addOption("Forward Then Backward Path", new SequentialCommandGroup(
-//                new TrajectoryBase(drivetrain, "/FORWARD-DISTANCE", false, true), // ... boolean isBackwards, boolean resetGyro
-//                new TrajectoryBase(drivetrain, "/BACKWARD-DISTANCE", true, false)
-//        ));
-//
-//
-//        // NetworkTableInstance inst = NetworkTableInstance.getDefault();
-//
-//        // NetworkTable table = inst.getTable("SmartDashboard");
-//
-//        // table.addEntryListener("isRed",
-//        //   (local_table, key, entry, value, flags) -> {
-//        //     pathColor.set(Color.valueOf((int) value.getValue()));
-//        //   },
-//        //   EntryListenerFlags.kNew | EntryListenerFlags.kUpdate
-//        // );
+        m_chooser.setDefaultOption("Leave Tarmac, Intake, and Shoot",
+            SequentialCommandGroup(
+                DropArmCommand(intake, armVel = 0.2).withTimeout(0.5),
+                ParallelDeadlineGroup(
+                    DriveForDistanceCommand(drivetrain, 0.15, 9.0), //Distance is 9
+                    IntakeGroup(intake, 0.6, shooter) { -0.4 }
+                ),
+                ShooterGroup(intake, -0.1, shooter, true) {
+                    SmartDashboard.getNumber("StaticShooter",0.0)
+                }.withTimeout(5.0)
+            )
+        )
+        m_chooser.addOption("Short Tarmac, Intake, and Shoot",
+            SequentialCommandGroup(
+                DropArmCommand(intake, armVel = 0.2).withTimeout(0.5),
+                ParallelDeadlineGroup(
+                    DriveForDistanceCommand(drivetrain, 0.15, 7.5), //Distance is 7.5
+                    IntakeGroup(intake, 0.6, shooter) { -0.4 }
+                ),
+                ShooterGroup(intake, -0.1, shooter, true) {0.4}.withTimeout(5.0)
+            )
+        )
+        m_chooser.addOption("Leave Tarmac Timed", SequentialCommandGroup(
+            DropArmCommand(intake, armVel = 0.2).withTimeout(0.5),
+            DriveForTimeCommand(drivetrain, 2.0)))
+        m_chooser.addOption("Leave Tarmac Distance", SequentialCommandGroup(
+            DropArmCommand(intake, armVel = 0.2).withTimeout(0.5),
+            DriveForDistanceCommand(drivetrain, 0.25, 9.0)))
+        m_chooser.addOption("Leave Tarmac and Shoot",
+            SequentialCommandGroup(
+                DriveForDistanceCommand(drivetrain, 0.15, 9.0),
+                ShooterGroup(intake, -0.1, shooter, true) {
+                    SmartDashboard.getNumber(
+                        "StaticShooter",
+                        0.0
+                    )
+                }.withTimeout(5.0)
+            )
+        )
+        println("INFO: Initialize Autonomous Options")
+        SmartDashboard.putData(m_chooser)
     }
 
     /**
@@ -255,7 +233,7 @@ class RobotContainer {
 
 
         // Drivers Button Binding
-        button1.whileHeld(IntakeGroup(intake, 0.6, shooter) { -0.15 })
+        button1.whileHeld(IntakeGroup(intake, 0.6, shooter) { -0.4 })
 
         button2.whileHeld(StartEndCommand(
             {drivetrain.isFullSpeed = 0.5},
@@ -267,7 +245,7 @@ class RobotContainer {
 
         button5.whileHeld(IntakeGroup(intake, -0.3, shooter) { -0.1 })
 
-        button6.whileHeld(ShooterGroup(intake, -0.1, shooter, true) { SmartDashboard.getNumber("staticChooser", 0.0) })
+        button6.whileHeld(ShooterGroup(intake, -0.1, shooter, true) { SmartDashboard.getNumber("StaticShooter", 0.0) })
 
         button7.whenPressed(AlignShooter(pidController, { -imu.angle }, drivetrain::calcHeading,
             { output: Double -> drivetrain.drive(0.0, -output) }, drivetrain).withTimeout(1.0))
@@ -280,10 +258,12 @@ class RobotContainer {
                 println("INFO: THE POSE IS RESET!!!")
             }
         ))
+//
+//        button9.whenPressed(IntakeCargos(intake, intakeVel).withTimeout(0.04)).withTimeout(0.04)
 
-        button10.whileHeld(ClimberGroup(climber, -0.5))
+        button10.whileHeld(ClimberGroup(climber, -0.8))
 
-        button11.whileHeld(ClimberGroup(climber, 0.5))
+        button11.whileHeld(ClimberGroup(climber, 0.8))
 
         // CO-Drivers Button Binding
 
@@ -291,11 +271,11 @@ class RobotContainer {
 
         coButton2.whenPressed(AutoClimber(climber, isGrenade = false, isDown = false))
 
-        coButton3.whileHeld(IntakeArm(intake, armVel = 0.5)) // Intake Arm Up
+        coButton3.whileHeld(IntakeArm(intake, armVel = 0.3)) // Intake Arm Up
 
-        coButton4.whileHeld(IntakeGroup(intake, 0.3, shooter) { 0.2 })
+        coButton4.whileHeld(IntakeGroup(intake, 0.3, shooter) { 0.25 })
 
-        coButton5.whileHeld(IntakeArm(intake, armVel = -0.5)) // Intake Arm Down
+        coButton5.whileHeld(DropArmCommand(intake, armVel = 0.2)) // Intake Arm Down
 
         coButton6.whenPressed(AutoClimber(climber, isGrenade = true, isDown = true))
 

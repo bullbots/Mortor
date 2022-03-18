@@ -37,15 +37,15 @@ class DrivetrainFalcon : SubsystemBase() {
     // private val max_ticks_per_hundred_milliseconds: Double = ticks_per_foot * Constants.MAX_SPEED_LOW_GEAR / 10
 
     // Initializing Master Falcon Motors
-    private val leftMasterFalcon = SafeTalonFX(Constants.LEFT_MASTER_PORT, isDrivetrain=true) // change to false for no PID?
-    private val rightMasterFalcon = SafeTalonFX(Constants.RIGHT_MASTER_PORT, isDrivetrain=true)
+    private val leftMasterFalcon = SafeTalonFX(Constants.LEFT_MASTER_PORT, isDrivetrain=true, usePID = true) // change to false for no PID?
+    private val rightMasterFalcon = SafeTalonFX(Constants.RIGHT_MASTER_PORT, isDrivetrain=true, usePID = true)
 
     // Initializing Slave Falcon Motors
-    private val leftSlaveFalcon = SafeTalonFX(Constants.LEFT_SLAVE_PORT, isDrivetrain=true)
-    private val rightSlaveFalcon = SafeTalonFX(Constants.RIGHT_SLAVE_PORT, isDrivetrain=true)
+    private val leftSlaveFalcon = SafeTalonFX(Constants.LEFT_SLAVE_PORT, isDrivetrain=true, usePID = true)
+    private val rightSlaveFalcon = SafeTalonFX(Constants.RIGHT_SLAVE_PORT, isDrivetrain=true, usePID = true)
 
-    val leftGroup = MotorControllerGroup(leftMasterFalcon, leftSlaveFalcon)
-    val rightGroup = MotorControllerGroup(rightMasterFalcon, rightSlaveFalcon)
+    private val leftGroup = MotorControllerGroup(leftMasterFalcon, leftSlaveFalcon)
+    private val rightGroup = MotorControllerGroup(rightMasterFalcon, rightSlaveFalcon)
 
 //    private val kinematics = DifferentialDriveKinematics(Constants.TRACK_WIDTH)
     private val diffDrive = DifferentialDriveDebug(leftMasterFalcon, rightMasterFalcon)
@@ -107,7 +107,7 @@ class DrivetrainFalcon : SubsystemBase() {
             // orchestra.addInstrument(rightSlaveFalcon);
 
             // orchestra.loadMusic("test.chrp");
-            diffDrive.setDeadband(0.05)
+//            diffDrive.setDeadband(0.02)
         }
 
         // diffDrive.setRightSideInverted(false);
@@ -115,7 +115,7 @@ class DrivetrainFalcon : SubsystemBase() {
 
         // shifter.shiftLow();
 
-        // configurePID();
+         configurePID();
         // configureMotionMagic();
         // configureSmartDashboard();
 
@@ -123,7 +123,7 @@ class DrivetrainFalcon : SubsystemBase() {
 
         resetEncoders()
 
-        SmartDashboard.putData("Field", m_fieldSim)
+//        SmartDashboard.putData("Field", m_fieldSim)
     }
 
 
@@ -142,6 +142,12 @@ class DrivetrainFalcon : SubsystemBase() {
     }
 
     fun setOdometryDirection(invert: Boolean) { m_flippedOdometry = invert }
+
+    fun getAverageDist() : Double {
+        val leftDist = leftMasterFalcon.selectedSensorPosition / ticks_per_foot
+        val rightDist = rightMasterFalcon.selectedSensorPosition / ticks_per_foot
+        return (leftDist + rightDist) * 0.5
+    }
 
     private fun updateOdometry() {
         var leftDist = leftMasterFalcon.selectedSensorPosition / ticks_per_foot
@@ -237,25 +243,32 @@ class DrivetrainFalcon : SubsystemBase() {
         if (loopIdx == 10) {
             loopIdx = 0
 
-//            if (RobotBase.isReal()) {
+            if (RobotBase.isReal()) {
 //                SmartDashboard.putNumber("Left Encoder", leftMasterFalcon.selectedSensorPosition)
 //                SmartDashboard.putNumber("Right Encoder", rightMasterFalcon.selectedSensorPosition)
+                SmartDashboard.putNumber("Left Drive Speed", leftMasterFalcon.selectedSensorVelocity / 22000)
+                SmartDashboard.putNumber("Right Drive Speed", rightMasterFalcon.selectedSensorVelocity / 22000)
+                SmartDashboard.putNumber("Left Drive Stator Current", leftMasterFalcon.statorCurrent)
+                SmartDashboard.putNumber("Right Drive Stator Current", rightMasterFalcon.statorCurrent)
+                SmartDashboard.putNumber("Left Drive Supply Current", leftMasterFalcon.supplyCurrent)
+                SmartDashboard.putNumber("Right Drive Supply Current", rightMasterFalcon.supplyCurrent)
 //                SmartDashboard.putNumber("Heading", calcHeading())
 
 //                leftCurrent.setNumber(leftMasterFalcon.statorCurrent)
                 // leftPosition!!.setNumber(leftMasterFalcon.selectedSensorPosition)
-                // leftVelocity!!.setNumber(leftMasterFalcon.selectedSensorVelocity)
+//                 leftVelocity!!.setNumber(leftMasterFalcon.selectedSensorVelocity)
 
 //                rightCurrent.setNumber(rightMasterFalcon.statorCurrent)
                 // rightPosition!!.setNumber(rightMasterFalcon.selectedSensorPosition)
-                // rightVelocity!!.setNumber(rightMasterFalcon.selectedSensorVelocity)
+//                 rightVelocity!!.setNumber(rightMasterFalcon.selectedSensorVelocity)
 
-//            } else {
-//                var curLeftCurrent = 0.0
-//
-//                // if (simIter.hasNext()) {
-//                //   curLeftCurrent = simIter.next();
-//                // }
+
+            } else {
+                var curLeftCurrent = 0.0
+
+                // if (simIter.hasNext()) {
+                //   curLeftCurrent = simIter.next();
+                // }
 //                leftCurrent.setNumber(curLeftCurrent)
 //                leftPosition.setNumber(0.0)
 //                leftVelocity.setNumber(0.0)
@@ -263,8 +276,8 @@ class DrivetrainFalcon : SubsystemBase() {
 //                rightCurrent.setNumber(0.0)
 //                rightPosition.setNumber(0.0)
 //                rightVelocity.setNumber(0.0)
-//
-//            }
+
+            }
         }
     }
 
@@ -276,6 +289,7 @@ class DrivetrainFalcon : SubsystemBase() {
 
     fun curvatureDrive(speed: Double, rotation: Double, isQuickTurn: Boolean) {
         diffDrive.curvatureDrive(speed, rotation, isQuickTurn)
+//        diffDrive.arcadeDrive(speed, rotation, squareInputs=false)
     }
 
     /**
@@ -292,7 +306,6 @@ class DrivetrainFalcon : SubsystemBase() {
         val y = m_odometry.poseMeters.y
 
         val dist = hypot(x, y)
-
 
         return dist
     }

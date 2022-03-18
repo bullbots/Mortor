@@ -1,6 +1,7 @@
 package frc.robot.commands.Intake_Commands
 
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup
+import edu.wpi.first.wpilibj2.command.WaitCommand
 import frc.robot.commands.Shooter_Commands.ShooterCargos
 import frc.robot.subsystems.Intake
 import frc.robot.subsystems.Shooter
@@ -14,7 +15,7 @@ class IntakeGroup(intake: Intake, intakeVel: Double, shooter: Shooter, velocity:
 
     init {
         addCommands(
-            IntakeCargos(intake, intakeVel),
+            IntakeCargos(intake, intakeVel).beforeStarting(WaitCommand(0.2)),
             ShooterCargos(shooter, true, velocity)
         )
 

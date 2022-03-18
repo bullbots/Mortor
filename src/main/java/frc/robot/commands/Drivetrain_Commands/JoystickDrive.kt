@@ -25,6 +25,8 @@ class JoystickDrive (
         val turnInPlace = true
         m_drivetrain.curvatureDrive(_joyY, _joyX, turnInPlace)
 //        SmartDashboard.putNumber("JoyX", joyX.asDouble)
+        SmartDashboard.putNumber("JoyX", _joyX)
+        SmartDashboard.putNumber("JoyY", _joyY)
     }
 
     override fun end(interrupted: Boolean) {

@@ -6,6 +6,7 @@ import edu.wpi.first.math.trajectory.Trajectory
 import edu.wpi.first.math.trajectory.TrajectoryConfig
 import edu.wpi.first.math.trajectory.TrajectoryGenerator
 import edu.wpi.first.wpilibj.Filesystem
+import java.nio.file.Paths
 import java.util.concurrent.locks.ReentrantLock
 
 
@@ -26,17 +27,17 @@ class TrajectoryManager {
 
                     val pathNames = ArrayList<String>()
 
-                    val deployDirectory = Filesystem.getDeployDirectory()
-                    val listOfFiles = deployDirectory.listFiles()
+                    val deployDirectory = Paths.get(Filesystem.getDeployDirectory().toString(), "PathWeaver/Paths")
+                    val listOfFiles = deployDirectory.toFile().listFiles()
+
+//                    for (file in listOfFiles) {
+//                        pathNames.add("/" + file.name)
+//                        // No filter is needed for now since onl files in deploy directory are path files.
+//                    }
 
                     for (file in listOfFiles) {
-                        pathNames.add("/" + file.name)
-                        // No filter is needed for now since onl files in deploy directory are path files.
-                    }
-
-                    for (pathName in pathNames) {
                         // System.out.println(String.format("Adding Pathname: %s", pathName));
-                        val trajPack = TrajectoryPacket.generateTrajectoryPacket(pathName)
+                        val trajPack = TrajectoryPacket.generateTrajectoryPacket(file.name)
 
                         val trajectory = TrajectoryGenerator.generateTrajectory(
                             Pose2d(trajPack.firstX, trajPack.firstY, Rotation2d.fromDegrees(trajPack.startAngle)),
@@ -45,7 +46,7 @@ class TrajectoryManager {
                             TrajectoryConfig(2.0, 4.0)
                         )
 
-                        trajectories!![pathName] = trajectory
+                        trajectories!![file.name] = trajectory
                     }
                     trajectoriesLock.unlock()
                     println("INFO: Trajectories loaded")

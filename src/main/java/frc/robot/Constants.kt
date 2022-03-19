@@ -52,7 +52,8 @@ class Constants {
 
         const val WHEEL_RADIUS_FT = 0.333
         const val WHEEL_DIAMETER_FT = 0.666
-        const val TRACK_WIDTH = 0.67945 // 26.75 Inches
+        const val TRACK_WIDTH_METERS = 0.67945 // 26.75 Inches
+        const val TRACK_WIDTH_FT = 2.229 // 26.75 Inches
         const val FTPERSEC_TOPSPEED = 16.827
         const val MAX_ANGULAR_VELOCITY = FTPERSEC_TOPSPEED * WHEEL_RADIUS_FT
         /**

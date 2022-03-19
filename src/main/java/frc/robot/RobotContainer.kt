@@ -283,9 +283,19 @@ class RobotContainer {
                     false,
                     true
                 ),  // ... boolean isBackwards, boolean resetGyro
-                TrajectoryBase(drivetrain, "/BACKWARD-DISTANCE", true, false)
+                TrajectoryBase(drivetrain, "/BACKWARD-DISTANCE", isBackwards=true, resetGyro=false)
             )
         )
+
+        m_chooser.addOption("PathWeaver Straight", SequentialCommandGroup(
+            TrajectoryBase(drivetrain, "PATH-STRAIGHT", isBackwards=false, resetGyro=true),
+        ))
+
+        m_chooser.addOption("PathWeaver", SequentialCommandGroup(
+            TrajectoryBase(drivetrain, "PATH-1", isBackwards=false, resetGyro=true),
+            TrajectoryBase(drivetrain, "PATH-2", isBackwards=false, resetGyro=true),
+            TrajectoryBase(drivetrain, "PATH-3", isBackwards=false, resetGyro=true)
+        ))
 
         SmartDashboard.putData(m_chooser)
 

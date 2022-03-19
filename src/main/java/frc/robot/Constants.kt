@@ -50,7 +50,11 @@ class Constants {
         const val RIGHT_MASTER_ACCELERATION = 3300.0
         const val RIGHT_MASTER_VELOCITY = 3300.0
 
+        const val WHEEL_RADIUS_FT = 0.333
+        const val WHEEL_DIAMETER_FT = 0.666
         const val TRACK_WIDTH = 0.67945 // 26.75 Inches
+        const val FTPERSEC_TOPSPEED = 16.827
+        const val MAX_ANGULAR_VELOCITY = FTPERSEC_TOPSPEED * WHEEL_RADIUS_FT
         /**
          * ALL INTAKE RELATED CONSTANTS GO HERE
          */

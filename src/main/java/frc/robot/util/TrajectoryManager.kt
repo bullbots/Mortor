@@ -1,0 +1,72 @@
+package frc.robot.util
+
+import edu.wpi.first.math.geometry.Pose2d
+import edu.wpi.first.math.geometry.Rotation2d
+import edu.wpi.first.math.trajectory.Trajectory
+import edu.wpi.first.math.trajectory.TrajectoryConfig
+import edu.wpi.first.math.trajectory.TrajectoryGenerator
+import edu.wpi.first.wpilibj.Filesystem
+import java.util.concurrent.locks.ReentrantLock
+
+
+class TrajectoryManager {
+
+    companion object {
+        private var trajectories: HashMap<String, Trajectory>? = null
+        var trajectoriesLock = ReentrantLock()
+
+        fun generateTrajectories() {
+
+            val genTrajectoryThread = Thread {
+                if (trajectories == null) {
+                    println("INFO: Trajectories loading...")
+                    trajectoriesLock.lock()
+
+                    trajectories = HashMap<String, Trajectory>()
+
+                    val pathNames = ArrayList<String>()
+
+                    val deployDirectory = Filesystem.getDeployDirectory()
+                    val listOfFiles = deployDirectory.listFiles()
+
+                    for (file in listOfFiles) {
+                        pathNames.add("/" + file.name)
+                        // No filter is needed for now since onl files in deploy directory are path files.
+                    }
+
+                    for (pathName in pathNames) {
+                        // System.out.println(String.format("Adding Pathname: %s", pathName));
+                        val trajPack = TrajectoryPacket.generateTrajectoryPacket(pathName)
+
+                        val trajectory = TrajectoryGenerator.generateTrajectory(
+                            Pose2d(trajPack.firstX, trajPack.firstY, Rotation2d.fromDegrees(trajPack.startAngle)),
+                            trajPack.pathRead,
+                            Pose2d(trajPack.lastX, trajPack.lastY, Rotation2d.fromDegrees(trajPack.endAngle)),
+                            TrajectoryConfig(2.0, 4.0)
+                        )
+
+                        trajectories!![pathName] = trajectory
+                    }
+                    trajectoriesLock.unlock()
+                    println("INFO: Trajectories loaded")
+
+
+                }
+            }
+
+            genTrajectoryThread.isDaemon = true
+            genTrajectoryThread.start()
+        }
+
+        fun getTrajectories(): HashMap<String, Trajectory>? {
+            var curTrajectories: HashMap<String, Trajectory>? = null
+
+            if (trajectories != null && trajectoriesLock.tryLock()) {
+                curTrajectories = trajectories
+                trajectoriesLock.unlock()
+            }
+
+            return curTrajectories
+        }
+    }
+}

@@ -31,7 +31,7 @@ class DrivetrainFalcon : SubsystemBase() {
 
     // These values are used for Autonomous
     private val ticks_per_wheel_revolution = 26112.0
-    private val ticks_per_foot = ticks_per_wheel_revolution / (0.666 * Math.PI) // .8 inches is diameter of wheel in feet
+    private val ticks_per_foot = ticks_per_wheel_revolution / (Constants.WHEEL_DIAMETER_FT * Math.PI) // .8 inches is diameter of wheel in feet
 
     // NEED THIS FOR AUTONOMOUS
     // private val max_ticks_per_hundred_milliseconds: Double = ticks_per_foot * Constants.MAX_SPEED_LOW_GEAR / 10

@@ -225,68 +225,6 @@ class RobotContainer {
 
         // Add commands to the autonomous command chooser
 
-
-        // Add commands to the autonomous command chooser
-        m_chooser.setDefaultOption(
-            "Bounce Piece", SequentialCommandGroup(
-                TrajectoryBase(drivetrain, "/BOUNCE-1", false, true),  // ... boolean isBackwards, boolean resetGyro
-                TrajectoryBase(drivetrain, "/BOUNCE-2", true, false),
-                TrajectoryBase(drivetrain, "/BOUNCE-3", false, false),
-                TrajectoryBase(drivetrain, "/BOUNCE-4", true, false)
-            )
-        )
-        m_chooser.addOption(
-            "Bounce Path", SequentialCommandGroup(
-                TrajectoryBase(drivetrain, "/BOUNCE-1", false, true),  // ... boolean isBackwards, boolean resetGyro
-                TrajectoryBase(drivetrain, "/BOUNCE-2", true, false),
-                TrajectoryBase(drivetrain, "/BOUNCE-3", false, false),
-                TrajectoryBase(drivetrain, "/BOUNCE-4", true, false)
-            )
-        )
-        m_chooser.addOption(
-            "Slalom Path",
-            TrajectoryBase(drivetrain, "/SLALOM")
-        )
-
-        println("Path Color: " + pathColor.get())
-        m_chooser.addOption("Galactic Search Challenge",
-            ParallelCommandGroup(
-                AutonomousGSC(
-                    drivetrain,
-                    intake,
-                    shooter,
-                    { SmartDashboard.getNumber("isRed", 0.0).toInt() != 0 },  //&& pathLetter.get() != Letter.UNLOADED),
-                    { SmartDashboard.getNumber("isRed", 0.0).toInt() == 1 }
-                ) { pathLetter.get() == Letter.A }
-            ))
-
-        m_chooser.addOption(
-            "Galactic Red",
-            ParallelCommandGroup(
-                TrajectoryBase(drivetrain, "/RED-COMBINED", true, false).deadlineWith(
-                    IntakeGroup(intake, 0.0, shooter)
-                )
-            )
-        )
-
-//        m_chooser.addOption("Galactic Search Challenge B", AutonomousGSC_B(
-//            drivetrain,
-//            intake,
-//            { pathColor.get() != Color.UNLOADED }
-//        ) { pathColor.get() == Color.RED })
-
-        m_chooser.addOption(
-            "Forward Then Backward Path", SequentialCommandGroup(
-                TrajectoryBase(
-                    drivetrain,
-                    "/FORWARD-DISTANCE",
-                    false,
-                    true
-                ),  // ... boolean isBackwards, boolean resetGyro
-                TrajectoryBase(drivetrain, "/BACKWARD-DISTANCE", isBackwards=true, resetGyro=false)
-            )
-        )
-
         m_chooser.addOption("PathWeaver Straight", SequentialCommandGroup(
             TrajectoryBase(drivetrain, "PATH-STRAIGHT", isBackwards=false, resetGyro=true),
         ))
@@ -299,13 +237,77 @@ class RobotContainer {
 
         SmartDashboard.putData(m_chooser)
 
+
+
+//        m_chooser.setDefaultOption(
+//            "Bounce Piece", SequentialCommandGroup(
+//                TrajectoryBase(drivetrain, "/BOUNCE-1", isBackwards=false, resetGyro=true),  // ... boolean isBackwards, boolean resetGyro
+//                TrajectoryBase(drivetrain, "/BOUNCE-2", isBackwards=true, resetGyro=false),
+//                TrajectoryBase(drivetrain, "/BOUNCE-3", isBackwards=false, resetGyro=false),
+//                TrajectoryBase(drivetrain, "/BOUNCE-4", isBackwards=true, resetGyro=false)
+//            )
+//        )
+//        m_chooser.addOption(
+//            "Bounce Path", SequentialCommandGroup(
+//                TrajectoryBase(drivetrain, "/BOUNCE-1", isBackwards=false, resetGyro=true),  // ... boolean isBackwards, boolean resetGyro
+//                TrajectoryBase(drivetrain, "/BOUNCE-2", isBackwards=true, resetGyro=false),
+//                TrajectoryBase(drivetrain, "/BOUNCE-3", isBackwards=false, resetGyro=false),
+//                TrajectoryBase(drivetrain, "/BOUNCE-4", isBackwards=true, resetGyro=false)
+//            )
+//        )
+//        m_chooser.addOption(
+//            "Slalom Path",
+//            TrajectoryBase(drivetrain, "/SLALOM")
+//        )
+//
+//        println("Path Color: " + pathColor.get())
+//        m_chooser.addOption("Galactic Search Challenge",
+//            ParallelCommandGroup(
+//                AutonomousGSC(
+//                    drivetrain,
+//                    intake,
+//                    shooter,
+//                    { SmartDashboard.getNumber("isRed", 0.0).toInt() != 0 },  //&& pathLetter.get() != Letter.UNLOADED),
+//                    { SmartDashboard.getNumber("isRed", 0.0).toInt() == 1 }
+//                ) { pathLetter.get() == Letter.A }
+//            ))
+//
+//        m_chooser.addOption(
+//            "Galactic Red",
+//            ParallelCommandGroup(
+//                TrajectoryBase(drivetrain, "/RED-COMBINED", isBackwards=true, resetGyro=false).deadlineWith(
+//                    IntakeGroup(intake, 0.0, shooter)
+//                )
+//            )
+//        )
+//
+////        m_chooser.addOption("Galactic Search Challenge B", AutonomousGSC_B(
+////            drivetrain,
+////            intake,
+////            { pathColor.get() != Color.UNLOADED }
+////        ) { pathColor.get() == Color.RED })
+//
+//        m_chooser.addOption(
+//            "Forward Then Backward Path", SequentialCommandGroup(
+//                TrajectoryBase(
+//                    drivetrain,
+//                    "/FORWARD-DISTANCE",
+//                    false,
+//                    true
+//                ),  // ... boolean isBackwards, boolean resetGyro
+//                TrajectoryBase(drivetrain, "/BACKWARD-DISTANCE", isBackwards=true, resetGyro=false)
+//            )
+//        )
+
+
+
         val inst: NetworkTableInstance = NetworkTableInstance.getDefault()
 
         val table: NetworkTable = inst.getTable("SmartDashboard")
 
         table.addEntryListener(
             "isRed",
-            { local_table, key, entry, value, flags -> pathColor.set(Color.valueOf(value.getValue() as Int)) },
+            { local_table, key, entry, value, flags -> pathColor.set(Color.valueOf(value.value as Int)) },
             EntryListenerFlags.kNew or EntryListenerFlags.kUpdate)
         println("INFO: Initialize Autonomous Options")
         SmartDashboard.putData(m_chooser)
@@ -330,11 +332,13 @@ class RobotContainer {
         ))
 
 //        button4.whileHeld(ShooterGroup(intake, -0.1, shooter, true) { 0.6 })
-        button4.whileHeld(ShooterGroup(intake, -0.1, shooter, false, drivetrain::calcDist))
+//        button4.whileHeld(ShooterGroup(intake, -0.1, shooter, false, drivetrain::calcDist))
+        button4.whenPressed(AutoArmCommand(intake, isDown=true))
 
         button5.whileHeld(IntakeGroup(intake, -0.3, shooter) { -0.1 })
 
-        button6.whileHeld(ShooterGroup(intake, -0.1, shooter, true) { SmartDashboard.getNumber("StaticShooter", 0.0) })
+        button6.whenPressed(AutoArmCommand(intake, isDown=false))
+//        button6.whileHeld(ShooterGroup(intake, -0.1, shooter, true) { SmartDashboard.getNumber("StaticShooter", 0.0) })
 
         button7.whenPressed(AlignShooter(pidController, { -imu.angle }, drivetrain::calcHeading,
             { output: Double -> drivetrain.drive(0.0, -output) }, drivetrain).withTimeout(1.0))

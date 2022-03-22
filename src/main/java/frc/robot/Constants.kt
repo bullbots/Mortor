@@ -62,16 +62,28 @@ class Constants {
         const val INTAKE_ARM_HOLD_THRESHOLD = -1.0
         const val INTAKE_ARM_DROP_THRESHOLD = 1.0
         const val INTAKE_HOLD_ARM = 0.07
+        const val INTAKE_ARM_UP = 10000.0
+        const val INTAKE_ARM_DOWN = 5000.0
+        const val INTAKE_ARM_HOLD = 15000.0
+
+        const val INTAKE_FF = 0.000156 // Normalize to 1023 (Max Speed)
+        const val INTAKE_P = 5e-5 // 0
+        const val INTAKE_I = 1e-6 // 1e-6
+        const val INTAKE_D = 0.00 // 0
+        const val INTAKE_IZONE = 0.0
+        const val I_SlotIdx = 0
+        const val I_ALLOWED_ERROR = 1000.0
+        const val I_MAXRPM = 5700.0
 
         /**
          *  ALL SHOOTER RELATED CONSTANTS GO HERE
          */
 
         // TODO: These values need to be tuned
-        const val  SHOOTER_FF = 0.0473 // Normalize to 1023 (Max Speed)
-        const val SHOOTER_P = 0.05 // 0
-        const val SHOOTER_I = 0.0 // 1e-6
-        const val SHOOTER_D = 0.005 // 0
+        const val SHOOTER_KFF = 0.0473 // Normalize to 1023 (Max Speed)
+        const val SHOOTER_KP = 0.05 // 0
+        const val SHOOTER_KI = 0.0 // 1e-6
+        const val SHOOTER_KD = 0.005 // 0
 
         const val NEO_MAX_RPM = 5676.0 // http://www.revrobotics.com/rev-21-1650/ "Empirical Free Speed"
 
@@ -84,12 +96,12 @@ class Constants {
         const val CLIMBER_LIMIT_THRESHOLD = 1000
         const val kPIDLoopIdx = 0
 
-        const val climberkP = 0.05
-        const val climberkI = 0.0
-        const val climberkD = 0.005 // kP / 10
-        const val climberkF = 2048.0 / 21000.0
-        const val climberkIzone = 0.0
-        const val climberkPeakOutput = 1.0
+        const val CLIMBER_KP = 0.05
+        const val CLIMBER_KI = 0.0
+        const val CLIMBER_KD = 0.005 // kP / 10
+        const val CLIMBER_KFF = 2048.0 / 21000.0
+        const val CLIMBER_IZONE = 0.0
+        const val CLIMBER_PEAK_OUTPUT = 1.0
 
         const val kSlotIdx = 0
 

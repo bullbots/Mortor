@@ -2,6 +2,9 @@ package frc.robot.subsystems
 
 import com.revrobotics.CANSparkMax
 import com.revrobotics.CANSparkMaxLowLevel
+import edu.wpi.first.hal.DIOJNI
+import edu.wpi.first.wpilibj.DigitalInput
+import edu.wpi.first.wpilibj.DigitalOutput
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import frc.robot.Constants
@@ -15,18 +18,37 @@ class Intake : SubsystemBase() {
     var intakeSpinner: SafeSparkMax
     var armSpinner: SafeSparkMax // CAN ID 11
     var raiseLowerSpinner: SafeSparkMax // CAN ID 9
+
     var loopIdx = 0
+
+    companion object {
+        var intakeEncoderVal = 0.0
+        var isDown = false
+    }
 
     init {
         configureShuffleBoard()
 
-        intakeSpinner = SafeSparkMax(Constants.INTAKE_SPINNER_PORT, CANSparkMaxLowLevel.MotorType.kBrushless)
-        armSpinner = SafeSparkMax(Constants.INTAKE_ARM_SPINNER_PORT, CANSparkMaxLowLevel.MotorType.kBrushless)
-        raiseLowerSpinner = SafeSparkMax(Constants.RAISE_LOWER_ARM_PORT, CANSparkMaxLowLevel.MotorType.kBrushless)
+        intakeSpinner = SafeSparkMax(Constants.INTAKE_SPINNER_PORT)
+        armSpinner = SafeSparkMax(Constants.INTAKE_ARM_SPINNER_PORT)
+        raiseLowerSpinner = SafeSparkMax(Constants.RAISE_LOWER_ARM_PORT)
+
+        raiseLowerSpinner.pidController.p = Constants.INTAKE_P
+        raiseLowerSpinner.pidController.i = Constants.INTAKE_I
+        raiseLowerSpinner.pidController.d = Constants.INTAKE_D
+        raiseLowerSpinner.pidController.ff = Constants.INTAKE_FF
+        raiseLowerSpinner.pidController.iZone = Constants.INTAKE_IZONE
+        raiseLowerSpinner.pidController.setOutputRange(-1.0, 1.0)
+
+        raiseLowerSpinner.pidController.setSmartMotionMaxVelocity(2000.0, Constants.I_SlotIdx)
+        raiseLowerSpinner.pidController.setSmartMotionMinOutputVelocity(1000.0, Constants.I_SlotIdx)
+        raiseLowerSpinner.pidController.setSmartMotionMaxAccel(2000.0, Constants.I_SlotIdx)
+        raiseLowerSpinner.pidController.setSmartMotionAllowedClosedLoopError(Constants.I_ALLOWED_ERROR, Constants.I_SlotIdx)
 
         intakeSpinner.idleMode = CANSparkMax.IdleMode.kBrake
         armSpinner.idleMode = CANSparkMax.IdleMode.kBrake
         raiseLowerSpinner.idleMode = CANSparkMax.IdleMode.kBrake
+
     }
 
     fun set(speed: Double) {
@@ -54,9 +76,13 @@ class Intake : SubsystemBase() {
         }
     }
 
+    fun resetEncoder() { intakeEncoderVal = raiseLowerSpinner.encoder.position }
+
     fun stop() {
         intakeSpinner.set(0.0)
         armSpinner.set(0.0)
         raiseLowerSpinner.set(0.0)
     }
+
+
 }

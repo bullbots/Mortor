@@ -15,6 +15,7 @@ class IntakeGroup(intake: Intake, intakeVel: Double, shooter: Shooter, velocity:
 
     init {
         addCommands(
+            AutoArmCommand(intake, isDown=true),
             IntakeCargos(intake, intakeVel).beforeStarting(WaitCommand(0.2)),
             ShooterCargos(shooter, true, velocity)
         )

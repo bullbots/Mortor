@@ -37,10 +37,10 @@ class Climber : SubsystemBase() {
         climberMotor.setNeutralMode(NeutralMode.Brake)
 
         climberMotor.selectProfileSlot(Constants.kSlotIdx, Constants.kPIDLoopIdx)
-        climberMotor.config_kF(Constants.kSlotIdx, Constants.climberkF, Constants.kTIMEOUT_MS)
-        climberMotor.config_kP(Constants.kSlotIdx, Constants.climberkP, Constants.kTIMEOUT_MS)
-        climberMotor.config_kI(Constants.kSlotIdx, Constants.climberkI, Constants.kTIMEOUT_MS)
-        climberMotor.config_kD(Constants.kSlotIdx, Constants.climberkD, Constants.kTIMEOUT_MS)
+        climberMotor.config_kF(Constants.kSlotIdx, Constants.CLIMBER_KFF, Constants.kTIMEOUT_MS)
+        climberMotor.config_kP(Constants.kSlotIdx, Constants.CLIMBER_KP, Constants.kTIMEOUT_MS)
+        climberMotor.config_kI(Constants.kSlotIdx, Constants.CLIMBER_KI, Constants.kTIMEOUT_MS)
+        climberMotor.config_kD(Constants.kSlotIdx, Constants.CLIMBER_KD, Constants.kTIMEOUT_MS)
 
         climberMotor.configMotionCruiseVelocity(21000.0, Constants.kTIMEOUT_MS)
         climberMotor.configMotionAcceleration(21000.0, Constants.kTIMEOUT_MS)

@@ -10,6 +10,7 @@ class HoldArmCommand(private val intake: Intake) : CommandBase() {
     init {
         // each subsystem used by the command must be passed into the addRequirements() method
         addRequirements(intake)
+
     }
 
     override fun initialize() {}

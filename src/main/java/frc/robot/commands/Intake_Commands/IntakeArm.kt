@@ -6,6 +6,8 @@ import frc.robot.subsystems.Intake
 
 class IntakeArm(private var intake: Intake, private var armVel: Double = 0.5) : CommandBase() {
 
+
+
     init { addRequirements(intake) }
 
     override fun initialize() {

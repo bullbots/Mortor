@@ -40,9 +40,9 @@ class Intake : SubsystemBase() {
         raiseLowerSpinner.pidController.iZone = Constants.INTAKE_IZONE
         raiseLowerSpinner.pidController.setOutputRange(-1.0, 1.0)
 
-        raiseLowerSpinner.pidController.setSmartMotionMaxVelocity(2000.0, Constants.I_SlotIdx)
-        raiseLowerSpinner.pidController.setSmartMotionMinOutputVelocity(1000.0, Constants.I_SlotIdx)
-        raiseLowerSpinner.pidController.setSmartMotionMaxAccel(2000.0, Constants.I_SlotIdx)
+        raiseLowerSpinner.pidController.setSmartMotionMaxVelocity(Constants.I_MAXRPM, Constants.I_SlotIdx)
+        raiseLowerSpinner.pidController.setSmartMotionMinOutputVelocity(0.0, Constants.I_SlotIdx)
+        raiseLowerSpinner.pidController.setSmartMotionMaxAccel(Constants.I_MAXRPM, Constants.I_SlotIdx)
         raiseLowerSpinner.pidController.setSmartMotionAllowedClosedLoopError(Constants.I_ALLOWED_ERROR, Constants.I_SlotIdx)
 
         intakeSpinner.idleMode = CANSparkMax.IdleMode.kBrake
@@ -72,6 +72,7 @@ class Intake : SubsystemBase() {
             loopIdx = 0
             SmartDashboard.putNumber("Arm Encoder", raiseLowerSpinner.encoder.position)
             SmartDashboard.putNumber("Arm Current", raiseLowerSpinner.outputCurrent)
+            SmartDashboard.putNumber("Arm Speed", raiseLowerSpinner.appliedOutput)
 //            println("INFO: Arm Encoder Pos: ${raiseLowerSpinner.encoder.position}")
         }
     }

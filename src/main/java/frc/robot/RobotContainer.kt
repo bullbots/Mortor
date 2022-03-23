@@ -27,6 +27,7 @@ import frc.robot.commands.Drivetrain_Commands.DriveForTimeCommand
 import frc.robot.commands.Drivetrain_Commands.JoystickDrive
 import frc.robot.commands.Intake_Commands.*
 import frc.robot.commands.Shooter_Commands.ShooterGroup
+import frc.robot.commands.Shooter_Commands.TestingServo
 import frc.robot.subsystems.*
 import frc.robot.util.NavX
 import frc.robot.util.PIDControllerDebug
@@ -153,7 +154,7 @@ class RobotContainer {
             { stick.x }
         ) { (stick.z - 1) / -2.0 }
 
-        intake.defaultCommand = HoldArmCommand(intake)
+//        intake.defaultCommand = HoldArmCommand(intake)
 
         initializeAutonomousOptions()
 
@@ -360,15 +361,17 @@ class RobotContainer {
 
         // CO-Drivers Button Binding
 
-        coButton1.whenPressed(AutoClimber(climber, isGrenade = false, isDown = true))
+//        coButton1.whenPressed(AutoClimber(climber, isGrenade = false, isDown = true))
+        coButton1.whenPressed(TestingServo(shooter, 0.0))
+        coButton2.whenPressed(TestingServo(shooter, 180.0))
 
-        coButton2.whenPressed(AutoClimber(climber, isGrenade = false, isDown = false))
+//        coButton2.whenPressed(AutoClimber(climber, isGrenade = false, isDown = false))
 
-        coButton3.whileHeld(IntakeArm(intake, armVel = 0.3)) // Intake Arm Up
+        coButton3.whileHeld(IntakeArm(intake, armVel = 0.5)) // Intake Arm Up
 
         coButton4.whileHeld(IntakeGroup(intake, 0.3, shooter) { 0.25 })
 
-        coButton5.whileHeld(DropArmCommand(intake, armVel = 0.2)) // Intake Arm Down
+        coButton5.whileHeld(IntakeArm(intake, armVel = -0.5)) // Intake Arm Down
 
         coButton6.whenPressed(AutoClimber(climber, isGrenade = true, isDown = true))
 

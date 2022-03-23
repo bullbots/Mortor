@@ -40,6 +40,7 @@ class Shooter : SubsystemBase() {
         shooterSpinner.config_kD(Constants.kSlotIdx, Constants.SHOOTER_KD, Constants.kTIMEOUT_MS)
     }
 
+
     private fun configureShuffleBoard() {}
 
     override fun periodic() {

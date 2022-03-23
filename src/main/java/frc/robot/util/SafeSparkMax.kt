@@ -17,7 +17,7 @@ class SafeSparkMax(deviceNumber: Int, motorType: MotorType = MotorType.kBrushles
     init {
         restoreFactoryDefaults()
         clearFaults()
-        setSmartCurrentLimit(stallLimit, freeLimit)
+//        setSmartCurrentLimit(stallLimit, freeLimit)
         burnFlash()
     }
 }

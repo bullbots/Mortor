@@ -62,9 +62,9 @@ class Constants {
         const val INTAKE_ARM_HOLD_THRESHOLD = -1.0
         const val INTAKE_ARM_DROP_THRESHOLD = 1.0
         const val INTAKE_HOLD_ARM = 0.07
-        const val INTAKE_ARM_UP = 10000.0
-        const val INTAKE_ARM_DOWN = 5000.0
-        const val INTAKE_ARM_HOLD = 15000.0
+        const val INTAKE_ARM_UP = 0.0
+        const val INTAKE_ARM_DOWN = -40.0
+        const val INTAKE_ARM_HOLD = -6.0
 
         const val INTAKE_FF = 0.000156 // Normalize to 1023 (Max Speed)
         const val INTAKE_P = 5e-5 // 0
@@ -72,8 +72,8 @@ class Constants {
         const val INTAKE_D = 0.00 // 0
         const val INTAKE_IZONE = 0.0
         const val I_SlotIdx = 0
-        const val I_ALLOWED_ERROR = 1000.0
-        const val I_MAXRPM = 5700.0
+        const val I_ALLOWED_ERROR = 0.0
+        const val I_MAXRPM = 60000.0 // TODO: How does this work!!!
 
         /**
          *  ALL SHOOTER RELATED CONSTANTS GO HERE

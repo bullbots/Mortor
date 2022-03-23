@@ -21,13 +21,18 @@ class AutoArmCommand(private var intake: Intake, private var isDown: Boolean) : 
     }
 
     override fun initialize() {
+        println("INFO: TargetTraj: $targetTraj")
         intake.raiseLowerSpinner.pidController.setReference(targetTraj, CANSparkMax.ControlType.kSmartMotion)
+    }
+
+    override fun execute() {
+//        intake.raiseLowerSpinner.pidController.setReference(targetTraj, CANSparkMax.ControlType.kSmartMotion)
     }
 
     override fun isFinished(): Boolean {
         val trajPoseError = targetTraj - intake.raiseLowerSpinner.encoder.position
         return if (isDown) {
-            abs(trajPoseError) < 1000
+            abs(trajPoseError) < 1
         } else {
             false
         }

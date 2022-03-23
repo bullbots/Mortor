@@ -61,7 +61,6 @@ class Constants {
          */
         const val INTAKE_ARM_HOLD_THRESHOLD = -1.0
         const val INTAKE_ARM_DROP_THRESHOLD = 1.0
-        const val INTAKE_HOLD_ARM = 0.07
         const val INTAKE_ARM_UP = 0.0
         const val INTAKE_ARM_DOWN = -40.0
         const val INTAKE_ARM_HOLD = -6.0

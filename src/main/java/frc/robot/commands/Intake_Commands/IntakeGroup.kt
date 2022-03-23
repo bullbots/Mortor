@@ -12,14 +12,13 @@ import frc.robot.subsystems.Shooter
  * @param intake: Intake
  * @param intakeVel: Double / The default value is 0.3 if a value is not passed in
  */
-class IntakeGroup(intake: Intake, intakeVel: Double, shooter: Shooter, velocity: ()->Double = { -0.1 }) : SequentialCommandGroup() {
+class IntakeGroup(intake: Intake, intakeVel: Double, shooter: Shooter, velocity: ()->Double = { -0.1 }) : ParallelCommandGroup() {
 
     init {
         addCommands(
-            parallel(
-                IntakeCargos(intake, intakeVel)
+            IntakeCargos(intake, intakeVel)
 //                ShooterCargos(shooter, true, velocity)
-            )
+
 
         )
 

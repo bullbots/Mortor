@@ -56,10 +56,6 @@ class Intake : SubsystemBase() {
         armSpinner.set(speed)
     }
 
-    fun holdArm() {
-        raiseLowerSpinner.set(Constants.INTAKE_HOLD_ARM)
-    }
-
     fun stopArm() {
         raiseLowerSpinner.set(0.0)
     }

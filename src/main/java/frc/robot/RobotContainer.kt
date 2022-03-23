@@ -186,7 +186,7 @@ class RobotContainer {
         // Add commands to the autonomous command chooser
         m_chooser.setDefaultOption("Leave Tarmac, Intake, and Shoot",
             SequentialCommandGroup(
-                DropArmCommand(intake, armVel = 0.2).withTimeout(0.5),
+                IntakeCargos(intake, 0.2).withTimeout(0.5),
                 ParallelDeadlineGroup(
                     DriveForDistanceCommand(drivetrain, 0.15, 9.0), //Distance is 9
                     IntakeGroup(intake, 0.6, shooter) { -0.4 }
@@ -198,7 +198,7 @@ class RobotContainer {
         )
         m_chooser.addOption("Short Tarmac, Intake, and Shoot",
             SequentialCommandGroup(
-                DropArmCommand(intake, armVel = 0.2).withTimeout(0.5),
+                IntakeCargos(intake, 0.2).withTimeout(0.5),
                 ParallelDeadlineGroup(
                     DriveForDistanceCommand(drivetrain, 0.15, 7.5), //Distance is 7.5
                     IntakeGroup(intake, 0.6, shooter) { -0.4 }
@@ -207,10 +207,10 @@ class RobotContainer {
             )
         )
         m_chooser.addOption("Leave Tarmac Timed", SequentialCommandGroup(
-            DropArmCommand(intake, armVel = 0.2).withTimeout(0.5),
+            IntakeCargos(intake, 0.2).withTimeout(0.5),
             DriveForTimeCommand(drivetrain, 2.0)))
         m_chooser.addOption("Leave Tarmac Distance", SequentialCommandGroup(
-            DropArmCommand(intake, armVel = 0.2).withTimeout(0.5),
+            IntakeCargos(intake, 0.2).withTimeout(0.5),
             DriveForDistanceCommand(drivetrain, 0.25, 9.0)))
         m_chooser.addOption("Leave Tarmac and Shoot",
             SequentialCommandGroup(
@@ -325,7 +325,7 @@ class RobotContainer {
 
 
         // Drivers Button Binding
-        button1.whileHeld(IntakeGroup(intake, 0.6, shooter) { -0.4 })
+        button1.whileHeld(IntakeCargos(intake, 0.6))
 
         button2.whileHeld(StartEndCommand(
             {drivetrain.isFullSpeed = 0.5},
@@ -336,7 +336,7 @@ class RobotContainer {
 //        button4.whileHeld(ShooterGroup(intake, -0.1, shooter, false, drivetrain::calcDist))
         button4.whenPressed(AutoArmCommand(intake, isDown=true))
 
-        button5.whileHeld(IntakeGroup(intake, -0.3, shooter) { -0.1 })
+        button5.whileHeld(IntakeCargos(intake, -0.3))
 
         button6.whenPressed(AutoArmCommand(intake, isDown=false))
 //        button6.whileHeld(ShooterGroup(intake, -0.1, shooter, true) { SmartDashboard.getNumber("StaticShooter", 0.0) })

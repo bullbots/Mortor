@@ -76,7 +76,7 @@ class RobotContainer {
     private val climber = Climber()
 
     // Util
-    private val pidController = PIDControllerDebug(0.003, 0.0, 0.0)
+    private val pidController = PIDControllerDebug(0.003, 0.000, 0.000)
     private val imu = NavX()
 
     private var loopIdx = 0
@@ -333,13 +333,13 @@ class RobotContainer {
         ))
 
 //        button4.whileHeld(ShooterGroup(intake, -0.1, shooter, true) { 0.6 })
-//        button4.whileHeld(ShooterGroup(intake, -0.1, shooter, false, drivetrain::calcDist))
-        button4.whenPressed(AutoArmCommand(intake, isDown=true))
+        button4.whileHeld(ShooterGroup(intake, -0.1, shooter, false, drivetrain::calcDist))
+//        button4.whenPressed(AutoArmCommand(intake, isDown=true))
 
         button5.whileHeld(IntakeCargos(intake, -0.3))
 
-        button6.whenPressed(AutoArmCommand(intake, isDown=false))
-//        button6.whileHeld(ShooterGroup(intake, -0.1, shooter, true) { SmartDashboard.getNumber("StaticShooter", 0.0) })
+//        button6.whenPressed(AutoArmCommand(intake, isDown=false))
+        button6.whileHeld(ShooterGroup(intake, -0.1, shooter, true) { SmartDashboard.getNumber("StaticShooter", 0.0) })
 
         button7.whenPressed(AlignShooter(pidController, { -imu.angle }, drivetrain::calcHeading,
             { output: Double -> drivetrain.drive(0.0, -output) }, drivetrain).withTimeout(1.0))
@@ -363,7 +363,7 @@ class RobotContainer {
 
 //        coButton1.whenPressed(AutoClimber(climber, isGrenade = false, isDown = true))
         coButton1.whenPressed(TestingServo(shooter, 0.0))
-        coButton2.whenPressed(TestingServo(shooter, 180.0))
+        coButton2.whenPressed(TestingServo(shooter, 90.0))
 
 //        coButton2.whenPressed(AutoClimber(climber, isGrenade = false, isDown = false))
 
@@ -403,11 +403,20 @@ class RobotContainer {
     fun stopAllSubsystems() { drivetrain.stop() }
 
     fun periodic() {
-//        SmartDashboard.putNumber("Yaw", -imu.angle)
         loopIdx++
         if (loopIdx == 10) {
             loopIdx = 0
-            SmartDashboard.putNumber("Shooter Dist", drivetrain.calcDist())
+
+//            SmartDashboard.putNumber("Shooter Dist", drivetrain.calcDist())
+            SmartDashboard.putNumber("Yaw", -imu.angle)
+            SmartDashboard.putNumber("Heading", drivetrain.calcHeading())
+//            SmartDashboard.putNumber("Proportional Value", pidController.p * pidController.positionError)
+//            SmartDashboard.putNumber("Integral Value", pidController.i * pidController.totalError())
+
+
+
+
+
         }
 //        println("RobotContainer Periodic is being called")
     }

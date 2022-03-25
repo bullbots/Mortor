@@ -11,8 +11,8 @@ class Climber : SubsystemBase() {
 
     var loopIdx = 0
     var climberMotor: SafeTalonFX
-    var hallEffectTop: Counter
-    var hallEffectBot: Counter
+//    var hallEffectTop: Counter
+//    var hallEffectBot: Counter
 
     var delta = 0.0
 
@@ -46,17 +46,17 @@ class Climber : SubsystemBase() {
         climberMotor.configMotionAcceleration(21000.0, Constants.kTIMEOUT_MS)
 
 
-        hallEffectTop = Counter(Counter.Mode.kPulseLength)
-        hallEffectBot = Counter(Counter.Mode.kPulseLength)
-
-        hallEffectTop.setUpSource(0)
-        hallEffectBot.setUpSource(1)
-
-        hallEffectTop.setUpSourceEdge(true, true)
-        hallEffectBot.setUpSourceEdge(true, true)
-
-        hallEffectTop.reset()
-        hallEffectBot.reset()
+//        hallEffectTop = Counter(Counter.Mode.kPulseLength)
+//        hallEffectBot = Counter(Counter.Mode.kPulseLength)
+//
+//        hallEffectTop.setUpSource(2)
+//        hallEffectBot.setUpSource(1)
+//
+//        hallEffectTop.setUpSourceEdge(true, true)
+//        hallEffectBot.setUpSourceEdge(true, true)
+//
+//        hallEffectTop.reset()
+//        hallEffectBot.reset()
     }
 
     private fun configureShuffleBoard() {}
@@ -77,28 +77,28 @@ class Climber : SubsystemBase() {
 
     fun stop() { climberMotor.set(0.0) }
 
-    fun checkHallEffectSoftLimits() {
-        // Used for the HallEffect Sensors
-        if(currentState == State.RELEASE) {
-            if (hallEffectTop.get() > 0) {
-                currentState = State.TOP
-                delta = climberMotor.selectedSensorPosition
-            } else if (hallEffectBot.get() > 0) {
-                currentState = State.BOTTOM
-                delta = climberMotor.selectedSensorPosition
-            }
-        } else if (currentState == State.BOTTOM) {
-            if(climberMotor.selectedSensorPosition - delta > Constants.CLIMBER_LIMIT_THRESHOLD) {
-                currentState = State.RELEASE
-                hallEffectBot.reset()
-            }
-        } else if (currentState == State.TOP) {
-            if (delta - climberMotor.selectedSensorPosition > Constants.CLIMBER_LIMIT_THRESHOLD) {
-                currentState = State.RELEASE
-                hallEffectTop.reset()
-            }
-        }
-    }
+//    fun checkHallEffectSoftLimits() {
+//        // Used for the HallEffect Sensors
+//        if(currentState == State.RELEASE) {
+//            if (hallEffectTop.get() > 0) {
+//                currentState = State.TOP
+//                delta = climberMotor.selectedSensorPosition
+//            } else if (hallEffectBot.get() > 0) {
+//                currentState = State.BOTTOM
+//                delta = climberMotor.selectedSensorPosition
+//            }
+//        } else if (currentState == State.BOTTOM) {
+//            if(climberMotor.selectedSensorPosition - delta > Constants.CLIMBER_LIMIT_THRESHOLD) {
+//                currentState = State.RELEASE
+//                hallEffectBot.reset()
+//            }
+//        } else if (currentState == State.TOP) {
+//            if (delta - climberMotor.selectedSensorPosition > Constants.CLIMBER_LIMIT_THRESHOLD) {
+//                currentState = State.RELEASE
+//                hallEffectTop.reset()
+//            }
+//        }
+//    }
 
     fun setManual(percentOutput: Double) {
         if (climberMotor.selectedSensorPosition <= -14000) {

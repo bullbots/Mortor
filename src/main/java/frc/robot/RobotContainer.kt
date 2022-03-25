@@ -76,7 +76,8 @@ class RobotContainer {
     private val climber = Climber()
 
     // Util
-    private val pidController = PIDControllerDebug(0.003, 0.000, 0.000)
+    private val pidController = PIDControllerDebug(0.008, 0.0008, 0.0)
+    private val pidDebugger = PIDDebugSubsystem(pidController, { -imu.angle }, drivetrain::calcHeading)
     private val imu = NavX()
 
     private var loopIdx = 0
@@ -158,7 +159,8 @@ class RobotContainer {
 
         initializeAutonomousOptions()
 
-        pidController.setTolerance(1.0)
+        pidController.setTolerance(0.5)
+        pidController.setIntegratorRange(-0.2, 0.2)
         pidController.enableContinuousInput(-180.0, 180.0)
 
         trajectory = TrajectoryGenerator.generateTrajectory(
@@ -167,7 +169,8 @@ class RobotContainer {
             Pose2d(6.0, 4.0, Rotation2d()),
             TrajectoryConfig(2.0, 2.0)
         )
-         initializeStaticShooterVel()
+        initializeStaticShooterVel()
+        initializePIDControllerValue()
 
 //        shooterMode.setDefaultOption("Competition Shooting", ShooterMode.COMPETITION)
 //        shooterMode.addOption("Demo Shooting", ShooterMode.DEMO)
@@ -179,6 +182,12 @@ class RobotContainer {
      * You are able to adjust the value inside the SmartDashboard to change velocity
      */
     private fun initializeStaticShooterVel() { SmartDashboard.putNumber("StaticShooter", 0.46) }
+
+    private fun initializePIDControllerValue() {
+        SmartDashboard.putNumber("PID P Value", 0.01)
+        SmartDashboard.putNumber("PID I Value", 0.005)
+        SmartDashboard.putNumber("PID D Value", 0.0)
+    }
 
 
     private fun initializeAutonomousOptions()
@@ -342,7 +351,7 @@ class RobotContainer {
         button6.whileHeld(ShooterGroup(intake, -0.1, shooter, true) { SmartDashboard.getNumber("StaticShooter", 0.0) })
 
         button7.whenPressed(AlignShooter(pidController, { -imu.angle }, drivetrain::calcHeading,
-            { output: Double -> drivetrain.drive(0.0, -output) }, drivetrain).withTimeout(1.0))
+            { output: Double -> drivetrain.drive(0.0, -output) }, drivetrain))
 
         button8.whenPressed(InstantCommand(
             {
@@ -352,6 +361,8 @@ class RobotContainer {
                 println("INFO: THE POSE IS RESET!!!")
             }
         ))
+
+        button9.whenPressed(InstantCommand({}, drivetrain))
 //
 //        button9.whenPressed(IntakeCargos(intake, intakeVel).withTimeout(0.04)).withTimeout(0.04)
 
@@ -362,8 +373,8 @@ class RobotContainer {
         // CO-Drivers Button Binding
 
 //        coButton1.whenPressed(AutoClimber(climber, isGrenade = false, isDown = true))
-        coButton1.whenPressed(TestingServo(shooter, 35.0))
-        coButton2.whenPressed(TestingServo(shooter, 100.0))
+        coButton1.whenPressed(TestingServo(shooter, 5.0))
+        coButton2.whenPressed(TestingServo(shooter, 45.0))
 
 //        coButton2.whenPressed(AutoClimber(climber, isGrenade = false, isDown = false))
 
@@ -410,6 +421,8 @@ class RobotContainer {
 //            SmartDashboard.putNumber("Shooter Dist", drivetrain.calcDist())
             SmartDashboard.putNumber("Yaw", -imu.angle)
             SmartDashboard.putNumber("Heading", drivetrain.calcHeading())
+            SmartDashboard.putNumber("Delta Error", drivetrain.calcHeading()-(-imu.angle))
+
 //            SmartDashboard.putNumber("Proportional Value", pidController.p * pidController.positionError)
 //            SmartDashboard.putNumber("Integral Value", pidController.i * pidController.totalError())
 

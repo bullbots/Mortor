@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import frc.robot.Constants
 import java.lang.reflect.Field
 import kotlin.math.abs
+import kotlin.math.sign
 
 /**
  * Wrapper for the PIDController setting the PID values
@@ -47,57 +48,41 @@ class PIDControllerDebug(private val m_kp: Double, private val m_ki: Double, kd:
 //        SmartDashboard.putNumber("PID output", 0.0)
     }
 
-    override fun calculate(measurement: Double): Double {
+    fun calculateDebug(measurement: Double, setpoint: Double, displayOutput: Boolean): Double {
         var output = super.calculate(measurement)
         var outputRegion = 0
-//        if (abs(measurement) <= Constants.VISION_OUTER_ALIGN_THRESHOLD) {
-//            if (!prev) {
-//                println("INFO: Calling PID reset")
-//                reset()
-//            }
-//            output = super.calculate(measurement)
-//            prev = true
-//            outputRegion = 1
-//        } else {
-//            prev = false
-//        }
-//        SmartDashboard.putNumber("PID Region", outputRegion.toDouble())
+        val delta = setpoint - measurement
 
-        /*
-        // m_measurement = measurement;
-        // m_prevError = m_positionError;
-        // if (m_continuous) {
-        // m_positionError =
-        // MathUtil.inputModulus(m_setpoint - measurement, m_minimumInput,
-        // m_maximumInput);
-        // } else {
-        // m_positionError = m_setpoint - measurement;
-        // }
-        // m_velocityError = (m_positionError - m_prevError) / m_period;
-        // if (m_ki != 0) {
-        // m_totalError =
-        // MathUtil.clamp(
-        // m_totalError + m_positionError * m_period,
-        // m_minimumIntegral / m_ki,
-        // m_maximumIntegral / m_ki);
-        // }
-        // return m_kp * m_positionError + m_ki * m_totalError + m_kd * m_velocityError;
-        */
-        var totalError = 0.0
-        try {
-            totalError = totalErrorField[this] as Double
-        } catch (e: IllegalArgumentException) {
-            e.printStackTrace()
-        } catch (e: IllegalAccessException) {
-            e.printStackTrace()
+        output = if (abs(delta) > 45) {
+            sign(delta) * 0.55
+        } else if(abs(delta) > 7.5) {
+            reset()
+            output + sign(delta) * 0.1
+        } else {
+            output + sign(delta) * 0.1
         }
-        val positionOutput = m_kp * positionError
-        val integralOutput = m_ki * totalError
 
-        SmartDashboard.putNumber("PID Position Output", positionOutput)
-        SmartDashboard.putNumber("PID Integral Output", integralOutput)
+        if (displayOutput) {
+            var totalError = 0.0
+            try {
+                totalError = totalErrorField[this] as Double
+            } catch (e: IllegalArgumentException) {
+                e.printStackTrace()
+            } catch (e: IllegalAccessException) {
+                e.printStackTrace()
+            }
+            val positionOutput = m_kp * positionError
+            val integralOutput = m_ki * totalError
+
+            SmartDashboard.putNumber("PID Position Output", positionOutput)
+            SmartDashboard.putNumber("PID Integral Output", integralOutput)
 //        SmartDashboard.putNumber("PID Derivative Output", )
-        SmartDashboard.putNumber("PID output", output)
+            SmartDashboard.putNumber("PID output", output)
+            SmartDashboard.putNumber("PID Expected Output", positionOutput + integralOutput + (sign(delta) * 0.1))
+
+
+        }
+
         return output
 
     }

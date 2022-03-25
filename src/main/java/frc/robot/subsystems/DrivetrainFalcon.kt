@@ -37,15 +37,15 @@ class DrivetrainFalcon : SubsystemBase() {
     // private val max_ticks_per_hundred_milliseconds: Double = ticks_per_foot * Constants.MAX_SPEED_LOW_GEAR / 10
 
     // Initializing Master Falcon Motors
-    private val leftMasterFalcon = SafeTalonFX(Constants.LEFT_MASTER_PORT, isDrivetrain=true, usePID = true) // change to false for no PID?
-    private val rightMasterFalcon = SafeTalonFX(Constants.RIGHT_MASTER_PORT, isDrivetrain=true, usePID = true)
+    private val leftMasterFalcon = SafeTalonFX(Constants.LEFT_MASTER_PORT, isDrivetrain=true, usePID=false) // change to false for no PID?
+    private val rightMasterFalcon = SafeTalonFX(Constants.RIGHT_MASTER_PORT, isDrivetrain=true, usePID=false)
 
     // Initializing Slave Falcon Motors
-    private val leftSlaveFalcon = SafeTalonFX(Constants.LEFT_SLAVE_PORT, isDrivetrain=true, usePID = true)
-    private val rightSlaveFalcon = SafeTalonFX(Constants.RIGHT_SLAVE_PORT, isDrivetrain=true, usePID = true)
+    private val leftSlaveFalcon = SafeTalonFX(Constants.LEFT_SLAVE_PORT, isDrivetrain=true, usePID=false)
+    private val rightSlaveFalcon = SafeTalonFX(Constants.RIGHT_SLAVE_PORT, isDrivetrain=true, usePID=false)
 
-    private val leftGroup = MotorControllerGroup(leftMasterFalcon, leftSlaveFalcon)
-    private val rightGroup = MotorControllerGroup(rightMasterFalcon, rightSlaveFalcon)
+//    private val leftGroup = MotorControllerGroup(leftMasterFalcon, leftSlaveFalcon)
+//    private val rightGroup = MotorControllerGroup(rightMasterFalcon, rightSlaveFalcon)
 
 //    private val kinematics = DifferentialDriveKinematics(Constants.TRACK_WIDTH)
     private val diffDrive = DifferentialDriveDebug(leftMasterFalcon, rightMasterFalcon)
@@ -66,8 +66,6 @@ class DrivetrainFalcon : SubsystemBase() {
     lateinit var rightVelocity: NetworkTableEntry
 
     var isFullSpeed = 1.0
-//    private val firstGearSlope = 1 / shiftThreshold
-//    private val secondGearSlope = ( (21000 - 9240) / (1 - shiftThreshold)) / 21000
 
     private var m_flippedOdometry = false
 
@@ -239,6 +237,9 @@ class DrivetrainFalcon : SubsystemBase() {
         updateOdometry()
         m_fieldSim
 
+        SmartDashboard.putNumber("Left Drive Speed", leftMasterFalcon.selectedSensorVelocity / 22000)
+        SmartDashboard.putNumber("Right Drive Speed", rightMasterFalcon.selectedSensorVelocity / 22000)
+
         loopIdx++
         if (loopIdx == 10) {
             loopIdx = 0
@@ -246,12 +247,12 @@ class DrivetrainFalcon : SubsystemBase() {
             if (RobotBase.isReal()) {
 //                SmartDashboard.putNumber("Left Encoder", leftMasterFalcon.selectedSensorPosition)
 //                SmartDashboard.putNumber("Right Encoder", rightMasterFalcon.selectedSensorPosition)
-                SmartDashboard.putNumber("Left Drive Speed", leftMasterFalcon.selectedSensorVelocity / 22000)
-                SmartDashboard.putNumber("Right Drive Speed", rightMasterFalcon.selectedSensorVelocity / 22000)
+
                 SmartDashboard.putNumber("Left Drive Stator Current", leftMasterFalcon.statorCurrent)
                 SmartDashboard.putNumber("Right Drive Stator Current", rightMasterFalcon.statorCurrent)
                 SmartDashboard.putNumber("Left Drive Supply Current", leftMasterFalcon.supplyCurrent)
                 SmartDashboard.putNumber("Right Drive Supply Current", rightMasterFalcon.supplyCurrent)
+
 //                SmartDashboard.putNumber("Heading", calcHeading())
 
 //                leftCurrent.setNumber(leftMasterFalcon.statorCurrent)
@@ -331,8 +332,8 @@ class DrivetrainFalcon : SubsystemBase() {
         val rightOutput =
             rightPIDController.calculate(rightMasterFalcon.selectedSensorPosition, speeds.rightMetersPerSecond)
 
-        leftGroup.setVoltage(leftOutput + leftFeedforward)
-        rightGroup.setVoltage(rightOutput + rightFeedforward)
+//        leftGroup.setVoltage(leftOutput + leftFeedforward)
+//        rightGroup.setVoltage(rightOutput + rightFeedforward)
 
     }
 

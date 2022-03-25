@@ -2,32 +2,46 @@ package frc.robot.commands.Drivetrain_Commands
 
 import edu.wpi.first.math.MathUtil
 import edu.wpi.first.math.controller.PIDController
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.PIDCommand
 import frc.robot.subsystems.DrivetrainFalcon
+import frc.robot.util.PIDControllerDebug
 import java.util.function.DoubleConsumer
 import java.util.function.DoubleSupplier
 import kotlin.math.abs
 import kotlin.math.sign
 
-class AlignShooter(controller: PIDController, measurementSource: DoubleSupplier, setpointSource: DoubleSupplier,
+class AlignShooter(private val debugController: PIDControllerDebug, measurementSource: DoubleSupplier, setpointSource: DoubleSupplier,
                    useOutput: DoubleConsumer, var drivetrain: DrivetrainFalcon) :
-    PIDCommand(controller, measurementSource, setpointSource, useOutput, drivetrain) {
+    PIDCommand(debugController, measurementSource, setpointSource, useOutput, drivetrain) {
 
     private var loopIdx = 0
 
     override fun initialize() {
         super.initialize()
+        debugController.p = SmartDashboard.getNumber("PID P Value", 0.0)
+        debugController.i = SmartDashboard.getNumber("PID I Value", 0.0)
+        debugController.d = SmartDashboard.getNumber("PID D Value", 0.0)
         println("INFO: AlignShooter is being called")
     }
 
     override fun execute() {
-        val pidOut = m_controller.calculate(m_measurement.asDouble, m_setpoint.asDouble)
+        val pidOut = debugController.calculateDebug(m_measurement.asDouble, m_setpoint.asDouble, true)
         val delta = MathUtil.inputModulus(m_setpoint.asDouble - m_measurement.asDouble, -180.0, 180.0)
         var ff = 0.0
 
-        if(abs(delta) > 5 ) {
-            ff = sign(delta) * 0.3
-        }
+
+
+//        ff = when (delta) {
+//            in 360.0..10.0 -> sign(delta) * 0.3
+//            in 10.0..5.0 -> sign(delta) * 0.2
+//            else -> 0.0
+//        }
+
+
+//        if(abs(delta) > 15 ) {
+//            ff = sign(delta) * 0.3
+//        }
 
 //        m_useOutput.accept(0.6)
         m_useOutput.accept(pidOut + ff)

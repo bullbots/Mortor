@@ -61,7 +61,7 @@ class Constants {
          */
         const val INTAKE_ARM_HOLD_THRESHOLD = -1.0
         const val INTAKE_ARM_DROP_THRESHOLD = 1.0
-        const val INTAKE_ARM_UP = 0.0
+        const val INTAKE_ARM_UP = 3.0
         const val INTAKE_ARM_DOWN = -40.0
         const val INTAKE_ARM_HOLD = -6.0
 
@@ -89,9 +89,9 @@ class Constants {
         /**
          * ALL CLIMB RELATED CONSTANTS GO HERE
          */
-        const val CLIMBER_GRENADE = -20000.0
-        const val CLIMBER_DOWN = -18000.0
-        const val CLIMBER_UP = 348000.0
+        const val CLIMBER_GRENADE = -12000.0
+        const val CLIMBER_DOWN = -20000.0
+        const val CLIMBER_UP = 330000.0
         const val CLIMBER_LIMIT_THRESHOLD = 1000
         const val kPIDLoopIdx = 0
 

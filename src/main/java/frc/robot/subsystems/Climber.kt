@@ -11,7 +11,7 @@ import frc.robot.util.SafeTalonFX
 class Climber : SubsystemBase() {
 
     var loopIdx = 0
-    var climberMotor: SafeTalonFX
+    private var climberMotor: SafeTalonFX
 //    var hallEffectTop: Counter
 //    var hallEffectBot: Counter
     var limitSwitch: Counter
@@ -76,6 +76,7 @@ class Climber : SubsystemBase() {
 //            SmartDashboard.putNumber("Climber Velocity", climberMotor.getSelectedSensorVelocity(Constants.kPIDLoopIdx))
             SmartDashboard.putNumber("Climber Position", climberMotor.getSelectedSensorPosition(Constants.kPIDLoopIdx))
             SmartDashboard.putNumber("Climber Supply Current", climberMotor.supplyCurrent)
+            SmartDashboard.putNumber("Climber Stator Current", climberMotor.statorCurrent)
             SmartDashboard.putNumber("Limit Switch", limitSwitch.get().toDouble())
 //            SmartDashboard.putNumber("Climber Active Traj Pos", climberMotor.activeTrajectoryPosition)
         }
@@ -107,7 +108,7 @@ class Climber : SubsystemBase() {
 //            }
 //        }
 //    }
-    fun set(encoderVal: Double, controlMode: TalonFXControlMode) {
+    fun setAuto(controlMode: TalonFXControlMode, encoderVal: Double) {
         if (limitSwitch.get() > 0) {
             if (encoderVal > 0) {
                 climberMotor.set(controlMode, encoderVal)
@@ -134,7 +135,12 @@ class Climber : SubsystemBase() {
             climberMotor.set(percentOutput)
         }
     }
-    fun encoderSoftLimits() {
-
+    fun resetEncoders() {
+        climberMotor.selectedSensorPosition = 0.0
     }
+
+    fun getEncoderPos(): Double {
+        return climberMotor.getSelectedSensorPosition(Constants.kPIDLoopIdx)
+    }
+
 }

@@ -9,7 +9,6 @@ import kotlin.math.abs
 class AutoClimber(private var climber: Climber, private var isGrenade: Boolean, private var isDown: Boolean) : CommandBase() {
     private var targetTraj = 0.0
 
-
     init { addRequirements(climber)
         targetTraj = if(!isGrenade) {
             if (isDown) {
@@ -25,23 +24,20 @@ class AutoClimber(private var climber: Climber, private var isGrenade: Boolean, 
     override fun initialize() {
         if (isGrenade) {
             Climber.isReleased = true
-            climber.climberMotor.selectedSensorPosition = 0.0
+            climber.resetEncoders()
             println("INFO: Grenade initialize")
         } else if (!Climber.isReleased) {
             println("PULL GRENADE PIN!!!!!!!!!!")
             return
         }
-
-
-        climber.climberMotor.set(TalonFXControlMode.MotionMagic, targetTraj)
     }
 
     override fun execute() {
-//        println("INFO: Climber Executed")
+        climber.setAuto(TalonFXControlMode.MotionMagic, targetTraj)
     }
 
     override fun isFinished(): Boolean {
-        val traj_pose_error = targetTraj - climber.climberMotor.getSelectedSensorPosition(Constants.kPIDLoopIdx)
+        val traj_pose_error = targetTraj - climber.getEncoderPos()
         return if (isGrenade) {
             abs(traj_pose_error) < 1000
         } else {
@@ -52,5 +48,9 @@ class AutoClimber(private var climber: Climber, private var isGrenade: Boolean, 
     override fun end(interrupted: Boolean) {
         println("INFO: Grenade end")
         climber.stop()
+    }
+
+    fun grenade() {
+
     }
 }

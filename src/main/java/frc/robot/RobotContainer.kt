@@ -17,7 +17,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.*
 import edu.wpi.first.wpilibj2.command.button.JoystickButton
-import frc.robot.commands.Autonomous_Commands.AutonomousGSC
 import frc.robot.commands.Autonomous_Commands.TrajectoryBase
 import frc.robot.commands.Climber_Commands.AutoClimber
 import frc.robot.commands.Climber_Commands.ClimberGroup
@@ -28,7 +27,6 @@ import frc.robot.commands.Drivetrain_Commands.JoystickDrive
 import frc.robot.commands.Intake_Commands.*
 import frc.robot.commands.Shooter_Commands.ShooterCargos
 import frc.robot.commands.Shooter_Commands.ShooterGroup
-import frc.robot.commands.Shooter_Commands.TestingServo
 import frc.robot.subsystems.*
 import frc.robot.util.NavX
 import frc.robot.util.PIDControllerDebug
@@ -364,29 +362,34 @@ class RobotContainer {
             }
         ))
 
-        button9.whenPressed(InstantCommand({}, drivetrain))
+        button9.whenPressed(InstantCommand(climber::resetEncoders, climber))
 //
 //        button9.whenPressed(IntakeCargos(intake, intakeVel).withTimeout(0.04)).withTimeout(0.04)
 
-        button10.whileHeld(ClimberGroup(climber, -0.8))
+        button10.whileHeld(ClimberGroup(climber, -0.3))
 
-        button11.whileHeld(ClimberGroup(climber, 0.8))
+        button11.whileHeld(ClimberGroup(climber, 0.3))
 
         // CO-Drivers Button Binding
 
         coButton1.whenPressed(AutoClimber(climber, isGrenade = false, isDown = true))
+
 //        coButton1.whenPressed(TestingServo(shooter, 5.0))
 //        coButton2.whenPressed(TestingServo(shooter, 45.0))
 
         coButton2.whenPressed(AutoClimber(climber, isGrenade = false, isDown = false))
 
-        coButton3.whileHeld(IntakeArm(intake, armVel = 0.5)) // Intake Arm Up
+//        coButton3.whileHeld(IntakeArm(intake, armVel = 0.5)) // Intake Arm Up
 
         coButton4.whileHeld(ShooterGroup(intake, -0.1, shooter, true) { SmartDashboard.getNumber("StaticShooter", 0.0) })
 
-        coButton5.whileHeld(IntakeArm(intake, armVel = -0.5)) // Intake Arm Down
+//        coButton5.whileHeld(IntakeArm(intake, armVel = -0.5)) // Intake Arm Down
 
-        coButton6.whenPressed(AutoClimber(climber, isGrenade = true, isDown = true))
+//        coButton6.whenPressed(AutoClimber(climber, isGrenade = true, isDown = true))
+        coButton6.whenPressed(ParallelCommandGroup(
+            AutoClimber(climber, isGrenade = true, isDown = true),
+            IntakeArm(intake)
+        ))
 
         SmartDashboard.putData(object : InstantCommand(
             drivetrain::resetEncoders,

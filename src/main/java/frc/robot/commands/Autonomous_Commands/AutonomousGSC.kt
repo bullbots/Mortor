@@ -22,7 +22,7 @@ class AutonomousGSC(drivetrain: DrivetrainFalcon, intake: Intake, shooter: Shoot
                     isRed
                 )
             ),
-            IntakeGroup(intake, 0.0, shooter)
+//            IntakeGroup(intake, 0.0, true, shooter)
         )
     }
 

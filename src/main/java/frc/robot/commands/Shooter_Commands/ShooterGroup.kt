@@ -14,10 +14,10 @@ class ShooterGroup(intake: Intake, intakeVel: Double, shooter: Shooter, static: 
 
     init {
         addCommands(
-            IntakeCargos(intake, intakeVel).withTimeout(0.04),
-            ShooterCargos(shooter, static, velocity).withTimeout(2.0),
+            IntakeCargos(intake, intakeVel, 0.0, shooter).withTimeout(0.04),
+            ShooterCargos(shooter, static, velocity).withTimeout(0.75),
             ParallelCommandGroup(
-                IntakeCargos(intake, 0.1),
+                IntakeCargos(intake, 0.1, 0.0, shooter),
                 ShooterCargos(shooter, static, velocity)
             )
         )

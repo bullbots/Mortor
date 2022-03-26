@@ -26,6 +26,7 @@ import frc.robot.commands.Drivetrain_Commands.DriveForDistanceCommand
 import frc.robot.commands.Drivetrain_Commands.DriveForTimeCommand
 import frc.robot.commands.Drivetrain_Commands.JoystickDrive
 import frc.robot.commands.Intake_Commands.*
+import frc.robot.commands.Shooter_Commands.ShooterCargos
 import frc.robot.commands.Shooter_Commands.ShooterGroup
 import frc.robot.commands.Shooter_Commands.TestingServo
 import frc.robot.subsystems.*
@@ -195,10 +196,10 @@ class RobotContainer {
         // Add commands to the autonomous command chooser
         m_chooser.setDefaultOption("Leave Tarmac, Intake, and Shoot",
             SequentialCommandGroup(
-                IntakeCargos(intake, 0.2).withTimeout(0.5),
+                IntakeCargos(intake, 0.2, 0.6, shooter).withTimeout(0.5),
                 ParallelDeadlineGroup(
                     DriveForDistanceCommand(drivetrain, 0.15, 9.0), //Distance is 9
-                    IntakeGroup(intake, 0.6, shooter) { -0.4 }
+                    IntakeGroup(intake, 0.6, 0.6, shooter) { -0.4 }
                 ),
                 ShooterGroup(intake, -0.1, shooter, true) {
                     SmartDashboard.getNumber("StaticShooter",0.0)
@@ -207,19 +208,19 @@ class RobotContainer {
         )
         m_chooser.addOption("Short Tarmac, Intake, and Shoot",
             SequentialCommandGroup(
-                IntakeCargos(intake, 0.2).withTimeout(0.5),
+                IntakeCargos(intake, 0.2, 0.2, shooter).withTimeout(0.5),
                 ParallelDeadlineGroup(
                     DriveForDistanceCommand(drivetrain, 0.15, 7.5), //Distance is 7.5
-                    IntakeGroup(intake, 0.6, shooter) { -0.4 }
+                    IntakeGroup(intake, 0.6, 0.6, shooter) { -0.4 }
                 ),
                 ShooterGroup(intake, -0.1, shooter, true) {0.4}.withTimeout(5.0)
             )
         )
         m_chooser.addOption("Leave Tarmac Timed", SequentialCommandGroup(
-            IntakeCargos(intake, 0.2).withTimeout(0.5),
+            IntakeCargos(intake, 0.2, 0.2, shooter).withTimeout(0.5),
             DriveForTimeCommand(drivetrain, 2.0)))
         m_chooser.addOption("Leave Tarmac Distance", SequentialCommandGroup(
-            IntakeCargos(intake, 0.2).withTimeout(0.5),
+            IntakeCargos(intake, 0.2, 0.2, shooter).withTimeout(0.5),
             DriveForDistanceCommand(drivetrain, 0.25, 9.0)))
         m_chooser.addOption("Leave Tarmac and Shoot",
             SequentialCommandGroup(
@@ -334,7 +335,8 @@ class RobotContainer {
 
 
         // Drivers Button Binding
-        button1.whileHeld(IntakeCargos(intake, 0.6))
+        button1.whileHeld(IntakeGroup(intake, 0.3, 0.6, shooter) { -0.3 }).whenReleased(ShooterCargos(shooter, true) { -0.7 }
+            .withTimeout(0.3))
 
         button2.whileHeld(StartEndCommand(
             {drivetrain.isFullSpeed = 0.5},
@@ -345,7 +347,7 @@ class RobotContainer {
         button4.whileHeld(ShooterGroup(intake, -0.1, shooter, false, drivetrain::calcDist))
 //        button4.whenPressed(AutoArmCommand(intake, isDown=true))
 
-        button5.whileHeld(IntakeCargos(intake, -0.3))
+        button5.whileHeld(IntakeCargos(intake, -0.3, -0.3, shooter))
 
 //        button6.whenPressed(AutoArmCommand(intake, isDown=false))
         button6.whileHeld(ShooterGroup(intake, -0.1, shooter, true) { SmartDashboard.getNumber("StaticShooter", 0.0) })
@@ -380,7 +382,7 @@ class RobotContainer {
 
         coButton3.whileHeld(IntakeArm(intake, armVel = 0.5)) // Intake Arm Up
 
-        coButton4.whileHeld(IntakeGroup(intake, 0.3, shooter) { 0.25 })
+        coButton4.whileHeld(ShooterGroup(intake, -0.1, shooter, true) { SmartDashboard.getNumber("StaticShooter", 0.0) })
 
         coButton5.whileHeld(IntakeArm(intake, armVel = -0.5)) // Intake Arm Down
 
@@ -418,7 +420,7 @@ class RobotContainer {
         if (loopIdx == 10) {
             loopIdx = 0
 
-//            SmartDashboard.putNumber("Shooter Dist", drivetrain.calcDist())
+            SmartDashboard.putNumber("Shooter Dist", drivetrain.calcDist())
             SmartDashboard.putNumber("Yaw", -imu.angle)
             SmartDashboard.putNumber("Heading", drivetrain.calcHeading())
             SmartDashboard.putNumber("Delta Error", drivetrain.calcHeading()-(-imu.angle))

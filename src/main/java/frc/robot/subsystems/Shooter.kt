@@ -2,6 +2,7 @@ package frc.robot.subsystems
 
 import com.ctre.phoenix.motorcontrol.NeutralMode
 import edu.wpi.first.wpilibj.Servo
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import frc.robot.Constants
 import frc.robot.util.SafeTalonFX
@@ -14,6 +15,7 @@ class Shooter : SubsystemBase() {
     // var shooterSpinner: SafeSparkMax
     var shooterSpinner: SafeTalonFX
     var servo: Servo
+    private var loopIdx = 0
 
     init {
         configureShuffleBoard()
@@ -45,6 +47,14 @@ class Shooter : SubsystemBase() {
 
     override fun periodic() {
 //        SmartDashboard.putNumber("Shooter speed", shooterSpinner.selectedSensorVelocity)
+        loopIdx++
+        if (loopIdx == 10) {
+            loopIdx = 0
+            SmartDashboard.putNumber("Shooter Stator Current", shooterSpinner.statorCurrent)
+            SmartDashboard.putNumber("Shooter Supply Current", shooterSpinner.supplyCurrent)
+            SmartDashboard.putNumber("Shooter Output Percent", shooterSpinner.motorOutputPercent)
+            SmartDashboard.putNumber("Shooter Sensor Velocity", shooterSpinner.selectedSensorVelocity)
+        }
     }
 
     fun stop() { shooterSpinner.stopMotor() }

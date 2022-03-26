@@ -16,6 +16,7 @@ class AlignShooter(private val debugController: PIDControllerDebug, measurementS
     PIDCommand(debugController, measurementSource, setpointSource, useOutput, drivetrain) {
 
     private var loopIdx = 0
+    private var delta = 0.0
 
     override fun initialize() {
         super.initialize()
@@ -23,11 +24,23 @@ class AlignShooter(private val debugController: PIDControllerDebug, measurementS
         debugController.i = SmartDashboard.getNumber("PID I Value", 0.0)
         debugController.d = SmartDashboard.getNumber("PID D Value", 0.0)
         println("INFO: AlignShooter is being called")
+        delta = MathUtil.inputModulus(m_setpoint.asDouble - m_measurement.asDouble, -180.0, 180.0)
     }
 
     override fun execute() {
-        val pidOut = debugController.calculateDebug(m_measurement.asDouble, m_setpoint.asDouble, true)
-        val delta = MathUtil.inputModulus(m_setpoint.asDouble - m_measurement.asDouble, -180.0, 180.0)
+//        val pidOut = debugController.calculateDebug(m_measurement.asDouble, m_setpoint.asDouble, true)
+
+        delta = MathUtil.inputModulus(m_setpoint.asDouble - m_measurement.asDouble, -180.0, 180.0)
+
+        val output = if (abs(delta) > 45) {
+            sign(delta) * 0.575
+        } else if(abs(delta) > 1){
+            sign(delta) * 0.26
+        } else {
+            0.0
+        }
+
+//        val delta = MathUtil.inputModulus(m_setpoint.asDouble - m_measurement.asDouble, -180.0, 180.0)
         var ff = 0.0
 
 
@@ -44,7 +57,7 @@ class AlignShooter(private val debugController: PIDControllerDebug, measurementS
 //        }
 
 //        m_useOutput.accept(0.6)
-        m_useOutput.accept(pidOut + ff)
+        m_useOutput.accept(output)
 
 //        // Debugging values
 //        loopIdx++
@@ -57,7 +70,10 @@ class AlignShooter(private val debugController: PIDControllerDebug, measurementS
 //        }
     }
 
-    override fun isFinished(): Boolean { return m_controller.atSetpoint() }
+    override fun isFinished(): Boolean {
+        return abs(delta) < 1 &&
+        abs(drivetrain.getVelocities()[0]) < 0.015
+    }
 
     override fun end(interrupted: Boolean) {
         println("INFO: AlignShooter end")

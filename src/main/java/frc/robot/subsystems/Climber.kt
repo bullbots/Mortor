@@ -1,6 +1,7 @@
 package frc.robot.subsystems
 
 import com.ctre.phoenix.motorcontrol.NeutralMode
+import com.ctre.phoenix.motorcontrol.TalonFXControlMode
 import edu.wpi.first.wpilibj.Counter
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.SubsystemBase
@@ -13,6 +14,7 @@ class Climber : SubsystemBase() {
     var climberMotor: SafeTalonFX
 //    var hallEffectTop: Counter
 //    var hallEffectBot: Counter
+    var limitSwitch: Counter
 
     var delta = 0.0
 
@@ -46,6 +48,9 @@ class Climber : SubsystemBase() {
         climberMotor.configMotionAcceleration(21000.0, Constants.kTIMEOUT_MS)
 
 
+        limitSwitch = Counter(Counter.Mode.kPulseLength)
+
+        limitSwitch.setUpSource(0)
 //        hallEffectTop = Counter(Counter.Mode.kPulseLength)
 //        hallEffectBot = Counter(Counter.Mode.kPulseLength)
 //
@@ -61,6 +66,8 @@ class Climber : SubsystemBase() {
 
     private fun configureShuffleBoard() {}
 
+
+
     override fun periodic() {
         loopIdx++
         if (loopIdx == 10) {
@@ -69,6 +76,7 @@ class Climber : SubsystemBase() {
 //            SmartDashboard.putNumber("Climber Velocity", climberMotor.getSelectedSensorVelocity(Constants.kPIDLoopIdx))
             SmartDashboard.putNumber("Climber Position", climberMotor.getSelectedSensorPosition(Constants.kPIDLoopIdx))
             SmartDashboard.putNumber("Climber Supply Current", climberMotor.supplyCurrent)
+            SmartDashboard.putNumber("Limit Switch", limitSwitch.get().toDouble())
 //            SmartDashboard.putNumber("Climber Active Traj Pos", climberMotor.activeTrajectoryPosition)
         }
 
@@ -99,11 +107,29 @@ class Climber : SubsystemBase() {
 //            }
 //        }
 //    }
+    fun set(encoderVal: Double, controlMode: TalonFXControlMode) {
+        if (limitSwitch.get() > 0) {
+            if (encoderVal > 0) {
+                climberMotor.set(controlMode, encoderVal)
+                limitSwitch.reset()
+            } else {
+                println("WARNING: The climber is too low!!!!!!")
+                climberMotor.stopMotor()
+            }
+        } else {
+            climberMotor.set(controlMode, encoderVal)
+        }
+    }
 
     fun setManual(percentOutput: Double) {
-        if (climberMotor.selectedSensorPosition <= -14000) {
-            climberMotor.stopMotor()
-            println("WARNING: THE CLIMBER IS TO LOW!!!!!!")
+        if (limitSwitch.get() > 0) {
+            if(percentOutput < 0) {
+                climberMotor.stopMotor()
+                println("WARNING: THE CLIMBER IS TO LOW!!!!!!")
+            } else {
+                climberMotor.set(percentOutput)
+                limitSwitch.reset()
+            }
         } else {
             climberMotor.set(percentOutput)
         }

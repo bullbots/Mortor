@@ -372,11 +372,11 @@ class RobotContainer {
 
         // CO-Drivers Button Binding
 
-//        coButton1.whenPressed(AutoClimber(climber, isGrenade = false, isDown = true))
-        coButton1.whenPressed(TestingServo(shooter, 5.0))
-        coButton2.whenPressed(TestingServo(shooter, 45.0))
+        coButton1.whenPressed(AutoClimber(climber, isGrenade = false, isDown = true))
+//        coButton1.whenPressed(TestingServo(shooter, 5.0))
+//        coButton2.whenPressed(TestingServo(shooter, 45.0))
 
-//        coButton2.whenPressed(AutoClimber(climber, isGrenade = false, isDown = false))
+        coButton2.whenPressed(AutoClimber(climber, isGrenade = false, isDown = false))
 
         coButton3.whileHeld(IntakeArm(intake, armVel = 0.5)) // Intake Arm Up
 

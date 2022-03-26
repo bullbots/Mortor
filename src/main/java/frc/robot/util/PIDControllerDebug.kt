@@ -49,17 +49,16 @@ class PIDControllerDebug(private val m_kp: Double, private val m_ki: Double, kd:
     }
 
     fun calculateDebug(measurement: Double, setpoint: Double, displayOutput: Boolean): Double {
-        var output = super.calculate(measurement)
         var outputRegion = 0
         val delta = setpoint - measurement
 
-        output = if (abs(delta) > 45) {
+        var output = if (abs(delta) > 45) {
             sign(delta) * 0.55
-        } else if(abs(delta) > 7.5) {
-            reset()
-            output + sign(delta) * 0.1
+            0.0
+        } else if(abs(delta) > 1){
+            sign(delta) * 0.35
         } else {
-            output + sign(delta) * 0.1
+            0.0
         }
 
         if (displayOutput) {
@@ -86,6 +85,8 @@ class PIDControllerDebug(private val m_kp: Double, private val m_ki: Double, kd:
         return output
 
     }
+
+
 
 
 }

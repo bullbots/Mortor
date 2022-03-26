@@ -32,6 +32,7 @@ class AutoClimber(private var climber: Climber, private var isGrenade: Boolean, 
             return
         }
 
+
         climber.climberMotor.set(TalonFXControlMode.MotionMagic, targetTraj)
     }
 

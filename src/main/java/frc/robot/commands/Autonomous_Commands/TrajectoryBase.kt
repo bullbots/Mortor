@@ -27,19 +27,21 @@ class TrajectoryBase(private var drivetrain: DrivetrainFalcon, private var traje
 
     private fun getTrajectory() {
         if (trajectory == null && TrajectoryManager.getTrajectories() != null) {
+            println("INFO: getting trajectory: $trajectoryName")
             trajectory = TrajectoryManager.getTrajectories()!![trajectoryName]
         }
     }
 
     private fun initializeTrajectory() {
         if (!isInitialized) {
-
+            println("INFO: initializing trajectory")
             getTrajectory()
-            trajectory?.initialPose?.let { drivetrain.resetOdometry(it) }
-            isInitialized = true
-
-            timer.reset()
-            timer.start()
+            trajectory?.initialPose?.let {
+                drivetrain.resetOdometry(it)
+                isInitialized = true
+                timer.reset()
+                timer.start()
+            }
         }
     }
 
@@ -61,7 +63,7 @@ class TrajectoryBase(private var drivetrain: DrivetrainFalcon, private var traje
 
         if (!isInitialized) { return }
 
-        val reference = trajectory?.sample(elapsed)
+        val reference = trajectory!!.sample(elapsed)
 
         val speeds = ramsete.calculate(drivetrain.getPose(), reference)
 
@@ -96,15 +98,19 @@ class TrajectoryBase(private var drivetrain: DrivetrainFalcon, private var traje
         SmartDashboard.putNumber("Pose R - Actual", aRotation)
 
         DrivetrainFalcon.m_fieldSim.robotPose = reference.poseMeters
-
-        fun end(interrupted: Boolean) {
-            drivetrain.setOdometryDirection(false)
-        }
-
-        fun isFinished(): Boolean {
-            return timer.get() > trajectory!!.totalTimeSeconds
-        }
     }
 
+    override fun end(interrupted: Boolean) {
+        println("INFO: trajectory end: $trajectoryName")
+        drivetrain.setOdometryDirection(false)
+    }
+
+    override fun isFinished(): Boolean {
+        trajectory?.let {
+            print("INFO: checking isFinished: $trajectoryName")
+            return timer.get() > it.totalTimeSeconds
+        }
+        return true
+    }
 
 }

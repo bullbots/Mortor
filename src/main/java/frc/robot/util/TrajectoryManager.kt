@@ -37,13 +37,14 @@ class TrajectoryManager {
 
                     for (file in listOfFiles) {
                         // System.out.println(String.format("Adding Pathname: %s", pathName));
-                        val trajPack = TrajectoryPacket.generateTrajectoryPacket(file.name)
+                        val trajPack = TrajectoryPacket.generateTrajectoryPacket(file)
 
                         val trajectory = TrajectoryGenerator.generateTrajectory(
                             Pose2d(trajPack.firstX, trajPack.firstY, Rotation2d.fromDegrees(trajPack.startAngle)),
                             trajPack.pathRead,
                             Pose2d(trajPack.lastX, trajPack.lastY, Rotation2d.fromDegrees(trajPack.endAngle)),
-                            TrajectoryConfig(2.0, 4.0)
+                            TrajectoryConfig(2.0, 4.0).setReversed(trajPack.reversed)
+//                            TrajectoryConfig(2.0, 4.0)
                         )
 
                         trajectories!![file.name] = trajectory
@@ -61,6 +62,10 @@ class TrajectoryManager {
 
         fun getTrajectories(): HashMap<String, Trajectory>? {
             var curTrajectories: HashMap<String, Trajectory>? = null
+
+            if (trajectories != null) {
+                println("INFO: trajectories is not null")
+            }
 
             if (trajectories != null && trajectoriesLock.tryLock()) {
                 curTrajectories = trajectories

@@ -234,8 +234,20 @@ class RobotContainer {
 
         // Add commands to the autonomous command chooser
 
-        m_chooser.addOption("PathWeaver Straight", SequentialCommandGroup(
-            TrajectoryBase(drivetrain, "PATH-STRAIGHT", isBackwards=false, resetGyro=true),
+        m_chooser.addOption("PathWeaver Not So Straight", SequentialCommandGroup(
+            TrajectoryBase(drivetrain, "PATH-NOT-SO-STRAIGHT", isBackwards=false, resetGyro=true),
+        ))
+
+        m_chooser.addOption("PathWeaver Straight Backward", SequentialCommandGroup(
+            TrajectoryBase(drivetrain, "PATH-STRAIGHT-BACKWARD", isBackwards=false, resetGyro=true),
+        ))
+
+        m_chooser.addOption("PathWeaver Curve Backward", SequentialCommandGroup(
+            TrajectoryBase(drivetrain, "PATH-CURVE-BACKWARD", isBackwards=false, resetGyro=true),
+        ))
+
+        m_chooser.addOption("PathWeaver Curve", SequentialCommandGroup(
+            TrajectoryBase(drivetrain, "PATH-CURVE", isBackwards=false, resetGyro=true),
         ))
 
         m_chooser.addOption("PathWeaver", SequentialCommandGroup(

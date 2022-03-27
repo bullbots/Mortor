@@ -103,6 +103,7 @@ class TrajectoryBase(private var drivetrain: DrivetrainFalcon, private var traje
     override fun end(interrupted: Boolean) {
         println("INFO: trajectory end: $trajectoryName")
         drivetrain.setOdometryDirection(false)
+        isInitialized = false
     }
 
     override fun isFinished(): Boolean {

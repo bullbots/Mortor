@@ -11,8 +11,11 @@ import java.util.function.DoubleSupplier
 import kotlin.math.abs
 import kotlin.math.sign
 
-class AlignShooter(private val debugController: PIDControllerDebug, measurementSource: DoubleSupplier, setpointSource: DoubleSupplier,
-                   useOutput: DoubleConsumer, var drivetrain: DrivetrainFalcon) :
+class AlignShooter(debugController: PIDControllerDebug,
+                   measurementSource: DoubleSupplier,
+                   setpointSource: DoubleSupplier,
+                   useOutput: DoubleConsumer,
+                   private val drivetrain: DrivetrainFalcon) :
     PIDCommand(debugController, measurementSource, setpointSource, useOutput, drivetrain) {
 
     private var loopIdx = 0
@@ -28,7 +31,6 @@ class AlignShooter(private val debugController: PIDControllerDebug, measurementS
     }
 
     override fun execute() {
-//        val pidOut = debugController.calculateDebug(m_measurement.asDouble, m_setpoint.asDouble, true)
 
         delta = MathUtil.inputModulus(m_setpoint.asDouble - m_measurement.asDouble, -180.0, 180.0)
 
@@ -40,10 +42,6 @@ class AlignShooter(private val debugController: PIDControllerDebug, measurementS
             0.0
         }
 
-//        val delta = MathUtil.inputModulus(m_setpoint.asDouble - m_measurement.asDouble, -180.0, 180.0)
-
-
-//        m_useOutput.accept(0.6)
         m_useOutput.accept(output)
 
 //        // Debugging values

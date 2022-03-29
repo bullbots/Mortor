@@ -11,14 +11,10 @@ import frc.robot.subsystems.Shooter
 /**
  * Creates a new IntakeCargo
  */
-class IntakeCargos(private var intake: Intake, private var intakeVel: Double, private var armVel: Double, private var shooter: Shooter) : CommandBase() {
+class IntakeCargos(private val intake: Intake, private val intakeVel: Double, private val armVel: Double, private val shooter: Shooter) : CommandBase() {
 
-
-    private val vel = 0.3
     // Use addRequirements() here to declare subsystem dependencies.
     init { addRequirements(intake) }
-
-
 
     // Called when the command is initially scheduled.
     override fun initialize() {
@@ -26,9 +22,6 @@ class IntakeCargos(private var intake: Intake, private var intakeVel: Double, pr
 
         intake.intakeSpinner.set(intakeVel)
         intake.armSpinner.set(armVel)
-
-
-
     }
 
     // Called every time the scheduler runs while the command is scheduled.

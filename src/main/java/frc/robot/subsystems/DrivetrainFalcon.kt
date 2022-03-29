@@ -115,7 +115,6 @@ class DrivetrainFalcon : SubsystemBase() {
 
          configurePID();
         // configureMotionMagic();
-        // configureSmartDashboard();
 
 //        configureSmartDashBoard()
 
@@ -235,8 +234,7 @@ class DrivetrainFalcon : SubsystemBase() {
         updateOdometry()
         m_fieldSim
 
-        SmartDashboard.putNumber("Left Drive Speed", leftMasterFalcon.selectedSensorVelocity / 22000)
-        SmartDashboard.putNumber("Right Drive Speed", rightMasterFalcon.selectedSensorVelocity / 22000)
+
 
         loopIdx++
         if (loopIdx == 10) {
@@ -245,11 +243,12 @@ class DrivetrainFalcon : SubsystemBase() {
             if (RobotBase.isReal()) {
 //                SmartDashboard.putNumber("Left Encoder", leftMasterFalcon.selectedSensorPosition)
 //                SmartDashboard.putNumber("Right Encoder", rightMasterFalcon.selectedSensorPosition)
-
-                SmartDashboard.putNumber("Left Drive Stator Current", leftMasterFalcon.statorCurrent)
-                SmartDashboard.putNumber("Right Drive Stator Current", rightMasterFalcon.statorCurrent)
-                SmartDashboard.putNumber("Left Drive Supply Current", leftMasterFalcon.supplyCurrent)
-                SmartDashboard.putNumber("Right Drive Supply Current", rightMasterFalcon.supplyCurrent)
+//                SmartDashboard.putNumber("Left Drive Speed", leftMasterFalcon.selectedSensorVelocity / 22000)
+//                SmartDashboard.putNumber("Right Drive Speed", rightMasterFalcon.selectedSensorVelocity / 22000)
+//                SmartDashboard.putNumber("Left Drive Stator Current", leftMasterFalcon.statorCurrent)
+//                SmartDashboard.putNumber("Right Drive Stator Current", rightMasterFalcon.statorCurrent)
+//                SmartDashboard.putNumber("Left Drive Supply Current", leftMasterFalcon.supplyCurrent)
+//                SmartDashboard.putNumber("Right Drive Supply Current", rightMasterFalcon.supplyCurrent)
 
 //                SmartDashboard.putNumber("Heading", calcHeading())
 

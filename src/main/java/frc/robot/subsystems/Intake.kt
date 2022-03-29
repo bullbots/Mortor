@@ -21,11 +21,6 @@ class Intake : SubsystemBase() {
 
     var loopIdx = 0
 
-    companion object {
-        var intakeEncoderVal = 0.0
-        var isDown = false
-    }
-
     init {
         configureShuffleBoard()
 
@@ -51,29 +46,20 @@ class Intake : SubsystemBase() {
 
     }
 
-    fun set(speed: Double) {
-        intakeSpinner.set(speed)
-        armSpinner.set(speed)
-    }
-
-    fun stopArm() {
-        raiseLowerSpinner.set(0.0)
-    }
-
     private fun configureShuffleBoard() {}
 
     override fun periodic() {
-        loopIdx++
-        if (loopIdx == 10) {
-            loopIdx = 0
-            SmartDashboard.putNumber("Arm Encoder", raiseLowerSpinner.encoder.position)
-            SmartDashboard.putNumber("Arm Current", raiseLowerSpinner.outputCurrent)
-            SmartDashboard.putNumber("Arm Speed", raiseLowerSpinner.appliedOutput)
+//        loopIdx++
+//        if (loopIdx == 10) {
+//            loopIdx = 0
+//            SmartDashboard.putNumber("Arm Encoder", raiseLowerSpinner.encoder.position)
+//            SmartDashboard.putNumber("Arm Current", raiseLowerSpinner.outputCurrent)
+//            SmartDashboard.putNumber("Arm Speed", raiseLowerSpinner.appliedOutput)
 //            println("INFO: Arm Encoder Pos: ${raiseLowerSpinner.encoder.position}")
-        }
+//        }
     }
 
-    fun resetEncoder() { intakeEncoderVal = raiseLowerSpinner.encoder.position }
+    fun stopArm() { raiseLowerSpinner.set(0.0) }
 
     fun stop() {
         intakeSpinner.set(0.0)

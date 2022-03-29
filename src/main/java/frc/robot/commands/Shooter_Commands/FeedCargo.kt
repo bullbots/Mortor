@@ -3,7 +3,7 @@ package frc.robot.commands.Shooter_Commands
 import edu.wpi.first.wpilibj2.command.CommandBase
 import frc.robot.subsystems.Intake
 
-class FeedCargoCommand(private val intake: Intake, private val intakeVel: Double) : CommandBase() {
+class FeedCargo(private val intake: Intake, private val intakeVel: Double) : CommandBase() {
 
 
     init {

@@ -3,7 +3,7 @@ package frc.robot.commands.Climber_Commands
 import edu.wpi.first.wpilibj2.command.CommandBase
 import frc.robot.subsystems.Climber
 
-class ManualClimber(private var climber: Climber, private var climberVel: Double) : CommandBase() {
+class ManualClimber(private val climber: Climber, private val climberVel: Double) : CommandBase() {
 
     // Use addRequirements() here to declare subsystem dependencies.
     init { addRequirements(climber) }

@@ -9,10 +9,10 @@ import kotlin.math.pow
 import kotlin.math.sign
 
 class JoystickDrive (
-    var m_drivetrain: DrivetrainFalcon,
-    private var joyY: DoubleSupplier,
-    private var joyX: DoubleSupplier,
-    private var joyZ: DoubleSupplier = DoubleSupplier { 1.0 }
+    private val m_drivetrain: DrivetrainFalcon,
+    private val joyY: DoubleSupplier,
+    private val joyX: DoubleSupplier,
+    private val joyZ: DoubleSupplier = DoubleSupplier { 1.0 }
 ) : CommandBase() {
     
     init { addRequirements(m_drivetrain) }
@@ -25,8 +25,8 @@ class JoystickDrive (
         val turnInPlace = true
         m_drivetrain.curvatureDrive(_joyY, _joyX, turnInPlace)
 //        SmartDashboard.putNumber("JoyX", joyX.asDouble)
-        SmartDashboard.putNumber("JoyX", _joyX)
-        SmartDashboard.putNumber("JoyY", _joyY)
+//        SmartDashboard.putNumber("JoyX", _joyX)
+//        SmartDashboard.putNumber("JoyY", _joyY)
     }
 
     override fun end(interrupted: Boolean) {

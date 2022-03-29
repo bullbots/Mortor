@@ -5,9 +5,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase
 import frc.robot.Constants
 import frc.robot.subsystems.Intake
 
-class IntakeArm(private var intake: Intake) : CommandBase() {
-
-
+class IntakeArmUp(private val intake: Intake) : CommandBase() {
 
     init { addRequirements(intake) }
 
@@ -17,12 +15,8 @@ class IntakeArm(private var intake: Intake) : CommandBase() {
 
     override fun execute() { }
 
-    override fun end(interrupted: Boolean) {
-        intake.stop()
-    }
+    override fun end(interrupted: Boolean) {}
 
-    override fun isFinished(): Boolean {
-        return false
-    }
+    override fun isFinished(): Boolean { return false }
 
 }

@@ -8,7 +8,7 @@ import frc.robot.subsystems.Shooter
  * ShooterCargo initialize the velocity of the staticShooter
  * @param shooter: StaticShooter
  */
-class ShooterCargos(private var shooter: Shooter, private var static: Boolean, private var dist: () -> Double) : CommandBase() {
+class ShooterCargos(private val shooter: Shooter, private val static: Boolean, private val dist: () -> Double) : CommandBase() {
 
     var velocity = 0.0
     // Use addRequirements() here to declare subsystem dependencies.

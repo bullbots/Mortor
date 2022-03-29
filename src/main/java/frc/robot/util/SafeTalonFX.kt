@@ -11,7 +11,7 @@ import kotlin.math.abs
  * @param usePID Boolean: By default this value is false.
  * @param isDrivetrain Boolean: By default this value is true.
  */
-class SafeTalonFX (deviceNumber: Int, private var isDrivetrain: Boolean = false, private var usePID: Boolean = false) : WPI_TalonFX(deviceNumber) {
+class SafeTalonFX (deviceNumber: Int, private val isDrivetrain: Boolean = false, private val usePID: Boolean = false) : WPI_TalonFX(deviceNumber) {
 
     private val maxSpeed = 21000.0
     private val deadBand = 0.02

@@ -25,8 +25,8 @@ class TrajectoryPacket {
 
         fun generateTrajectoryPacket(file: File): TrajectoryPacket {
 
-            var pathRead = ArrayList<Translation2d>()
-            var angleList = ArrayList<Double>()
+            val pathRead = ArrayList<Translation2d>()
+            val angleList = ArrayList<Double>()
 
             var br: BufferedReader? = null
 
@@ -66,7 +66,7 @@ class TrajectoryPacket {
                 // error.printStackTrace();
             }
 
-            var trajectoryPacket = TrajectoryPacket()
+            val trajectoryPacket = TrajectoryPacket()
 
             trajectoryPacket.firstX = pathRead[0].x
             trajectoryPacket.firstY = pathRead[0].y

@@ -73,11 +73,11 @@ class PIDControllerDebug(private val m_kp: Double, private val m_ki: Double, kd:
             val positionOutput = m_kp * positionError
             val integralOutput = m_ki * totalError
 
-            SmartDashboard.putNumber("PID Position Output", positionOutput)
-            SmartDashboard.putNumber("PID Integral Output", integralOutput)
-//        SmartDashboard.putNumber("PID Derivative Output", )
-            SmartDashboard.putNumber("PID output", output)
-            SmartDashboard.putNumber("PID Expected Output", positionOutput + integralOutput + (sign(delta) * 0.1))
+//            SmartDashboard.putNumber("PID Position Output", positionOutput)
+//            SmartDashboard.putNumber("PID Integral Output", integralOutput)
+//            SmartDashboard.putNumber("PID Derivative Output", )
+//            SmartDashboard.putNumber("PID output", output)
+//            SmartDashboard.putNumber("PID Expected Output", positionOutput + integralOutput + (sign(delta) * 0.1))
 
 
         }

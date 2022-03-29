@@ -18,12 +18,9 @@ class NavX : AHRS() {
         var angle = super.getAngle() - angleDelta
         angle = MathUtil.inputModulus(angle, -180.0, 180.0)
 
-//        SmartDashboard.putNumber("Yaw", -angle)
-
         return angle
     }
 
     override fun reset() { angleDelta = super.getAngle() }
 
-    fun reset180() { angleDelta = angle + 180 }
 }

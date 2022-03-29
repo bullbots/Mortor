@@ -46,15 +46,15 @@ class Shooter : SubsystemBase() {
     private fun configureShuffleBoard() {}
 
     override fun periodic() {
-//        SmartDashboard.putNumber("Shooter speed", shooterSpinner.selectedSensorVelocity)
-        loopIdx++
-        if (loopIdx == 10) {
-            loopIdx = 0
-            SmartDashboard.putNumber("Shooter Stator Current", shooterSpinner.statorCurrent)
-            SmartDashboard.putNumber("Shooter Supply Current", shooterSpinner.supplyCurrent)
-            SmartDashboard.putNumber("Shooter Output Percent", shooterSpinner.motorOutputPercent)
-            SmartDashboard.putNumber("Shooter Sensor Velocity", shooterSpinner.selectedSensorVelocity)
-        }
+//        loopIdx++
+//        if (loopIdx == 10) {
+//            loopIdx = 0
+//            SmartDashboard.putNumber("Shooter speed", shooterSpinner.selectedSensorVelocity)
+//            SmartDashboard.putNumber("Shooter Stator Current", shooterSpinner.statorCurrent)
+//            SmartDashboard.putNumber("Shooter Supply Current", shooterSpinner.supplyCurrent)
+//            SmartDashboard.putNumber("Shooter Output Percent", shooterSpinner.motorOutputPercent)
+//            SmartDashboard.putNumber("Shooter Sensor Velocity", shooterSpinner.selectedSensorVelocity)
+//        }
     }
 
     fun stop() { shooterSpinner.stopMotor() }

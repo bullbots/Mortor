@@ -6,7 +6,7 @@ import frc.robot.Constants
 import frc.robot.subsystems.Climber
 import kotlin.math.abs
 
-class AutoClimber(private var climber: Climber, private var isGrenade: Boolean, private var isDown: Boolean) : CommandBase() {
+class AutoClimber(private val climber: Climber, private val isGrenade: Boolean, isDown: Boolean) : CommandBase() {
     private var targetTraj = 0.0
 
     init { addRequirements(climber)
@@ -27,7 +27,7 @@ class AutoClimber(private var climber: Climber, private var isGrenade: Boolean, 
             climber.resetEncoders()
             println("INFO: Grenade initialize")
         } else if (!Climber.isReleased) {
-            println("PULL GRENADE PIN!!!!!!!!!!")
+            println("WARNING: PULL GRENADE PIN!!!!!!!!!!")
             return
         }
     }
@@ -50,7 +50,4 @@ class AutoClimber(private var climber: Climber, private var isGrenade: Boolean, 
         climber.stop()
     }
 
-    fun grenade() {
-
-    }
 }

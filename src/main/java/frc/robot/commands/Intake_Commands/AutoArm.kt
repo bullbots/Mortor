@@ -6,7 +6,7 @@ import frc.robot.Constants
 import frc.robot.subsystems.Intake
 import kotlin.math.abs
 
-class AutoArmCommand(private var intake: Intake, private var isDown: Boolean) : CommandBase() {
+class AutoArm(private val intake: Intake, private val isDown: Boolean) : CommandBase() {
     private var targetTraj = 0.0
 
     init {

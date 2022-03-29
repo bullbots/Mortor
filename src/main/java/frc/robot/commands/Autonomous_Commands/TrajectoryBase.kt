@@ -9,17 +9,17 @@ import frc.robot.Constants
 import frc.robot.subsystems.DrivetrainFalcon
 import frc.robot.util.TrajectoryManager
 
-class TrajectoryBase(private var drivetrain: DrivetrainFalcon, private var trajectoryName: String,
-                     private var isBackwards: Boolean = false, private var resetGyro: Boolean = true) : CommandBase() {
-
-    private var trajectory: Trajectory? = null
+class TrajectoryBase(private val drivetrain: DrivetrainFalcon, private val trajectoryName: String, private val resetGyro: Boolean = true) : CommandBase() {
 
     private val timer = Timer()
 
     private val ramsete = RamseteController()
 
-    private var isInitialized: Boolean = false
+    private var loopIdx = 0
 
+    private var trajectory: Trajectory? = null
+
+    private var isInitialized: Boolean = false
 
     init {
         addRequirements(drivetrain)
@@ -84,16 +84,22 @@ class TrajectoryBase(private var drivetrain: DrivetrainFalcon, private var traje
         val aY = aPose.y
         val aRotation = aPose.rotation.degrees
 
-        SmartDashboard.putNumber("Ramsete Speed - Normalized", normalizedRamseteSpeed)
-        SmartDashboard.putNumber("Ramsete Rot - Normalized", normalizedRamseteRot)
+        loopIdx++
+        if (loopIdx == 10) {
+            loopIdx = 0
 
-        SmartDashboard.putNumber("Pose X - Trajectory", tX)
-        SmartDashboard.putNumber("Pose Y - Trajectory", tY)
-        SmartDashboard.putNumber("Pose R - Trajectory", tRotation)
+            SmartDashboard.putNumber("Ramsete Speed - Normalized", normalizedRamseteSpeed)
+            SmartDashboard.putNumber("Ramsete Rot - Normalized", normalizedRamseteRot)
 
-        SmartDashboard.putNumber("Pose X - Actual", aX)
-        SmartDashboard.putNumber("Pose Y - Actual", aY)
-        SmartDashboard.putNumber("Pose R - Actual", aRotation)
+            SmartDashboard.putNumber("Pose X - Trajectory", tX)
+            SmartDashboard.putNumber("Pose Y - Trajectory", tY)
+            SmartDashboard.putNumber("Pose R - Trajectory", tRotation)
+
+            SmartDashboard.putNumber("Pose X - Actual", aX)
+            SmartDashboard.putNumber("Pose Y - Actual", aY)
+            SmartDashboard.putNumber("Pose R - Actual", aRotation)
+        }
+
 
         DrivetrainFalcon.m_fieldSim.robotPose = reference.poseMeters
     }

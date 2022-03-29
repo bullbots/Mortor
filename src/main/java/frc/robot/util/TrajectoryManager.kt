@@ -14,7 +14,7 @@ class TrajectoryManager {
 
     companion object {
         private var trajectories: HashMap<String, Trajectory>? = null
-        var trajectoriesLock = ReentrantLock()
+        private val trajectoriesLock = ReentrantLock()
 
         fun generateTrajectories() {
 

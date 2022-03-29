@@ -13,14 +13,13 @@ import edu.wpi.first.networktables.NetworkTableInstance
 import edu.wpi.first.wpilibj.DriverStation
 import edu.wpi.first.wpilibj.Joystick
 import edu.wpi.first.wpilibj.RobotBase
-import edu.wpi.first.wpilibj.Timer
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.*
 import edu.wpi.first.wpilibj2.command.button.JoystickButton
 import frc.robot.commands.Autonomous_Commands.TrajectoryBase
 import frc.robot.commands.Climber_Commands.AutoClimber
-import frc.robot.commands.Climber_Commands.ClimberGroup
+import frc.robot.commands.Climber_Commands.ManualClimber
 import frc.robot.commands.Drivetrain_Commands.AlignShooter
 import frc.robot.commands.Drivetrain_Commands.DriveForDistanceCommand
 import frc.robot.commands.Drivetrain_Commands.DriveForTimeCommand
@@ -66,7 +65,6 @@ class RobotContainer {
         private val pathColor = AtomicReference<Color>(Color.UNLOADED)
         var pathLetter = AtomicReference<Letter>(Letter.UNLOADED)
 
-        private val shooterMode = SendableChooser<ShooterMode>()
     }
 
     // Subsystems
@@ -134,11 +132,6 @@ class RobotContainer {
 
     }
 
-    private enum class ShooterMode {
-        STATIC,
-        DYANMIC
-    }
-
     /**
      * The container for the robot. Contains subsystems, IO Devices, and commands.
      */
@@ -172,9 +165,6 @@ class RobotContainer {
         initializeStaticShooterVel()
         initializePIDControllerValue()
 
-//        shooterMode.setDefaultOption("Competition Shooting", ShooterMode.COMPETITION)
-//        shooterMode.addOption("Demo Shooting", ShooterMode.DEMO)
-//        SmartDashboard.putData(shooterMode)
     }
 
     /**
@@ -198,7 +188,7 @@ class RobotContainer {
                 IntakeCargos(intake, 0.2, 0.6, shooter).withTimeout(0.5),
                 ParallelDeadlineGroup(
                     DriveForDistanceCommand(drivetrain, 0.15, 9.0), //Distance is 9
-                    IntakeGroup(intake, 0.6, 0.6, shooter) { -0.4 }
+                    IntakeGroup(intake, 0.6, 0.6, shooter)
                 ),
                 ShooterGroup(intake, shooter, true) {
                     SmartDashboard.getNumber("StaticShooter",0.0)
@@ -210,7 +200,7 @@ class RobotContainer {
                 IntakeCargos(intake, 0.2, 0.2, shooter).withTimeout(0.5),
                 ParallelDeadlineGroup(
                     DriveForDistanceCommand(drivetrain, 0.15, 7.5), //Distance is 7.5
-                    IntakeGroup(intake, 0.6, 0.6, shooter) { -0.4 }
+                    IntakeGroup(intake, 0.6, 0.6, shooter)
                 ),
                 ShooterGroup(intake, shooter, true) {0.4}.withTimeout(5.0)
             )
@@ -234,80 +224,88 @@ class RobotContainer {
         )
 
         // Add commands to the autonomous command chooser
-
         m_chooser.addOption("PathWeaver Not So Straight", SequentialCommandGroup(
-            TrajectoryBase(drivetrain, "PATH-NOT-SO-STRAIGHT", isBackwards=false, resetGyro=true),
+            TrajectoryBase(drivetrain, "PATH-NOT-SO-STRAIGHT", resetGyro=true),
         ))
 
         m_chooser.addOption("PathWeaver Straight Backward", SequentialCommandGroup(
-            TrajectoryBase(drivetrain, "PATH-STRAIGHT-BACKWARD", isBackwards=false, resetGyro=true),
+            TrajectoryBase(drivetrain, "PATH-STRAIGHT-BACKWARD", resetGyro=true),
         ))
 
         m_chooser.addOption("PathWeaver Curve Backward", SequentialCommandGroup(
-            TrajectoryBase(drivetrain, "PATH-CURVE-BACKWARD", isBackwards=false, resetGyro=true),
+            TrajectoryBase(drivetrain, "PATH-CURVE-BACKWARD", resetGyro=true),
         ))
 
         m_chooser.addOption("PathWeaver Curve", SequentialCommandGroup(
-            TrajectoryBase(drivetrain, "PATH-CURVE", isBackwards=false, resetGyro=true),
+            TrajectoryBase(drivetrain, "PATH-CURVE", resetGyro=true),
         ))
 
+        // TODO: Tune the Shooter Vel Values!
         m_chooser.addOption("PathWeaver Low Goal Start", SequentialCommandGroup(
-            ShooterGroup(intake, shooter, true) { 0.26 }.withTimeout(2.0), // Low Goal Shot
-            ParallelDeadlineGroup( // First Path "Grabbing second ball"
-                TrajectoryBase(drivetrain, "PATH-1", isBackwards=false, resetGyro=true),
-                IntakeGroup(intake, 0.3, 0.6, shooter) { -0.3 }
+            // Low Goal Shot
+            ShooterGroup(intake, shooter, true) { 0.26 }.withTimeout(2.0),
+            // First/Second Path "Grabbing Second/Third Ball"
+            ParallelDeadlineGroup(
+                TrajectoryBase(drivetrain, "PATH-1", resetGyro=true),
+                IntakeGroup(intake, 0.3, 0.6, shooter)
             ),
             AlignShooter(pidController, { -imu.angle }, { 95.0 },
                 { output: Double -> drivetrain.drive(0.0, -output) }, drivetrain),
-            ParallelDeadlineGroup( // Second Path "Grabbing third ball"
-                TrajectoryBase(drivetrain, "PATH-2", isBackwards=false, resetGyro=false),
-                IntakeGroup(intake, 0.3, 0.6, shooter) { -0.3 }
+            ParallelDeadlineGroup(
+                TrajectoryBase(drivetrain, "PATH-2", resetGyro=false),
+                IntakeGroup(intake, 0.3, 0.6, shooter)
             ),
-            AlignShooter(pidController, { -imu.angle }, { 166.0 }, // Shooting
+            // Shooting Second and Third ball
+            AlignShooter(pidController, { -imu.angle }, { 166.0 },
                 { output: Double -> drivetrain.drive(0.0, -output) }, drivetrain),
             ShooterGroup(intake, shooter, true) {0.2}.withTimeout(2.0),
-            ParallelDeadlineGroup( // Third Path "Grabbing fourth and fifth ball"
-                TrajectoryBase(drivetrain, "PATH-3", isBackwards=false, resetGyro=false),
-                IntakeGroup(intake, 0.3, 0.6, shooter) { -0.3 }
+            // Third/Fourth Path "Grabbing Fourth/Fifth Ball"
+            ParallelDeadlineGroup(
+                TrajectoryBase(drivetrain, "PATH-3", resetGyro=false),
+                IntakeGroup(intake, 0.3, 0.6, shooter)
             ),
-            IntakeGroup(intake, 0.3, 0.6, shooter) { -0.3 }.withTimeout(2.0),
-            TrajectoryBase(drivetrain, "PATH-4", isBackwards=true, resetGyro=false),
+            IntakeGroup(intake, 0.3, 0.6, shooter).withTimeout(2.0),
+            TrajectoryBase(drivetrain, "PATH-4", resetGyro=false),
+            // Shooting Fourth/Fifth ball
             AlignShooter(pidController, { -imu.angle }, { 110.0 },
                 { output: Double -> drivetrain.drive(0.0, -output) }, drivetrain),
             ShooterGroup(intake, shooter, true) { 0.2 }.withTimeout(2.0)
         ))
 
         m_chooser.addOption("PathWeaver High Goal Start", SequentialCommandGroup(
-            ShooterGroup(intake, shooter, true) { drivetrain.calcDist() }.withTimeout(2.0), // High Goal Shot
+            // High Goal Shot
+            ShooterGroup(intake, shooter, true) { 0.4 }.withTimeout(2.0),
             AlignShooter(pidController, { -imu.angle }, { 60.0 }, // Shooting
                 { output: Double -> drivetrain.drive(0.0, -output) }, drivetrain),
-            ParallelCommandGroup( // First Path "Grabbing second ball"
-                TrajectoryBase(drivetrain, "PATH-1B", isBackwards=false, resetGyro=true),
-                IntakeGroup(intake, 0.3, 0.6, shooter) { -0.3 }.beforeStarting(WaitCommand(1.0)).withTimeout(1.0)
-            ).until(TrajectoryBase(drivetrain, "PATH-1", isBackwards=false, resetGyro=true)::isFinished),
-            (AlignShooter(pidController, { -imu.angle }, { 110.0 },
-                { output: Double -> drivetrain.drive(0.0, -output) }, drivetrain)),
-            ParallelCommandGroup( // Second Path "Grabbing third ball"
-                TrajectoryBase(drivetrain, "PATH-2", isBackwards=false, resetGyro=true),
-                IntakeGroup(intake, 0.3, 0.6, shooter) { -0.3 }.beforeStarting(WaitCommand(1.0)).withTimeout(1.0)
-            ).until(TrajectoryBase(drivetrain, "PATH-2", isBackwards=false, resetGyro=true)::isFinished),
-            (AlignShooter(pidController, { -imu.angle }, drivetrain::calcHeading, // Shooting
-                { output: Double -> drivetrain.drive(0.0, -output) }, drivetrain)),
-            ShooterGroup(intake, shooter, true) {drivetrain.calcDist()}.withTimeout(2.0),
-            ParallelCommandGroup( // Third Path "Grabbing fourth and fifth ball"
-                TrajectoryBase(drivetrain, "PATH-3", isBackwards=false, resetGyro=true),
-                IntakeGroup(intake, 0.3, 0.6, shooter) { -0.3 }.beforeStarting(WaitCommand(1.0)).withTimeout(1.0)
-            ).until(TrajectoryBase(drivetrain, "PATH-3", isBackwards=false, resetGyro=true)::isFinished),
-            TrajectoryBase(drivetrain, "PATH-4", isBackwards=true, resetGyro=true),
-            (AlignShooter(pidController, { -imu.angle }, drivetrain::calcHeading, // Shooting
-                { output: Double -> drivetrain.drive(0.0, -output) }, drivetrain)),
-            ShooterGroup(intake, shooter, true) {drivetrain.calcDist()}.withTimeout(2.0)
+            // First/Second Path "Grabbing Second/Third Ball"
+            ParallelDeadlineGroup(
+                TrajectoryBase(drivetrain, "PATH-1B", resetGyro=true),
+                IntakeGroup(intake, 0.3, 0.6, shooter)
+            ),
+            AlignShooter(pidController, { -imu.angle }, { 95.0 },
+                { output: Double -> drivetrain.drive(0.0, -output) }, drivetrain),
+            ParallelDeadlineGroup(
+                TrajectoryBase(drivetrain, "PATH-2", resetGyro=false),
+                IntakeGroup(intake, 0.3, 0.6, shooter)
+            ),
+            // Shooting Second and Third ball
+            AlignShooter(pidController, { -imu.angle }, { 166.0 },
+                { output: Double -> drivetrain.drive(0.0, -output) }, drivetrain),
+            ShooterGroup(intake, shooter, true) { 0.2 }.withTimeout(2.0),
+            // Third/Fourth Path "Grabbing Fourth/Fifth Ball"
+            ParallelDeadlineGroup(
+                TrajectoryBase(drivetrain, "PATH-3", resetGyro=false),
+                IntakeGroup(intake, 0.3, 0.6, shooter)
+            ),
+            IntakeGroup(intake, 0.3, 0.6, shooter).withTimeout(2.0),
+            TrajectoryBase(drivetrain, "PATH-4", resetGyro=false),
+            // Shooting Fourth/Fifth ball
+            AlignShooter(pidController, { -imu.angle }, { 110.0 },
+                { output: Double -> drivetrain.drive(0.0, -output) }, drivetrain),
+            ShooterGroup(intake, shooter, true) { 0.2 }.withTimeout(2.0)
         ))
 
         SmartDashboard.putData(m_chooser)
-
-
-
 
         val inst: NetworkTableInstance = NetworkTableInstance.getDefault()
 
@@ -329,10 +327,8 @@ class RobotContainer {
      * edu.wpi.first.wpilibj2.command.button.JoystickButton
      */
     private fun configureButtonBindings() {
-
-
         // Drivers Button Binding
-        button1.whileHeld(IntakeGroup(intake, 0.3, 0.6, shooter) { -0.3 }).whenReleased(ShooterCargos(shooter, true) { -0.7 }
+        button1.whileHeld(IntakeGroup(intake, 0.3, 0.6, shooter)).whenReleased(ShooterCargos(shooter, true) { -0.7 }
             .withTimeout(0.3))
 
         button2.whileHeld(StartEndCommand(
@@ -340,13 +336,10 @@ class RobotContainer {
             {drivetrain.isFullSpeed = 1.0}
         ))
 
-//        button4.whileHeld(ShooterGroup(intake, -0.1, shooter, true) { 0.6 })
         button4.whileHeld(ShooterGroup(intake, shooter, false, drivetrain::calcDist))
-//        button4.whenPressed(AutoArmCommand(intake, isDown=true))
 
         button5.whileHeld(IntakeCargos(intake, -0.3, -0.3, shooter))
 
-//        button6.whenPressed(AutoArmCommand(intake, isDown=false))
         button6.whileHeld(ShooterGroup(intake, shooter, true) { SmartDashboard.getNumber("StaticShooter", 0.0) })
 
         button7.whenPressed(AlignShooter(pidController, { -imu.angle }, drivetrain::calcHeading,
@@ -362,32 +355,30 @@ class RobotContainer {
         ))
 
         button9.whenPressed(InstantCommand(climber::resetEncoders, climber))
-//
-//        button9.whenPressed(IntakeCargos(intake, intakeVel).withTimeout(0.04)).withTimeout(0.04)
 
-        button10.whileHeld(ClimberGroup(climber, -0.3))
+        button10.whileHeld(ManualClimber(climber, -0.3))
 
-        button11.whileHeld(ClimberGroup(climber, 0.3))
+        button11.whileHeld(ManualClimber(climber, 0.3))
 
         // CO-Drivers Button Binding
 
-        coButton1.whenPressed(AutoClimber(climber, isGrenade = false, isDown = true))
+        coButton1.whenPressed(AutoClimber(climber, isGrenade=false, isDown=true))
 
-//        coButton1.whenPressed(TestingServo(shooter, 5.0))
-//        coButton2.whenPressed(TestingServo(shooter, 45.0))
+        coButton2.whenPressed(AutoClimber(climber, isGrenade=false, isDown=false))
 
-        coButton2.whenPressed(AutoClimber(climber, isGrenade = false, isDown = false))
-
-//        coButton3.whileHeld(IntakeArm(intake, armVel = 0.5)) // Intake Arm Up
+        // Intake Arm Up
+//        coButton3.whileHeld(AutoArm(intake, isDown=false))
+        coButton3.whileHeld(ManualArm(intake, 0.3))
 
         coButton4.whileHeld(ShooterGroup(intake, shooter, true) { 0.26 })
 
-//        coButton5.whileHeld(IntakeArm(intake, armVel = -0.5)) // Intake Arm Down
+        // Intake Arm Down
+//        coButton5.whileHeld(AutoArm(intake, isDown=true))
+        coButton5.whileHeld(ManualArm(intake, -0.3))
 
-//        coButton6.whenPressed(AutoClimber(climber, isGrenade = true, isDown = true))
         coButton6.whenPressed(ParallelCommandGroup(
-            AutoClimber(climber, isGrenade = true, isDown = true),
-            IntakeArm(intake)
+            AutoClimber(climber, isGrenade=true, isDown=true),
+            IntakeArmUp(intake)
         ))
 
         SmartDashboard.putData(object : InstantCommand(
@@ -425,17 +416,11 @@ class RobotContainer {
             SmartDashboard.putNumber("Shooter Dist", drivetrain.calcDist())
             SmartDashboard.putNumber("Yaw", -imu.angle)
             SmartDashboard.putNumber("Heading", drivetrain.calcHeading())
-            SmartDashboard.putNumber("Delta Error", drivetrain.calcHeading()-(-imu.angle))
-
+//            SmartDashboard.putNumber("Delta Error", drivetrain.calcHeading()-(-imu.angle))
 //            SmartDashboard.putNumber("Proportional Value", pidController.p * pidController.positionError)
 //            SmartDashboard.putNumber("Integral Value", pidController.i * pidController.totalError())
 
-
-
-
-
         }
-//        println("RobotContainer Periodic is being called")
     }
 
     fun simulationPeriodic() { drivetrain.simulationPeriodic() }

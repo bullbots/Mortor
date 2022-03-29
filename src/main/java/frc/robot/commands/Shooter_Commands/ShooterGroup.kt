@@ -10,14 +10,14 @@ import frc.robot.subsystems.Shooter
  * Used to run ShooterCargo
  * @param shooter: StaticShooter
  */
-class ShooterGroup(intake: Intake, intakeVel: Double, shooter: Shooter, static: Boolean, velocity: ()->Double) : SequentialCommandGroup() {
+class ShooterGroup(intake: Intake, shooter: Shooter, static: Boolean, velocity: ()->Double) : SequentialCommandGroup() {
 
     init {
         addCommands(
-            IntakeCargos(intake, intakeVel, 0.0, shooter).withTimeout(0.04),
+            FeedCargoCommand(intake, -0.3).withTimeout(0.04),
             ShooterCargos(shooter, static, velocity).withTimeout(0.75),
             ParallelCommandGroup(
-                IntakeCargos(intake, 0.1, 0.0, shooter),
+                FeedCargoCommand(intake, 0.3),
                 ShooterCargos(shooter, static, velocity)
             )
         )

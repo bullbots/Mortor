@@ -200,7 +200,7 @@ class RobotContainer {
                     DriveForDistanceCommand(drivetrain, 0.15, 9.0), //Distance is 9
                     IntakeGroup(intake, 0.6, 0.6, shooter) { -0.4 }
                 ),
-                ShooterGroup(intake, -0.1, shooter, true) {
+                ShooterGroup(intake, shooter, true) {
                     SmartDashboard.getNumber("StaticShooter",0.0)
                 }.withTimeout(5.0)
             )
@@ -212,7 +212,7 @@ class RobotContainer {
                     DriveForDistanceCommand(drivetrain, 0.15, 7.5), //Distance is 7.5
                     IntakeGroup(intake, 0.6, 0.6, shooter) { -0.4 }
                 ),
-                ShooterGroup(intake, -0.1, shooter, true) {0.4}.withTimeout(5.0)
+                ShooterGroup(intake, shooter, true) {0.4}.withTimeout(5.0)
             )
         )
         m_chooser.addOption("Leave Tarmac Timed", SequentialCommandGroup(
@@ -224,7 +224,7 @@ class RobotContainer {
         m_chooser.addOption("Leave Tarmac and Shoot",
             SequentialCommandGroup(
                 DriveForDistanceCommand(drivetrain, 0.15, 9.0),
-                ShooterGroup(intake, -0.1, shooter, true) {
+                ShooterGroup(intake, shooter, true) {
                     SmartDashboard.getNumber(
                         "StaticShooter",
                         0.0
@@ -252,33 +252,34 @@ class RobotContainer {
         ))
 
         m_chooser.addOption("PathWeaver Low Goal Start", SequentialCommandGroup(
-            ShooterGroup(intake, -0.1, shooter, true) { 0.26 }.withTimeout(2.0), // Low Goal Shot
-            ParallelCommandGroup( // First Path "Grabbing second ball"
+            ShooterGroup(intake, shooter, true) { 0.26 }.withTimeout(2.0), // Low Goal Shot
+            ParallelDeadlineGroup( // First Path "Grabbing second ball"
                 TrajectoryBase(drivetrain, "PATH-1", isBackwards=false, resetGyro=true),
-                IntakeGroup(intake, 0.3, 0.6, shooter) { -0.3 }.beforeStarting(WaitCommand(1.0)).withTimeout(1.0)
-            ).until(TrajectoryBase(drivetrain, "PATH-1", isBackwards=false, resetGyro=true)::isFinished),
+                IntakeGroup(intake, 0.3, 0.6, shooter) { -0.3 }
+            ),
+            AlignShooter(pidController, { -imu.angle }, { 95.0 },
+                { output: Double -> drivetrain.drive(0.0, -output) }, drivetrain),
+            ParallelDeadlineGroup( // Second Path "Grabbing third ball"
+                TrajectoryBase(drivetrain, "PATH-2", isBackwards=false, resetGyro=false),
+                IntakeGroup(intake, 0.3, 0.6, shooter) { -0.3 }
+            ),
+            AlignShooter(pidController, { -imu.angle }, { 166.0 }, // Shooting
+                { output: Double -> drivetrain.drive(0.0, -output) }, drivetrain),
+            ShooterGroup(intake, shooter, true) {0.2}.withTimeout(2.0),
+            ParallelDeadlineGroup( // Third Path "Grabbing fourth and fifth ball"
+                TrajectoryBase(drivetrain, "PATH-3", isBackwards=false, resetGyro=false),
+                IntakeGroup(intake, 0.3, 0.6, shooter) { -0.3 }
+            ),
+            IntakeGroup(intake, 0.3, 0.6, shooter) { -0.3 }.withTimeout(2.0),
+            TrajectoryBase(drivetrain, "PATH-4", isBackwards=true, resetGyro=false),
             AlignShooter(pidController, { -imu.angle }, { 110.0 },
                 { output: Double -> drivetrain.drive(0.0, -output) }, drivetrain),
-            ParallelCommandGroup( // Second Path "Grabbing third ball"
-                TrajectoryBase(drivetrain, "PATH-2", isBackwards=false, resetGyro=true),
-                IntakeGroup(intake, 0.3, 0.6, shooter) { -0.3 }.beforeStarting(WaitCommand(1.0)).withTimeout(1.0)
-            ).until(TrajectoryBase(drivetrain, "PATH-2", isBackwards=false, resetGyro=true)::isFinished),
-            AlignShooter(pidController, { -imu.angle }, drivetrain::calcHeading, // Shooting
-                { output: Double -> drivetrain.drive(0.0, -output) }, drivetrain),
-            ShooterGroup(intake, -0.1, shooter, true) {drivetrain.calcDist()}.withTimeout(2.0),
-            ParallelCommandGroup( // Third Path "Grabbing fourth and fifth ball"
-                TrajectoryBase(drivetrain, "PATH-3", isBackwards=false, resetGyro=true),
-                IntakeGroup(intake, 0.3, 0.6, shooter) { -0.3 }.beforeStarting(WaitCommand(1.0)).withTimeout(1.0)
-            ).until(TrajectoryBase(drivetrain, "PATH-3", isBackwards=false, resetGyro=true)::isFinished),
-            TrajectoryBase(drivetrain, "PATH-4", isBackwards=true, resetGyro=true),
-                AlignShooter(pidController, { -imu.angle }, drivetrain::calcHeading, // Shooting
-                { output: Double -> drivetrain.drive(0.0, -output) }, drivetrain),
-            ShooterGroup(intake, -0.1, shooter, true) {drivetrain.calcDist()}.withTimeout(2.0)
+            ShooterGroup(intake, shooter, true) { 0.2 }.withTimeout(2.0)
         ))
 
         m_chooser.addOption("PathWeaver High Goal Start", SequentialCommandGroup(
-            ShooterGroup(intake, -0.1, shooter, true) { drivetrain.calcDist() }.withTimeout(2.0), // High Goal Shot
-            AlignShooter(pidController, { -imu.angle }, { -120.0 }, // Shooting
+            ShooterGroup(intake, shooter, true) { drivetrain.calcDist() }.withTimeout(2.0), // High Goal Shot
+            AlignShooter(pidController, { -imu.angle }, { 60.0 }, // Shooting
                 { output: Double -> drivetrain.drive(0.0, -output) }, drivetrain),
             ParallelCommandGroup( // First Path "Grabbing second ball"
                 TrajectoryBase(drivetrain, "PATH-1B", isBackwards=false, resetGyro=true),
@@ -292,7 +293,7 @@ class RobotContainer {
             ).until(TrajectoryBase(drivetrain, "PATH-2", isBackwards=false, resetGyro=true)::isFinished),
             (AlignShooter(pidController, { -imu.angle }, drivetrain::calcHeading, // Shooting
                 { output: Double -> drivetrain.drive(0.0, -output) }, drivetrain)),
-            ShooterGroup(intake, -0.1, shooter, true) {drivetrain.calcDist()}.withTimeout(2.0),
+            ShooterGroup(intake, shooter, true) {drivetrain.calcDist()}.withTimeout(2.0),
             ParallelCommandGroup( // Third Path "Grabbing fourth and fifth ball"
                 TrajectoryBase(drivetrain, "PATH-3", isBackwards=false, resetGyro=true),
                 IntakeGroup(intake, 0.3, 0.6, shooter) { -0.3 }.beforeStarting(WaitCommand(1.0)).withTimeout(1.0)
@@ -300,7 +301,7 @@ class RobotContainer {
             TrajectoryBase(drivetrain, "PATH-4", isBackwards=true, resetGyro=true),
             (AlignShooter(pidController, { -imu.angle }, drivetrain::calcHeading, // Shooting
                 { output: Double -> drivetrain.drive(0.0, -output) }, drivetrain)),
-            ShooterGroup(intake, -0.1, shooter, true) {drivetrain.calcDist()}.withTimeout(2.0)
+            ShooterGroup(intake, shooter, true) {drivetrain.calcDist()}.withTimeout(2.0)
         ))
 
         SmartDashboard.putData(m_chooser)
@@ -340,13 +341,13 @@ class RobotContainer {
         ))
 
 //        button4.whileHeld(ShooterGroup(intake, -0.1, shooter, true) { 0.6 })
-        button4.whileHeld(ShooterGroup(intake, -0.1, shooter, false, drivetrain::calcDist))
+        button4.whileHeld(ShooterGroup(intake, shooter, false, drivetrain::calcDist))
 //        button4.whenPressed(AutoArmCommand(intake, isDown=true))
 
         button5.whileHeld(IntakeCargos(intake, -0.3, -0.3, shooter))
 
 //        button6.whenPressed(AutoArmCommand(intake, isDown=false))
-        button6.whileHeld(ShooterGroup(intake, -0.1, shooter, true) { SmartDashboard.getNumber("StaticShooter", 0.0) })
+        button6.whileHeld(ShooterGroup(intake, shooter, true) { SmartDashboard.getNumber("StaticShooter", 0.0) })
 
         button7.whenPressed(AlignShooter(pidController, { -imu.angle }, drivetrain::calcHeading,
             { output: Double -> drivetrain.drive(0.0, -output) }, drivetrain))
@@ -379,7 +380,7 @@ class RobotContainer {
 
 //        coButton3.whileHeld(IntakeArm(intake, armVel = 0.5)) // Intake Arm Up
 
-        coButton4.whileHeld(ShooterGroup(intake, -0.1, shooter, true) { 0.26 })
+        coButton4.whileHeld(ShooterGroup(intake, shooter, true) { 0.26 })
 
 //        coButton5.whileHeld(IntakeArm(intake, armVel = -0.5)) // Intake Arm Down
 

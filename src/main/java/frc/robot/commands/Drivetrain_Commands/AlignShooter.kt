@@ -20,9 +20,9 @@ class AlignShooter(private val debugController: PIDControllerDebug, measurementS
 
     override fun initialize() {
         super.initialize()
-        debugController.p = SmartDashboard.getNumber("PID P Value", 0.0)
-        debugController.i = SmartDashboard.getNumber("PID I Value", 0.0)
-        debugController.d = SmartDashboard.getNumber("PID D Value", 0.0)
+//        debugController.p = SmartDashboard.getNumber("PID P Value", 0.0)
+//        debugController.i = SmartDashboard.getNumber("PID I Value", 0.0)
+//        debugController.d = SmartDashboard.getNumber("PID D Value", 0.0)
         println("INFO: AlignShooter is being called")
         delta = MathUtil.inputModulus(m_setpoint.asDouble - m_measurement.asDouble, -180.0, 180.0)
     }
@@ -41,20 +41,7 @@ class AlignShooter(private val debugController: PIDControllerDebug, measurementS
         }
 
 //        val delta = MathUtil.inputModulus(m_setpoint.asDouble - m_measurement.asDouble, -180.0, 180.0)
-        var ff = 0.0
 
-
-
-//        ff = when (delta) {
-//            in 360.0..10.0 -> sign(delta) * 0.3
-//            in 10.0..5.0 -> sign(delta) * 0.2
-//            else -> 0.0
-//        }
-
-
-//        if(abs(delta) > 15 ) {
-//            ff = sign(delta) * 0.3
-//        }
 
 //        m_useOutput.accept(0.6)
         m_useOutput.accept(output)

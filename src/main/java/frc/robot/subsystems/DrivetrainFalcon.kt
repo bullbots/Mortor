@@ -178,8 +178,6 @@ class DrivetrainFalcon : SubsystemBase() {
 
     fun resetGyro() { imu.reset() }
 
-    fun resetGyro180() { imu.reset180() }
-
     fun getPose(): Pose2d { return m_odometry.poseMeters }
 
     fun configurePID() {

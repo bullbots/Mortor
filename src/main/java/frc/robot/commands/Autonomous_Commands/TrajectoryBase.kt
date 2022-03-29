@@ -48,12 +48,10 @@ class TrajectoryBase(private var drivetrain: DrivetrainFalcon, private var traje
     override fun initialize() {
         if (resetGyro) {
             drivetrain.resetGyro()
-        } else {
-            drivetrain.resetGyro180()
         }
 
         ramsete.setEnabled(true)
-        drivetrain.setOdometryDirection(isBackwards)
+//        drivetrain.setOdometryDirection(isBackwards)
     }
 
     override fun execute() {
@@ -73,8 +71,8 @@ class TrajectoryBase(private var drivetrain: DrivetrainFalcon, private var traje
         val normalizedRamseteSpeed = ramseteSpeed / Constants.FTPERSEC_TOPSPEED
         val normalizedRamseteRot = -ramseteRot / Constants.FTPERSEC_TOPSPEED * Constants.WHEEL_RADIUS_FT
 
-        val direction = if (isBackwards) -1.0 else 1.0
-        drivetrain.arcadeDrive(normalizedRamseteSpeed * direction, normalizedRamseteRot, false)
+//        val direction = if (isBackwards) -1.0 else 1.0
+        drivetrain.arcadeDrive(normalizedRamseteSpeed, normalizedRamseteRot, false)
 
         val tPose = reference!!.poseMeters
         val tX = tPose.x
@@ -103,6 +101,7 @@ class TrajectoryBase(private var drivetrain: DrivetrainFalcon, private var traje
     override fun end(interrupted: Boolean) {
         println("INFO: trajectory end: $trajectoryName")
         drivetrain.setOdometryDirection(false)
+        isInitialized = false
     }
 
     override fun isFinished(): Boolean {

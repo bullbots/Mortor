@@ -1,5 +1,6 @@
 package frc.robot.commands.Drivetrain_Commands
 
+import com.kauailabs.navx.frc.AHRS
 import edu.wpi.first.math.MathUtil
 import edu.wpi.first.math.controller.PIDController
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
@@ -12,9 +13,11 @@ import java.util.function.DoubleSupplier
 import kotlin.math.abs
 import kotlin.math.sign
 
-class AlignShooter(private val measurementSource: DoubleSupplier,
+class AlignShooter(private val imu: AHRS,
+                   private val measurementSource: DoubleSupplier,
                    private val setpointSource: DoubleSupplier,
-                   private val drivetrain: DrivetrainFalcon) :
+                   private val drivetrain: DrivetrainFalcon,
+                   ) :
     CommandBase() {
 
     private var loopIdx = 0
@@ -52,8 +55,12 @@ class AlignShooter(private val measurementSource: DoubleSupplier,
     }
 
     override fun isFinished(): Boolean {
-        return abs(delta) < 1 &&
-        abs(drivetrain.getVelocities()[0]) < 0.015
+        return if(imu.isConnected && !imu.isCalibrating) {
+            abs(delta) < 1 && abs(drivetrain.getVelocities()[0]) < 0.015
+        } else {
+            true
+        }
+
     }
 
     override fun end(interrupted: Boolean) {

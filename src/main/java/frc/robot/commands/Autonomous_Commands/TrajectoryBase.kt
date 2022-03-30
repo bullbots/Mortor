@@ -84,21 +84,21 @@ class TrajectoryBase(private val drivetrain: DrivetrainFalcon, private val traje
         val aY = aPose.y
         val aRotation = aPose.rotation.degrees
 
-        loopIdx++
-        if (loopIdx == 10) {
-            loopIdx = 0
-
-            SmartDashboard.putNumber("Ramsete Speed - Normalized", normalizedRamseteSpeed)
-            SmartDashboard.putNumber("Ramsete Rot - Normalized", normalizedRamseteRot)
-
-            SmartDashboard.putNumber("Pose X - Trajectory", tX)
-            SmartDashboard.putNumber("Pose Y - Trajectory", tY)
-            SmartDashboard.putNumber("Pose R - Trajectory", tRotation)
-
-            SmartDashboard.putNumber("Pose X - Actual", aX)
-            SmartDashboard.putNumber("Pose Y - Actual", aY)
-            SmartDashboard.putNumber("Pose R - Actual", aRotation)
-        }
+//        loopIdx++
+//        if (loopIdx == 10) {
+//            loopIdx = 0
+//
+//            SmartDashboard.putNumber("Ramsete Speed - Normalized", normalizedRamseteSpeed)
+//            SmartDashboard.putNumber("Ramsete Rot - Normalized", normalizedRamseteRot)
+//
+//            SmartDashboard.putNumber("Pose X - Trajectory", tX)
+//            SmartDashboard.putNumber("Pose Y - Trajectory", tY)
+//            SmartDashboard.putNumber("Pose R - Trajectory", tRotation)
+//
+//            SmartDashboard.putNumber("Pose X - Actual", aX)
+//            SmartDashboard.putNumber("Pose Y - Actual", aY)
+//            SmartDashboard.putNumber("Pose R - Actual", aRotation)
+//        }
 
 
         DrivetrainFalcon.m_fieldSim.robotPose = reference.poseMeters

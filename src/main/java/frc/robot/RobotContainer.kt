@@ -415,13 +415,14 @@ class RobotContainer {
     fun stopAllSubsystems() { drivetrain.stop() }
 
     fun periodic() {
+        // Debugging Values
         loopIdx++
         if (loopIdx == 10) {
             loopIdx = 0
 
-            SmartDashboard.putNumber("Shooter Dist", drivetrain.calcDist())
-            SmartDashboard.putNumber("Yaw", -imu.angle)
             SmartDashboard.putNumber("Heading", drivetrain.calcHeading())
+            SmartDashboard.putNumber("Shooter Dist", drivetrain.calcDist())
+//            SmartDashboard.putNumber("Yaw", -imu.angle)g())
 //            SmartDashboard.putNumber("Delta Error", drivetrain.calcHeading()-(-imu.angle))
 //            SmartDashboard.putNumber("Proportional Value", pidController.p * pidController.positionError)
 //            SmartDashboard.putNumber("Integral Value", pidController.i * pidController.totalError())

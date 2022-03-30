@@ -25,6 +25,7 @@ import frc.robot.commands.Drivetrain_Commands.DriveForDistanceCommand
 import frc.robot.commands.Drivetrain_Commands.DriveForTimeCommand
 import frc.robot.commands.Drivetrain_Commands.JoystickDrive
 import frc.robot.commands.Intake_Commands.*
+import frc.robot.commands.Shooter_Commands.FeedCargo
 import frc.robot.commands.Shooter_Commands.ShooterCargos
 import frc.robot.commands.Shooter_Commands.ShooterGroup
 import frc.robot.subsystems.*
@@ -342,7 +343,8 @@ class RobotContainer {
 
         button4.whileHeld(ShooterGroup(intake, shooter, false, drivetrain::calcDist))
 
-        button5.whileHeld(IntakeCargos(intake, -0.3, -0.3, shooter)) // TODO: REMOVE ARM MOVEMENT
+//        button5.whileHeld(IntakeCargos(intake, -0.3, -0.3, shooter))
+        button5.whileHeld(FeedCargo(intake, -0.3))
 
         button6.whileHeld(ShooterGroup(intake, shooter, true) { SmartDashboard.getNumber("StaticShooter", 0.0) })
 

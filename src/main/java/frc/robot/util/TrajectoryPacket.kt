@@ -48,7 +48,7 @@ class TrajectoryPacket {
                     }
 
                     val x = sections[0].toDouble()
-                    val y = sections[1].toDouble() + 27 // TODO: Check if this needs a negative
+                    val y = sections[1].toDouble() + 27
 
                     pathRead.add(Translation2d(x, y))
 

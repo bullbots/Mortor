@@ -12,7 +12,6 @@ import java.util.function.DoubleSupplier
 import kotlin.math.abs
 import kotlin.math.sign
 
-// TODO: REMOVE PID CONTROLLER
 class AlignShooter(private val measurementSource: DoubleSupplier,
                    private val setpointSource: DoubleSupplier,
                    private val drivetrain: DrivetrainFalcon) :

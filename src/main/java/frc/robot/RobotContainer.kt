@@ -260,7 +260,7 @@ class RobotContainer {
             IntakeGroup(intake, 0.3, 0.6, shooter).withTimeout(0.04),
             // Shooting Second and Third ball
             AlignShooter({ -imu.angle }, { -28.0 }, drivetrain).withTimeout(1.0),
-            ShooterGroup(intake, shooter, true) { 0.2 }.withTimeout(2.0),
+            ShooterGroup(intake, shooter, true) { 0.2 }.withTimeout(1.5),
             // Third/Fourth Path "Grabbing Fourth/Fifth Ball"
             AlignShooter({ -imu.angle }, { -60.0 }, drivetrain).withTimeout(1.5),
             ParallelDeadlineGroup(

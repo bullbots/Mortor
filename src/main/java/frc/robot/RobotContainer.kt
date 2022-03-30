@@ -165,6 +165,8 @@ class RobotContainer {
         initializeStaticShooterVel()
         initializePIDControllerValue()
 
+        drivetrain.resetEncoders()
+        imu.reset()
     }
 
     /**
@@ -243,54 +245,57 @@ class RobotContainer {
         // TODO: Tune the Shooter Vel Values!
         m_chooser.addOption("PathWeaver Low Goal Start", SequentialCommandGroup(
             // Low Goal Shot
-            ShooterGroup(intake, shooter, true) { 0.26 }.withTimeout(2.0),
+            ShooterGroup(intake, shooter, true) { 0.26 }.withTimeout(1.1),
             // First/Second Path "Grabbing Second/Third Ball"
             ParallelDeadlineGroup(
                 TrajectoryBase(drivetrain, "PATH-1", resetGyro=true),
                 IntakeGroup(intake, 0.3, 0.6, shooter)
             ),
-            AlignShooter(pidController, { -imu.angle }, { 95.0 },
-                { output: Double -> drivetrain.drive(0.0, -output) }, drivetrain),
+            IntakeGroup(intake, 0.3, 0.6, shooter).withTimeout(0.04),
+            AlignShooter({ -imu.angle }, { -95.0 }, drivetrain).withTimeout(1.0),
             ParallelDeadlineGroup(
                 TrajectoryBase(drivetrain, "PATH-2", resetGyro=false),
                 IntakeGroup(intake, 0.3, 0.6, shooter)
             ),
+            IntakeGroup(intake, 0.3, 0.6, shooter).withTimeout(0.04),
             // Shooting Second and Third ball
-            AlignShooter(pidController, { -imu.angle }, { 166.0 },
-                { output: Double -> drivetrain.drive(0.0, -output) }, drivetrain),
-            ShooterGroup(intake, shooter, true) {0.2}.withTimeout(2.0),
+            AlignShooter({ -imu.angle }, { -28.0 }, drivetrain).withTimeout(1.0),
+            ShooterGroup(intake, shooter, true) { 0.2 }.withTimeout(2.0),
             // Third/Fourth Path "Grabbing Fourth/Fifth Ball"
+            AlignShooter({ -imu.angle }, { -60.0 }, drivetrain).withTimeout(1.5),
             ParallelDeadlineGroup(
                 TrajectoryBase(drivetrain, "PATH-3", resetGyro=false),
                 IntakeGroup(intake, 0.3, 0.6, shooter)
             ),
-            IntakeGroup(intake, 0.3, 0.6, shooter).withTimeout(2.0),
-            TrajectoryBase(drivetrain, "PATH-4", resetGyro=false),
-            // Shooting Fourth/Fifth ball
-            AlignShooter(pidController, { -imu.angle }, { 110.0 },
-                { output: Double -> drivetrain.drive(0.0, -output) }, drivetrain),
-            ShooterGroup(intake, shooter, true) { 0.2 }.withTimeout(2.0)
+            IntakeGroup(intake, 0.3, 0.6, shooter).withTimeout(0.5),
+            ParallelCommandGroup(
+                AlignShooter({ -imu.angle }, {-50.0 }, drivetrain),
+                ShooterGroup(intake, shooter, true) { 0.2 }
+            )
+
+
+//            TrajectoryBase(drivetrain, "PATH-4", resetGyro=false),
+//            // Shooting Fourth/Fifth ball
+////            AlignShooter({ -imu.angle }, { -70.0 }, drivetrain),
+//            ShooterGroup(intake, shooter, true) { 0.2 }.withTimeout(2.0)
         ))
 
         m_chooser.addOption("PathWeaver High Goal Start", SequentialCommandGroup(
             // High Goal Shot
             ShooterGroup(intake, shooter, true) { 0.4 }.withTimeout(2.0),
-            AlignShooter(pidController, { -imu.angle }, { 60.0 }, // Shooting
-                { output: Double -> drivetrain.drive(0.0, -output) }, drivetrain),
+            AlignShooter({ -imu.angle }, { 60.0 }, drivetrain),
             // First/Second Path "Grabbing Second/Third Ball"
             ParallelDeadlineGroup(
                 TrajectoryBase(drivetrain, "PATH-1B", resetGyro=true),
                 IntakeGroup(intake, 0.3, 0.6, shooter)
             ),
-            AlignShooter(pidController, { -imu.angle }, { 95.0 },
-                { output: Double -> drivetrain.drive(0.0, -output) }, drivetrain),
+            AlignShooter({ -imu.angle }, { 95.0 }, drivetrain),
             ParallelDeadlineGroup(
                 TrajectoryBase(drivetrain, "PATH-2", resetGyro=false),
                 IntakeGroup(intake, 0.3, 0.6, shooter)
             ),
             // Shooting Second and Third ball
-            AlignShooter(pidController, { -imu.angle }, { 166.0 },
-                { output: Double -> drivetrain.drive(0.0, -output) }, drivetrain),
+            AlignShooter({ -imu.angle }, { 166.0 }, drivetrain),
             ShooterGroup(intake, shooter, true) { 0.2 }.withTimeout(2.0),
             // Third/Fourth Path "Grabbing Fourth/Fifth Ball"
             ParallelDeadlineGroup(
@@ -300,8 +305,7 @@ class RobotContainer {
             IntakeGroup(intake, 0.3, 0.6, shooter).withTimeout(2.0),
             TrajectoryBase(drivetrain, "PATH-4", resetGyro=false),
             // Shooting Fourth/Fifth ball
-            AlignShooter(pidController, { -imu.angle }, { 110.0 },
-                { output: Double -> drivetrain.drive(0.0, -output) }, drivetrain),
+            AlignShooter({ -imu.angle }, { 110.0 }, drivetrain),
             ShooterGroup(intake, shooter, true) { 0.2 }.withTimeout(2.0)
         ))
 
@@ -338,12 +342,12 @@ class RobotContainer {
 
         button4.whileHeld(ShooterGroup(intake, shooter, false, drivetrain::calcDist))
 
-        button5.whileHeld(IntakeCargos(intake, -0.3, -0.3, shooter))
+        button5.whileHeld(IntakeCargos(intake, -0.3, -0.3, shooter)) // TODO: REMOVE ARM MOVEMENT
 
         button6.whileHeld(ShooterGroup(intake, shooter, true) { SmartDashboard.getNumber("StaticShooter", 0.0) })
 
-        button7.whenPressed(AlignShooter(pidController, { -imu.angle }, drivetrain::calcHeading,
-            { output: Double -> drivetrain.drive(0.0, -output) }, drivetrain))
+//        button7.whenPressed(AlignShooter({ -imu.angle }, drivetrain::calcHeading, drivetrain).withTimeout(2.0))
+        button7.whenPressed(AlignShooter({ -imu.angle }, { -95.0 }, drivetrain).withTimeout(2.0))
 
         button8.whenPressed(InstantCommand(
             {
@@ -424,4 +428,9 @@ class RobotContainer {
     }
 
     fun simulationPeriodic() { drivetrain.simulationPeriodic() }
+
+    fun reset() {
+        imu.reset()
+        drivetrain.resetEncoders()
+    }
 }

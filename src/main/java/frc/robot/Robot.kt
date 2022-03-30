@@ -67,6 +67,7 @@ object Robot : TimedRobot() {
         m_autonomousCommand = m_robotContainer.getAutonomousCommand()
         // schedule the autonomous command (example)
         m_autonomousCommand.schedule()
+        m_robotContainer.reset()
     }
 
     /** This function is called periodically during autonomous.  */

@@ -114,7 +114,7 @@ class Climber : SubsystemBase() {
                 climberMotor.set(controlMode, encoderVal)
                 limitSwitch.reset()
             } else {
-                println("WARNING: The climber is too low!!!!!!")
+                println("WARNING: THE CLIMBER IS TOO LOW!!!!!!")
                 climberMotor.stopMotor()
             }
         } else {
@@ -126,7 +126,7 @@ class Climber : SubsystemBase() {
         if (limitSwitch.get() > 0) {
             if(percentOutput < 0) {
                 climberMotor.stopMotor()
-                println("WARNING: THE CLIMBER IS TO LOW!!!!!!")
+                println("WARNING: THE CLIMBER IS TOO LOW!!!!!!")
             } else {
                 climberMotor.set(percentOutput)
                 limitSwitch.reset()

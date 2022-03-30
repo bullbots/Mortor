@@ -21,6 +21,6 @@ class NavX : AHRS() {
         return angle
     }
 
-    override fun reset() { angleDelta = super.getAngle() }
+//    override fun reset() { angleDelta = super.getAngle() }
 
 }

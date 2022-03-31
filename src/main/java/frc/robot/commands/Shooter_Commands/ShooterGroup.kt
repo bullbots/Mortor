@@ -14,9 +14,9 @@ class ShooterGroup(intake: Intake, shooter: Shooter, static: Boolean, velocity: 
     init {
         addCommands(
             FeedCargo(intake, -0.3).withTimeout(0.04),
-            ShooterCargos(shooter, static, velocity).withTimeout(0.75),
+            ShooterCargos(shooter, static, velocity).withTimeout(1.0),
             ParallelCommandGroup(
-                FeedCargo(intake, 0.3),
+                FeedCargo(intake, 0.2),
                 ShooterCargos(shooter, static, velocity)
             )
         )

@@ -111,7 +111,6 @@ class TrajectoryBase(private val drivetrain: DrivetrainFalcon, private val imu: 
 
     override fun end(interrupted: Boolean) {
         println("INFO: trajectory end: $trajectoryName")
-        drivetrain.setOdometryDirection(false)
         isInitialized = false
     }
 

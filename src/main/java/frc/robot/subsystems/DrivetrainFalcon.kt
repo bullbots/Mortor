@@ -67,8 +67,6 @@ class DrivetrainFalcon : SubsystemBase() {
 
     var isFullSpeed = 1.0
 
-    private var m_flippedOdometry = false
-
     private var loopIdx = 0
 
     private val m_odometry = DifferentialDriveOdometry(imu.rotation2d)
@@ -138,8 +136,6 @@ class DrivetrainFalcon : SubsystemBase() {
         leftSlaveFalcon.setNeutralMode(neutralMode)
     }
 
-    fun setOdometryDirection(invert: Boolean) { m_flippedOdometry = invert }
-
     fun getAverageDist() : Double {
         val leftDist = leftMasterFalcon.selectedSensorPosition / ticks_per_foot
         val rightDist = rightMasterFalcon.selectedSensorPosition / ticks_per_foot
@@ -152,17 +148,17 @@ class DrivetrainFalcon : SubsystemBase() {
 
 //        println("INFO: Left Dist: $leftDist, Right Dist: $rightDist")
 
-        if(m_flippedOdometry) {
-            var temporary = -leftDist
-            leftDist = -rightDist
-            rightDist = temporary
-        }
+//        if(m_flippedOdometry) {
+//            var temporary = -leftDist
+//            leftDist = -rightDist
+//            rightDist = temporary
+//        }
 
         var rotation2d = imu.rotation2d
 
-        if (m_flippedOdometry) {
-            rotation2d.rotateBy(Rotation2d.fromDegrees(180.0))
-        }
+//        if (m_flippedOdometry) {
+//            rotation2d.rotateBy(Rotation2d.fromDegrees(180.0))
+//        }
 
         m_odometry.update(rotation2d, leftDist, rightDist)
 

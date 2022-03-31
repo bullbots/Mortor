@@ -30,16 +30,16 @@ class AlignShooter(private val imu: AHRS,
     }
 
     override fun execute() {
-        imu.calibrate()
-
         delta = MathUtil.inputModulus(setpointSource.asDouble - measurementSource.asDouble, -180.0, 180.0)
 
+
+//        SmartDashboard.putNumber("Delta", delta)
         val output = if (abs(delta) > 45) {
             sign(delta) * 0.575
         } else if(abs(delta) > 30) {
             sign(delta) * 0.375
         } else if(abs(delta) > 1) {
-            sign(delta) * 0.26
+            sign(delta) * 0.24
         } else {
             0.0
         }

@@ -21,6 +21,15 @@ class NavX : AHRS() {
         return angle
     }
 
-//    override fun reset() { angleDelta = super.getAngle() }
+    override fun reset() {
+        angleDelta = super.getAngle()
+//        if (isCalibrating) {
+//            println("INFO: The imu used OUR program to reset")
+//            angleDelta = super.getAngle()
+//        } else {
+//            println("INFO: The imu used the super reset")
+//            super.reset()
+//        }
+    }
 
 }

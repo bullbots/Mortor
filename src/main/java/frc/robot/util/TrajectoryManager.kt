@@ -43,7 +43,7 @@ class TrajectoryManager {
                             Pose2d(trajPack.firstX, trajPack.firstY, Rotation2d.fromDegrees(trajPack.startAngle)),
                             trajPack.pathRead,
                             Pose2d(trajPack.lastX, trajPack.lastY, Rotation2d.fromDegrees(trajPack.endAngle)),
-                            TrajectoryConfig(6.0, 6.0).setReversed(trajPack.reversed)
+                            TrajectoryConfig(6.5, 6.5).setReversed(trajPack.reversed)
 //                            TrajectoryConfig(2.0, 4.0)
                         )
 

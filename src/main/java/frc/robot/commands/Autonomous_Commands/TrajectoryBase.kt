@@ -59,6 +59,7 @@ class TrajectoryBase(private val drivetrain: DrivetrainFalcon, private val imu: 
     }
 
     override fun execute() {
+
         val elapsed = timer.get()
 
         initializeTrajectory()
@@ -117,10 +118,11 @@ class TrajectoryBase(private val drivetrain: DrivetrainFalcon, private val imu: 
     override fun isFinished(): Boolean {
         if (imu.isConnected && !imu.isCalibrating) {
             trajectory?.let {
-                print("INFO: checking isFinished: $trajectoryName")
+                println("INFO: checking isFinished: $trajectoryName")
                 return timer.get() > it.totalTimeSeconds
             }
         } else {
+            println("ERROR: The IMU is disconnected or is calibrating")
             CommandScheduler.getInstance().cancelAll()
             return true
         }

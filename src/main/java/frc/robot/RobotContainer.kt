@@ -164,7 +164,7 @@ class RobotContainer {
             TrajectoryConfig(2.0, 2.0)
         )
         initializeStaticShooterVel()
-        initializePIDControllerValue()
+//        initializePIDControllerValue()
 
         drivetrain.resetEncoders()
         imu.reset()
@@ -175,14 +175,7 @@ class RobotContainer {
      * You are able to adjust the value inside the SmartDashboard to change velocity
      */
     private fun initializeStaticShooterVel() { SmartDashboard.putNumber("StaticShooter", 0.46) }
-
-    private fun initializePIDControllerValue() {
-        SmartDashboard.putNumber("PID P Value", 0.01)
-        SmartDashboard.putNumber("PID I Value", 0.005)
-        SmartDashboard.putNumber("PID D Value", 0.0)
-    }
-
-
+    
     private fun initializeAutonomousOptions()
     {
         // Add commands to the autonomous command chooser
@@ -232,7 +225,7 @@ class RobotContainer {
         ))
 
         m_chooser.addOption("PathWeaver Straight Backward", SequentialCommandGroup(
-            TrajectoryBase(drivetrain, imu, "PATH-STRAIGHT-BACKWARD", resetGyro=true),
+            TrajectoryBase(drivetrain, imu, "PATH-STRAIGHT-BACKWARD", resetGyro=true)
         ))
 
         m_chooser.addOption("PathWeaver Curve Backward", SequentialCommandGroup(
@@ -422,7 +415,7 @@ class RobotContainer {
 
             SmartDashboard.putNumber("Heading", drivetrain.calcHeading())
             SmartDashboard.putNumber("Shooter Dist", drivetrain.calcDist())
-//            SmartDashboard.putNumber("Yaw", -imu.angle)g())
+//            SmartDashboard.putNumber("Yaw", -imu.angle)
 //            SmartDashboard.putNumber("Delta Error", drivetrain.calcHeading()-(-imu.angle))
 //            SmartDashboard.putNumber("Proportional Value", pidController.p * pidController.positionError)
 //            SmartDashboard.putNumber("Integral Value", pidController.i * pidController.totalError())

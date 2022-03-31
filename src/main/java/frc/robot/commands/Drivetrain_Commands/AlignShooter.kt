@@ -5,6 +5,7 @@ import edu.wpi.first.math.MathUtil
 import edu.wpi.first.math.controller.PIDController
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.CommandBase
+import edu.wpi.first.wpilibj2.command.CommandScheduler
 import edu.wpi.first.wpilibj2.command.PIDCommand
 import frc.robot.subsystems.DrivetrainFalcon
 import frc.robot.util.PIDControllerDebug
@@ -29,6 +30,7 @@ class AlignShooter(private val imu: AHRS,
     }
 
     override fun execute() {
+        imu.calibrate()
 
         delta = MathUtil.inputModulus(setpointSource.asDouble - measurementSource.asDouble, -180.0, 180.0)
 
@@ -58,6 +60,8 @@ class AlignShooter(private val imu: AHRS,
         return if(imu.isConnected && !imu.isCalibrating) {
             abs(delta) < 1 && abs(drivetrain.getVelocities()[0]) < 0.015
         } else {
+            println("ERROR: The IMU is disconnected or is calibrating")
+            CommandScheduler.getInstance().cancelAll()
             true
         }
 

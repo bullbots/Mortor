@@ -168,6 +168,7 @@ class RobotContainer {
 
         drivetrain.resetEncoders()
         imu.reset()
+        climber.resetEncoders()
     }
 
     /**
@@ -247,6 +248,7 @@ class RobotContainer {
                 TrajectoryBase(drivetrain, imu, "PATH-1C", resetGyro=true),
                 IntakeGroup(intake, 0.3, 0.6, shooter)
             ),
+            ShooterGroup(intake, shooter, true) { 0.48 }.withTimeout(2.0),
             AlignShooter(imu, { -imu.angle }, { 85.0 }, drivetrain).withTimeout(1.0),
             ParallelDeadlineGroup(
                 TrajectoryBase(drivetrain, imu, "PATH-2C", resetGyro=true),
@@ -254,7 +256,8 @@ class RobotContainer {
             ),
             IntakeGroup(intake, 0.3, 0.6, shooter).withTimeout(2.0),
             AlignShooter(imu, { -imu.angle }, { 55.0 }, drivetrain).withTimeout(1.0),
-            ShooterGroup(intake, shooter, true) { 0.75 }.withTimeout(5.0)
+            TrajectoryBase(drivetrain, imu, "PATH-2C", resetGyro=true),
+            ShooterGroup(intake, shooter, true) { 0.75 }.withTimeout(2.0)
 
 
         ))
@@ -276,10 +279,10 @@ class RobotContainer {
             ),
             IntakeGroup(intake, 0.3, 0.6, shooter).withTimeout(0.04),
             // Shooting Second and Third ball
-            AlignShooter(imu, { -imu.angle }, { 28.0 }, drivetrain).withTimeout(1.0),
+            AlignShooter(imu, { -imu.angle }, { -31.0 }, drivetrain).withTimeout(1.0),
             ShooterGroup(intake, shooter, true) { 0.48 }.withTimeout(1.5),
             // Third/Fourth Path "Grabbing Fourth/Fifth Ball"
-            AlignShooter(imu, { -imu.angle }, { -60.0 }, drivetrain).withTimeout(1.5),
+            AlignShooter(imu, { -imu.angle }, { -62.0 }, drivetrain).withTimeout(1.5),
             ParallelDeadlineGroup(
                 TrajectoryBase(drivetrain, imu, "PATH-3", resetGyro=false),
                 IntakeGroup(intake, 0.3, 0.6, shooter)
@@ -287,7 +290,7 @@ class RobotContainer {
             IntakeGroup(intake, 0.3, 0.6, shooter).withTimeout(0.5),
             ParallelCommandGroup(
                 AlignShooter(imu, { -imu.angle }, { -50.0 }, drivetrain),
-                ShooterGroup(intake, shooter, true) { 0.70 }
+                ShooterGroup(intake, shooter, true) { 0.75 }
             )
 
 
@@ -299,31 +302,31 @@ class RobotContainer {
 
         m_chooser.addOption("PathWeaver High Goal Start", SequentialCommandGroup(
             // High Goal Shot
-            ShooterGroup(intake, shooter, true) { 0.46 }.withTimeout(2.0),
+            ShooterGroup(intake, shooter, true) { 0.38 }.withTimeout(2.0),
             // First/Second Path "Grabbing Second/Third Ball"
             ParallelDeadlineGroup(
                 TrajectoryBase(drivetrain, imu, "PATH-1B", resetGyro=true),
                 IntakeGroup(intake, 0.3, 0.6, shooter)
             ),
             AlignShooter(imu, { -imu.angle }, { -95.0 }, drivetrain),
-            ParallelDeadlineGroup(
-                TrajectoryBase(drivetrain, imu, "PATH-2", resetGyro=false),
-                IntakeGroup(intake, 0.3, 0.6, shooter)
-            ),
-            // Shooting Second and Third ball
-            AlignShooter(imu, { -imu.angle }, { 166.0 }, drivetrain),
-            ShooterGroup(intake, shooter, true) { 0.48 }.withTimeout(2.0),
-            // Third/Fourth Path "Grabbing Fourth/Fifth Ball"
-            AlignShooter(imu, { -imu.angle }, { -60.0 }, drivetrain).withTimeout(1.5),
-            ParallelDeadlineGroup(
-                TrajectoryBase(drivetrain, imu, "PATH-3", resetGyro=false),
-                IntakeGroup(intake, 0.3, 0.6, shooter)
-            ),
-            IntakeGroup(intake, 0.3, 0.6, shooter).withTimeout(0.5),
-            ParallelCommandGroup(
-                AlignShooter(imu, { -imu.angle }, { -50.0 }, drivetrain),
-                ShooterGroup(intake, shooter, true) { 0.70 }
-            )
+//            ParallelDeadlineGroup(
+//                TrajectoryBase(drivetrain, imu, "PATH-2", resetGyro=false),
+//                IntakeGroup(intake, 0.3, 0.6, shooter)
+//            ),
+//            // Shooting Second and Third ball
+//            AlignShooter(imu, { -imu.angle }, { -72.0 }, drivetrain),
+//            ShooterGroup(intake, shooter, true) { 0.48 }.withTimeout(2.0),
+//            // Third/Fourth Path "Grabbing Fourth/Fifth Ball"
+//            AlignShooter(imu, { -imu.angle }, { -60.0 }, drivetrain).withTimeout(1.5),
+//            ParallelDeadlineGroup(
+//                TrajectoryBase(drivetrain, imu, "PATH-3", resetGyro=false),
+//                IntakeGroup(intake, 0.3, 0.6, shooter)
+//            ),
+//            IntakeGroup(intake, 0.3, 0.6, shooter).withTimeout(0.5),
+//            ParallelCommandGroup(
+//                AlignShooter(imu, { -imu.angle }, { -50.0 }, drivetrain),
+//                ShooterGroup(intake, shooter, true) { 0.70 }
+//            )
         ))
 
         SmartDashboard.putData(m_chooser)
@@ -364,7 +367,7 @@ class RobotContainer {
 
         button6.whileHeld(ShooterGroup(intake, shooter, true) { SmartDashboard.getNumber("StaticShooter", 0.0) })
 
-        button7.whenPressed(AlignShooter(imu, { -imu.angle }, drivetrain::calcHeading, drivetrain).withTimeout(2.0))
+        button7.whenPressed(AlignShooter(imu, { -imu.angle }, drivetrain::calcHeading, drivetrain).withTimeout(1.5))
 //        button7.whenPressed(AlignShooter(imu, { -imu.angle }, { -95.0 }, drivetrain).withTimeout(2.0))
 
         button8.whenPressed(InstantCommand(
@@ -376,7 +379,7 @@ class RobotContainer {
             }
         ))
 
-        button9.whenPressed(InstantCommand(climber::resetEncoders, climber))
+        button9.whenPressed(InstantCommand({}, drivetrain))
 
         button10.whileHeld(ManualClimber(climber, -0.8))
 

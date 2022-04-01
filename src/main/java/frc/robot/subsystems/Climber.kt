@@ -69,17 +69,17 @@ class Climber : SubsystemBase() {
 
 
     override fun periodic() {
-//        loopIdx++
-//        if (loopIdx == 10) {
-//            loopIdx = 0
+        loopIdx++
+        if (loopIdx == 10) {
+            loopIdx = 0
 //            SmartDashboard.putNumber("Climber PID Error", climberMotor.getClosedLoopError(Constants.kPIDLoopIdx))
 //            SmartDashboard.putNumber("Climber Velocity", climberMotor.getSelectedSensorVelocity(Constants.kPIDLoopIdx))
-//            SmartDashboard.putNumber("Climber Position", climberMotor.getSelectedSensorPosition(Constants.kPIDLoopIdx))
+            SmartDashboard.putNumber("Climber Position", climberMotor.getSelectedSensorPosition(Constants.kPIDLoopIdx))
 //            SmartDashboard.putNumber("Climber Supply Current", climberMotor.supplyCurrent)
 //            SmartDashboard.putNumber("Climber Stator Current", climberMotor.statorCurrent)
-//            SmartDashboard.putNumber("Limit Switch", limitSwitch.get().toDouble())
+            SmartDashboard.putNumber("Limit Switch", limitSwitch.get().toDouble())
 //            SmartDashboard.putNumber("Climber Active Traj Pos", climberMotor.activeTrajectoryPosition)
-//        }
+        }
     }
 
     fun stop() { climberMotor.set(0.0) }

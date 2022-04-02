@@ -25,7 +25,7 @@ class ShooterCargos(private val shooter: Shooter, private val static: Boolean, p
         } else {
             // dist() is in feet
             velocity = when (dist()) {
-                in 0.0..5.0 -> 0.26
+                in 0.0..5.0 -> 0.24
                 in 5.0..7.0 -> MathUtil.interpolate(0.38, 0.41, (dist()-5) / 2)
                 in 7.0..9.0 -> MathUtil.interpolate(0.40, 0.43, (dist()-7) / 2)
                 in 9.0..11.0 -> MathUtil.interpolate(0.43, 0.45, (dist()-9) / 2)

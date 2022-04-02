@@ -107,13 +107,19 @@ class Climber : SubsystemBase() {
 //        }
 //    }
     fun setAuto(controlMode: TalonFXControlMode, encoderVal: Double) {
+
         if (limitSwitch.get() > 0) {
-            if (encoderVal > 0) {
+            if(climberMotor.selectedSensorPosition < 10000) {
+                if (encoderVal > 0) {
+                    climberMotor.set(controlMode, encoderVal)
+                    limitSwitch.reset()
+                } else {
+                    println("WARNING: THE CLIMBER IS TOO LOW!!!!!!")
+                    climberMotor.stopMotor()
+                }
+            } else {
                 climberMotor.set(controlMode, encoderVal)
                 limitSwitch.reset()
-            } else {
-                println("WARNING: THE CLIMBER IS TOO LOW!!!!!!")
-                climberMotor.stopMotor()
             }
         } else {
             climberMotor.set(controlMode, encoderVal)

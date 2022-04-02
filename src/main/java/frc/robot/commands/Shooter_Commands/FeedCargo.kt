@@ -14,5 +14,5 @@ class FeedCargo(private val intake: Intake, private val intakeVel: Double) : Com
 
     override fun isFinished(): Boolean { return false }
 
-    override fun end(interrupted: Boolean) { intake.intakeSpinner.stopMotor() }
+    override fun end(interrupted: Boolean) { intake.intakeSpinner.set(0.0) }
 }

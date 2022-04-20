@@ -21,7 +21,6 @@ class ShooterCargos(private val shooter: Shooter, private val static: Boolean, p
         // var shooterVel = SmartDashboard.getNumber("StaticShooter", 0.3)
         if(static) {
             velocity = dist()
-            shooter.shooterSpinner.set(dist())
         } else {
             // dist() is in feet
             velocity = when (dist()) {
@@ -38,8 +37,8 @@ class ShooterCargos(private val shooter: Shooter, private val static: Boolean, p
                 in 23.0..26.0 -> MathUtil.interpolate(0.74, 0.82, (dist()-23) / 2)
                 else -> 0.0
             }
-            shooter.shooterSpinner.set(velocity)
         }
+        shooter.shooterSpinner.set(velocity)
 //        println(velocity) // Debugging Values
     }
 

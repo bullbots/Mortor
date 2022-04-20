@@ -1,5 +1,7 @@
 package frc.robot
 
+import kotlin.math.PI
+
 class Constants {
 
     companion object {
@@ -56,6 +58,14 @@ class Constants {
         const val TRACK_WIDTH_FT = 2.229 // 26.75 Inches
         const val FTPERSEC_TOPSPEED = 16.827
         const val MAX_ANGULAR_VELOCITY = FTPERSEC_TOPSPEED * WHEEL_RADIUS_FT
+
+        // Swerve Constants
+        const val MAX_SPEED = 3.0
+        const val MAX_ANGULAR_SPEED = PI
+        const val ENCODER_RESOLUTION = 4096
+        const val MODULE_MAX_ANGULAR_VELOCITY = Constants.MAX_ANGULAR_SPEED
+        const val MODULE_MAX_ANGULAR_ACCELERATION = 2 * PI
+
         /**
          * ALL INTAKE RELATED CONSTANTS GO HERE
          */

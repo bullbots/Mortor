@@ -295,12 +295,6 @@ class RobotContainer {
                 AlignShooter(imu, { -imu.angle }, { -50.0 }, drivetrain),
                 ShooterGroup(intake, shooter, true) { 0.58 }
             )
-
-
-//            TrajectoryBase(drivetrain, "PATH-4", resetGyro=false),
-//            // Shooting Fourth/Fifth ball
-////            AlignShooter({ -imu.angle }, { -70.0 }, drivetrain),
-//            ShooterGroup(intake, shooter, true) { 0.2 }.withTimeout(2.0)
         ))
 
         m_chooser.addOption("PathWeaver High Goal Start", SequentialCommandGroup(

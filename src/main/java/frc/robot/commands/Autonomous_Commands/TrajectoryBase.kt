@@ -101,7 +101,7 @@ class TrajectoryBase(private val drivetrain: DrivetrainFalcon, private val traje
 //        }
 
 
-        DrivetrainFalcon.m_fieldSim.robotPose = reference.poseMeters
+//        DrivetrainFalcon.m_fieldSim.robotPose = reference.poseMeters
     }
 
     override fun end(interrupted: Boolean) {

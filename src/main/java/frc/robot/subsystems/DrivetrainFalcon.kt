@@ -3,6 +3,7 @@ package frc.robot.subsystems
 import com.ctre.phoenix.motorcontrol.ControlMode
 import com.ctre.phoenix.motorcontrol.InvertType
 import com.ctre.phoenix.motorcontrol.NeutralMode
+import com.ctre.phoenix.sensors.WPI_Pigeon2
 import edu.wpi.first.math.controller.SimpleMotorFeedforward
 import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.math.geometry.Rotation2d
@@ -10,17 +11,12 @@ import edu.wpi.first.math.kinematics.DifferentialDriveOdometry
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds
 import edu.wpi.first.networktables.NetworkTableEntry
 import edu.wpi.first.wpilibj.RobotBase
-import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import edu.wpi.first.wpilibj.smartdashboard.Field2d
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import frc.robot.Constants
-import frc.robot.util.DifferentialDriveDebug
-import frc.robot.util.NavX
-import frc.robot.util.PIDControllerDebug
-import frc.robot.util.SafeTalonFX
+import frc.robot.util.*
 import kotlin.math.atan2
 import kotlin.math.hypot
 
@@ -73,10 +69,16 @@ class DrivetrainFalcon : SubsystemBase() {
 
     private val m_odometry = DifferentialDriveOdometry(imu.rotation2d)
 
+//    var _pidgey = WPI_Pigeon2(1)
+    private lateinit var pidgey: WPI_Pigeon2
+
+//    private val driveSim = DrivebaseSimFX(leftMasterFalcon, rightMasterFalcon, _pidgey)
+    private lateinit var driveSim: DrivebaseSimFX
+
     // Any static variables or cases must go here
-    companion object {
-        val m_fieldSim = Field2d()
-    }
+//    companion object {
+//        val m_fieldSim = Field2d()
+//    }
 
     enum class CoastMode {
         Coast, Brake
@@ -106,6 +108,9 @@ class DrivetrainFalcon : SubsystemBase() {
 
             // orchestra.loadMusic("test.chrp");
 //            diffDrive.setDeadband(0.02)
+        } else {
+            pidgey = WPI_Pigeon2(1)
+            driveSim = DrivebaseSimFX(leftMasterFalcon, rightMasterFalcon, pidgey)
         }
 
         // diffDrive.setRightSideInverted(false);
@@ -232,9 +237,6 @@ class DrivetrainFalcon : SubsystemBase() {
 //        SmartDashboard.putNumber("Left Slave Current", leftSlaveFalcon.statorCurrent)
 
         updateOdometry()
-        m_fieldSim
-
-
 
         loopIdx++
         if (loopIdx == 10) {
@@ -345,9 +347,9 @@ class DrivetrainFalcon : SubsystemBase() {
         diffDrive.arcadeDrive(xSpeed, rotation)
     }
 
-//    override fun simulationPeriodic() {
-//        drivetrainSim
-//    }
+    override fun simulationPeriodic() {
+        driveSim.run()
+    }
 
     /**
      * @return double array of positions [left, right]

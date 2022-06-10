@@ -21,7 +21,7 @@ import frc.robot.util.TrajectoryManager
 object Robot : TimedRobot() {
     private lateinit var m_autonomousCommand: Command
     private lateinit var m_robotContainer: RobotContainer
-    private lateinit var m_field: Field2d
+//    private lateinit var m_field: Field2d
 
     /**
      * This function is run when the robot is first started up and should be used for any
@@ -32,9 +32,9 @@ object Robot : TimedRobot() {
         // autonomous chooser on the dashboard.
         TrajectoryManager.generateTrajectories();
         m_robotContainer = RobotContainer()
-        m_field = Field2d()
-        SmartDashboard.putData("Field", m_field)
-        m_field.robotPose = Pose2d()
+//        m_field = Field2d()
+//        SmartDashboard.putData("Field", m_field)
+//        m_field.robotPose = Pose2d()
     }
 
     /**

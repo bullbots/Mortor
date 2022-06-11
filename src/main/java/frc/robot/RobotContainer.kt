@@ -124,9 +124,6 @@ class RobotContainer {
             }
 
             fun valueOf(letter: Int): Letter { return map[letter]!! }
-
-
-
         }
 
         fun getValue(): Int { return value!! }
@@ -181,7 +178,6 @@ class RobotContainer {
         SmartDashboard.putNumber("PID I Value", 0.005)
         SmartDashboard.putNumber("PID D Value", 0.0)
     }
-
 
     private fun initializeAutonomousOptions()
     {

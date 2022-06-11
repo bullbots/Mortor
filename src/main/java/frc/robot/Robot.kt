@@ -3,14 +3,15 @@
 // the WPILib BSD license file in the root directory of this project.
 package frc.robot
 
-import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.networktables.NetworkTableInstance
+import edu.wpi.first.wpilibj.IterativeRobotBase
+import edu.wpi.first.wpilibj.RobotBase
 import edu.wpi.first.wpilibj.TimedRobot
-import edu.wpi.first.wpilibj.smartdashboard.Field2d
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
+import edu.wpi.first.wpilibj.Watchdog
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.CommandScheduler
 import frc.robot.util.TrajectoryManager
+import java.lang.reflect.Field
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -34,7 +35,9 @@ object Robot : TimedRobot() {
         m_robotContainer = RobotContainer()
 //        m_field = Field2d()
 //        SmartDashboard.putData("Field", m_field)
-//        m_field.robotPose = Pose2d()
+        if (RobotBase.isSimulation()) {
+            extendSimulationWatchdogPeriod()
+        }
     }
 
     /**
@@ -90,4 +93,12 @@ object Robot : TimedRobot() {
 
     /** This function is called periodically during test mode.  */
     override fun testPeriodic() {}
+
+    private fun extendSimulationWatchdogPeriod() {
+        println("INFO: Extending IterativeRobot watchdog period")
+        val field: Field = IterativeRobotBase::class.java.getDeclaredField("m_watchdog")
+        field.isAccessible = true
+        val watchdog = field.get(this) as Watchdog
+        watchdog.timeout = 1.0
+    }
 }

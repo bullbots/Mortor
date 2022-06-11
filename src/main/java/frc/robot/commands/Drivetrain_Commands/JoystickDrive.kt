@@ -20,13 +20,13 @@ class JoystickDrive (
     override fun initialize() {}
 
     override fun execute() {
-        var _joyY = sign(joyY.asDouble)*joyY.asDouble.pow(2) * m_drivetrain.isFullSpeed
-        var _joyX = sign(joyX.asDouble)* joyX.asDouble.pow(2) * m_drivetrain.isFullSpeed
-        val turnInPlace = true
-        m_drivetrain.curvatureDrive(_joyY, _joyX, turnInPlace)
-//        SmartDashboard.putNumber("JoyX", joyX.asDouble)
-//        SmartDashboard.putNumber("JoyX", _joyX)
-//        SmartDashboard.putNumber("JoyY", _joyY)
+        var _joyY = squareFullSpeed(joyY.asDouble)
+        var _joyX = squareFullSpeed(joyX.asDouble)
+        m_drivetrain.curvatureDrive(_joyY, _joyX, isQuickTurn=true)
+    }
+
+    fun squareFullSpeed(input: Double): Double {
+        return sign(input)*input.pow(2) * m_drivetrain.isFullSpeed
     }
 
     override fun end(interrupted: Boolean) {

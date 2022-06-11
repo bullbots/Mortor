@@ -24,11 +24,31 @@
       "/SmartDashboard/Sim Field": "Field2d"
     },
     "windows": {
+      "/SmartDashboard/SendableChooser[0]": {
+        "window": {
+          "visible": true
+        }
+      },
       "/SmartDashboard/Sim Field": {
         "window": {
           "visible": true
         }
       }
+    }
+  },
+  "NetworkTables": {
+    "LiveWindow": {
+      "Ungrouped": {
+        "navX-Sensor[4]": {
+          "open": true
+        }
+      }
+    },
+    "SmartDashboard": {
+      "Sim Field": {
+        "open": true
+      },
+      "open": true
     }
   }
 }

@@ -1,5 +1,7 @@
 package frc.robot
 
+import edu.wpi.first.math.util.Units
+
 class Constants {
 
     companion object {
@@ -46,16 +48,18 @@ class Constants {
         const val RIGHT_VELOCITY_D = 0.0
         const val RIGHT_VELOCITY_FF = 2048.0 / 21000.0
 
-
         const val RIGHT_MASTER_ACCELERATION = 3300.0
         const val RIGHT_MASTER_VELOCITY = 3300.0
 
         const val WHEEL_RADIUS_FT = 0.333
-        const val WHEEL_DIAMETER_FT = 0.666
+        const val WHEEL_DIAMETER_FT = 2 * WHEEL_RADIUS_FT
+        val PI_WHEEL_DIAMETER_METERS = Math.PI * Units.inchesToMeters(Constants.WHEEL_DIAMETER_FT * 12.0)
+        val PI_WHEEL_DIAMETER_FT = Math.PI * WHEEL_DIAMETER_FT
         const val TRACK_WIDTH_METERS = 0.67945 // 26.75 Inches
         const val TRACK_WIDTH_FT = 2.229 // 26.75 Inches
         const val FTPERSEC_TOPSPEED = 16.827
         const val MAX_ANGULAR_VELOCITY = FTPERSEC_TOPSPEED * WHEEL_RADIUS_FT
+        const val DRIVETRAIN_GEAR_RATIO = 12.75
         /**
          * ALL INTAKE RELATED CONSTANTS GO HERE
          */

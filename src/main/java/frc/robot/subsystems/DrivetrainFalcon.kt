@@ -26,24 +26,23 @@ import kotlin.math.hypot
 class DrivetrainFalcon : SubsystemBase() {
 
     // These values are used for Autonomous
-    private val ticks_per_wheel_revolution = 26112.0
-    private val ticks_per_foot = ticks_per_wheel_revolution / (Constants.WHEEL_DIAMETER_FT * Math.PI) // .8 inches is diameter of wheel in feet
+//    private val ticks_per_wheel_revolution = 26112.0
+//    private val ticks_per_foot = ticks_per_wheel_revolution / (Constants.WHEEL_DIAMETER_FT * Math.PI) // .8 inches is diameter of wheel in feet
 
     // NEED THIS FOR AUTONOMOUS
     // private val max_ticks_per_hundred_milliseconds: Double = ticks_per_foot * Constants.MAX_SPEED_LOW_GEAR / 10
 
     // Initializing Master Falcon Motors
-    private val leftMasterFalcon = SafeTalonFX(Constants.LEFT_MASTER_PORT, isDrivetrain=true, usePID=false) // change to false for no PID?
-    private val rightMasterFalcon = SafeTalonFX(Constants.RIGHT_MASTER_PORT, isDrivetrain=true, usePID=false)
+    private val usePID = true
 
-    // Initializing Slave Falcon Motors
-    private val leftSlaveFalcon = SafeTalonFX(Constants.LEFT_SLAVE_PORT, isDrivetrain=true, usePID=false)
-    private val rightSlaveFalcon = SafeTalonFX(Constants.RIGHT_SLAVE_PORT, isDrivetrain=true, usePID=false)
+    private val leftMasterFalcon = SafeTalonFX(Constants.LEFT_MASTER_PORT, isDrivetrain=true, usePID=usePID)
+    private val rightMasterFalcon = SafeTalonFX(Constants.RIGHT_MASTER_PORT, isDrivetrain=true, usePID=usePID)
+    private val leftSlaveFalcon = SafeTalonFX(Constants.LEFT_SLAVE_PORT, isDrivetrain=true, usePID=usePID)
+    private val rightSlaveFalcon = SafeTalonFX(Constants.RIGHT_SLAVE_PORT, isDrivetrain=true, usePID=usePID)
 
 //    private val leftGroup = MotorControllerGroup(leftMasterFalcon, leftSlaveFalcon)
 //    private val rightGroup = MotorControllerGroup(rightMasterFalcon, rightSlaveFalcon)
 
-//    private val kinematics = DifferentialDriveKinematics(Constants.TRACK_WIDTH)
     private val diffDrive = DifferentialDriveDebug(leftMasterFalcon, rightMasterFalcon)
     private val imu = NavX()
 
@@ -63,39 +62,32 @@ class DrivetrainFalcon : SubsystemBase() {
 
     var isFullSpeed = 1.0
 
-    private var m_flippedOdometry = false
-
     private var loopIdx = 0
 
-    private val m_odometry = DifferentialDriveOdometry(imu.rotation2d)
+    private val m_odometry = DifferentialDriveOdometry(Rotation2d())
 
-//    var _pidgey = WPI_Pigeon2(1)
     private lateinit var pidgey: WPI_Pigeon2
 
-//    private val driveSim = DrivebaseSimFX(leftMasterFalcon, rightMasterFalcon, _pidgey)
     private lateinit var driveSim: DrivebaseSimFX
-
-    // Any static variables or cases must go here
-//    companion object {
-//        val m_fieldSim = Field2d()
-//    }
 
     enum class CoastMode {
         Coast, Brake
     }
 
+    val dff: (Double) -> String = TalonFXUtil.df::format
+
     init {
+        leftSlaveFalcon.follow(leftMasterFalcon)
+        rightSlaveFalcon.follow(rightMasterFalcon)
+
+        rightMasterFalcon.inverted = true
+        rightSlaveFalcon.setInverted(InvertType.FollowMaster)
+        leftMasterFalcon.inverted = false
+        leftSlaveFalcon.setInverted(InvertType.FollowMaster)
+
+        setCoastMode(CoastMode.Brake)
+
         if (RobotBase.isReal()) {
-
-            leftSlaveFalcon.follow(leftMasterFalcon)
-            rightSlaveFalcon.follow(rightMasterFalcon)
-
-            rightMasterFalcon.inverted = true
-            rightSlaveFalcon.setInverted(InvertType.FollowMaster)
-            leftMasterFalcon.inverted = false
-            leftSlaveFalcon.setInverted(InvertType.FollowMaster)
-
-            setCoastMode(CoastMode.Brake)
 
             // leftMasterFalcon.configClosedloopRamp(Constants.DRIVETRAIN_RAMP);
             // rightMasterFalcon.configClosedloopRamp(Constants.DRIVETRAIN_RAMP);
@@ -110,7 +102,7 @@ class DrivetrainFalcon : SubsystemBase() {
 //            diffDrive.setDeadband(0.02)
         } else {
             pidgey = WPI_Pigeon2(1)
-            driveSim = DrivebaseSimFX(leftMasterFalcon, rightMasterFalcon, pidgey)
+            driveSim = DrivebaseSimFX(leftMasterFalcon, rightMasterFalcon, pidgey, m_odometry)
         }
 
         // diffDrive.setRightSideInverted(false);
@@ -143,34 +135,25 @@ class DrivetrainFalcon : SubsystemBase() {
         leftSlaveFalcon.setNeutralMode(neutralMode)
     }
 
-    fun setOdometryDirection(invert: Boolean) { m_flippedOdometry = invert }
-
     fun getAverageDist() : Double {
-        val leftDist = leftMasterFalcon.selectedSensorPosition / ticks_per_foot
-        val rightDist = rightMasterFalcon.selectedSensorPosition / ticks_per_foot
+        val leftDist = TalonFXUtil.nativeUnitsToDistanceFeet(leftMasterFalcon.selectedSensorPosition)
+        val rightDist = TalonFXUtil.nativeUnitsToDistanceFeet(rightMasterFalcon.selectedSensorPosition)
         return (leftDist + rightDist) * 0.5
     }
 
     private fun updateOdometry() {
-        var leftDist = leftMasterFalcon.selectedSensorPosition / ticks_per_foot
-        var rightDist = rightMasterFalcon.selectedSensorPosition / ticks_per_foot
+        println("INFO: updateOdometry")
+//        var leftDist = TalonFXUtil.nativeUnitsToDistanceFeet(leftMasterFalcon.selectedSensorPosition)
+//        var rightDist = TalonFXUtil.nativeUnitsToDistanceFeet(rightMasterFalcon.selectedSensorPosition)
+        var leftDist = TalonFXUtil.nativeUnitsToDistanceMeters(leftMasterFalcon.selectedSensorPosition)
+        var rightDist =TalonFXUtil. nativeUnitsToDistanceMeters(rightMasterFalcon.selectedSensorPosition)
 
-//        println("INFO: Left Dist: $leftDist, Right Dist: $rightDist")
+        // Simulation values not yet available from NavX2. Get from the Pigeon IMU instead.
+        var rotation2d = if (RobotBase.isReal()) imu.rotation2d else pidgey.rotation2d
 
-        if(m_flippedOdometry) {
-            var temporary = -leftDist
-            leftDist = -rightDist
-            rightDist = temporary
-        }
-
-        var rotation2d = imu.rotation2d
-
-        if (m_flippedOdometry) {
-            rotation2d.rotateBy(Rotation2d.fromDegrees(180.0))
-        }
+        println("INFO: Gyro: ${dff(rotation2d.degrees)}, Left: ${dff(leftDist)}, Right: ${dff(rightDist)}")
 
         m_odometry.update(rotation2d, leftDist, rightDist)
-
     }
 
     fun resetOdometry(pose: Pose2d) {
@@ -216,7 +199,13 @@ class DrivetrainFalcon : SubsystemBase() {
         rightVelocity = generateEntry("Right Velocity", 4, 2)
     }
 
+    override fun simulationPeriodic() {
+        driveSim.run()
+    }
+
     override fun periodic() {
+        updateOdometry()
+
 //        println("DrivetrainFalcon periodic")
 //        SmartDashboard.putNumber("Encoder Ticks - Left", leftMasterFalcon.selectedSensorPosition)
 //        SmartDashboard.putNumber("Encoder Ticks - Right", rightMasterFalcon.selectedSensorPosition)
@@ -235,8 +224,6 @@ class DrivetrainFalcon : SubsystemBase() {
 //        SmartDashboard.putNumber("Right Slave Current", rightSlaveFalcon.statorCurrent)
 //        SmartDashboard.putNumber("Left Master Current", leftMasterFalcon.statorCurrent)
 //        SmartDashboard.putNumber("Left Slave Current", leftSlaveFalcon.statorCurrent)
-
-        updateOdometry()
 
         loopIdx++
         if (loopIdx == 10) {
@@ -282,14 +269,12 @@ class DrivetrainFalcon : SubsystemBase() {
     }
 
     fun arcadeDrive(speed: Double, rotation: Double, squareInputs: Boolean) {
-
         diffDrive.arcadeDrive(speed, rotation, squareInputs)
     }
 
 
     fun curvatureDrive(speed: Double, rotation: Double, isQuickTurn: Boolean) {
         diffDrive.curvatureDrive(speed, rotation, isQuickTurn)
-//        diffDrive.arcadeDrive(speed, rotation, squareInputs=false)
     }
 
     /**
@@ -347,10 +332,6 @@ class DrivetrainFalcon : SubsystemBase() {
         diffDrive.arcadeDrive(xSpeed, rotation)
     }
 
-    override fun simulationPeriodic() {
-        driveSim.run()
-    }
-
     /**
      * @return double array of positions [left, right]
      */
@@ -387,7 +368,6 @@ class DrivetrainFalcon : SubsystemBase() {
         leftMasterFalcon.stopMotor()
         rightMasterFalcon.stopMotor()
     }
-
 
     /**
      * Helper function to generate NetworkTableEntries

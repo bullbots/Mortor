@@ -22,6 +22,7 @@ class DriveForDistanceCommand(private val drivetrainFalcon: DrivetrainFalcon,
 
     override fun isFinished(): Boolean {
         val averageDist = drivetrainFalcon.getAverageDist()
+        println("INFO: averageDist: $averageDist")
         if (averageDist >= distance) {
             return true
         }

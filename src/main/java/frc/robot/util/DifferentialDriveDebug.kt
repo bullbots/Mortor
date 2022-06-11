@@ -6,6 +6,7 @@ package frc.robot.util
 import edu.wpi.first.math.MathUtil
 import edu.wpi.first.wpilibj.drive.DifferentialDrive
 import edu.wpi.first.wpilibj.motorcontrol.MotorController
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import kotlin.math.abs
 import kotlin.math.withSign
 
@@ -78,66 +79,70 @@ class DifferentialDriveDebug(leftMotor: MotorController, rightMotor: MotorContro
     override fun curvatureDrive(xSpeed: Double, zRotation: Double, isQuickTurn: Boolean) {
         super.curvatureDrive(xSpeed, zRotation, isQuickTurn)
 
-        // xSpeed = MathUtil.clamp(xSpeed, -1.0, 1.0);
-        // xSpeed = applyDeadband(xSpeed, m_deadband);
+//        debug(xSpeed, zRotation, isQuickTurn)
+    }
 
-        // zRotation = MathUtil.clamp(zRotation, -1.0, 1.0);
-        // zRotation = applyDeadband(zRotation, m_deadband);
-
-        // double angularPower;
-        // boolean overPower;
-
-        // if (isQuickTurn) {
-        //     if (Math.abs(xSpeed) < m_quickStopThreshold) {
-        //         m_quickStopAccumulator =
-        //             (1 - m_quickStopAlpha) * m_quickStopAccumulator
-        //                 + m_quickStopAlpha * MathUtil.clamp(zRotation, -1.0, 1.0) * 2;
-        //     }
-        //     overPower = true;
-        //     angularPower = zRotation;
-        // } else {
-        //     overPower = false;
-        //     angularPower = Math.abs(xSpeed) * zRotation - m_quickStopAccumulator;
-
-        //     if (m_quickStopAccumulator > 1) {
-        //         m_quickStopAccumulator -= 1;
-        //     } else if (m_quickStopAccumulator < -1) {
-        //         m_quickStopAccumulator += 1;
-        //     } else {
-        //         m_quickStopAccumulator = 0.0;
-        //     }
-        // }
-
-        // double leftMotorOutput = xSpeed + angularPower;
-        // double rightMotorOutput = xSpeed - angularPower;
-
-        // // If rotation is overpowered, reduce both outputs to within acceptable range
-        // if (overPower) {
-        //     if (leftMotorOutput > 1.0) {
-        //         rightMotorOutput -= leftMotorOutput - 1.0;
-        //         leftMotorOutput = 1.0;
-        //     } else if (rightMotorOutput > 1.0) {
-        //         leftMotorOutput -= rightMotorOutput - 1.0;
-        //         rightMotorOutput = 1.0;
-        //     } else if (leftMotorOutput < -1.0) {
-        //         rightMotorOutput -= leftMotorOutput + 1.0;
-        //         leftMotorOutput = -1.0;
-        //     } else if (rightMotorOutput < -1.0) {
-        //         leftMotorOutput -= rightMotorOutput + 1.0;
-        //         rightMotorOutput = -1.0;
-        //     }
-        // }
-
-        // // Normalize the wheel speeds
-        // double maxMagnitude = Math.max(Math.abs(leftMotorOutput), Math.abs(rightMotorOutput));
-        // if (maxMagnitude > 1.0) {
-        //     leftMotorOutput /= maxMagnitude;
-        //     rightMotorOutput /= maxMagnitude;
-        // }
-
-        // SmartDashboard.putNumber("Left Motor - CurvatureDrive", leftMotorOutput * m_maxOutput);
-        // double rightSideInvertMultiplier = isRightSideInverted() ? -1.0 : 1.0;
-        // SmartDashboard.putNumber("Right Motor - CurvatureDrive", rightMotorOutput * m_maxOutput * rightSideInvertMultiplier);
+    fun debug(xSpeed: Double, zRotation: Double, isQuickTurn: Boolean) {
+//         var xSpeed = MathUtil.clamp(xSpeed, -1.0, 1.0)
+//         xSpeed = applyDeadband(xSpeed, m_deadband)
+//
+//         var zRotation = MathUtil.clamp(zRotation, -1.0, 1.0)
+//         zRotation = applyDeadband(zRotation, m_deadband)
+//
+//         double angularPower
+//         boolean overPower
+//
+//         if (isQuickTurn) {
+//             if (Math.abs(xSpeed) < m_quickStopThreshold) {
+//                 m_quickStopAccumulator =
+//                     (1 - m_quickStopAlpha) * m_quickStopAccumulator
+//                         + m_quickStopAlpha * MathUtil.clamp(zRotation, -1.0, 1.0) * 2;
+//             }
+//             overPower = true;
+//             angularPower = zRotation;
+//         } else {
+//             overPower = false;
+//             angularPower = Math.abs(xSpeed) * zRotation - m_quickStopAccumulator;
+//
+//             if (m_quickStopAccumulator > 1) {
+//                 m_quickStopAccumulator -= 1;
+//             } else if (m_quickStopAccumulator < -1) {
+//                 m_quickStopAccumulator += 1;
+//             } else {
+//                 m_quickStopAccumulator = 0.0;
+//             }
+//         }
+//
+//         double leftMotorOutput = xSpeed + angularPower;
+//         double rightMotorOutput = xSpeed - angularPower;
+//
+//         // If rotation is overpowered, reduce both outputs to within acceptable range
+//         if (overPower) {
+//             if (leftMotorOutput > 1.0) {
+//                 rightMotorOutput -= leftMotorOutput - 1.0;
+//                 leftMotorOutput = 1.0;
+//             } else if (rightMotorOutput > 1.0) {
+//                 leftMotorOutput -= rightMotorOutput - 1.0;
+//                 rightMotorOutput = 1.0;
+//             } else if (leftMotorOutput < -1.0) {
+//                 rightMotorOutput -= leftMotorOutput + 1.0;
+//                 leftMotorOutput = -1.0;
+//             } else if (rightMotorOutput < -1.0) {
+//                 leftMotorOutput -= rightMotorOutput + 1.0;
+//                 rightMotorOutput = -1.0;
+//             }
+//         }
+//
+//         // Normalize the wheel speeds
+//         double maxMagnitude = Math.max(Math.abs(leftMotorOutput), Math.abs(rightMotorOutput));
+//         if (maxMagnitude > 1.0) {
+//             leftMotorOutput /= maxMagnitude;
+//             rightMotorOutput /= maxMagnitude;
+//         }
+//
+//         SmartDashboard.putNumber("Left Motor - CurvatureDrive", leftMotorOutput * m_maxOutput);
+//         double rightSideInvertMultiplier = isRightSideInverted() ? -1.0 : 1.0;
+//         SmartDashboard.putNumber("Right Motor - CurvatureDrive", rightMotorOutput * m_maxOutput * rightSideInvertMultiplier);
     }
 
     var isRightSideInverted: Boolean

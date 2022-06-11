@@ -51,7 +51,6 @@ class TrajectoryBase(private val drivetrain: DrivetrainFalcon, private val traje
         }
 
         ramsete.setEnabled(true)
-//        drivetrain.setOdometryDirection(isBackwards)
     }
 
     override fun execute() {
@@ -71,7 +70,6 @@ class TrajectoryBase(private val drivetrain: DrivetrainFalcon, private val traje
         val normalizedRamseteSpeed = ramseteSpeed / Constants.FTPERSEC_TOPSPEED
         val normalizedRamseteRot = -ramseteRot / Constants.FTPERSEC_TOPSPEED * Constants.WHEEL_RADIUS_FT
 
-//        val direction = if (isBackwards) -1.0 else 1.0
         drivetrain.arcadeDrive(normalizedRamseteSpeed, normalizedRamseteRot, false)
 
         val tPose = reference!!.poseMeters
@@ -100,22 +98,19 @@ class TrajectoryBase(private val drivetrain: DrivetrainFalcon, private val traje
 //            SmartDashboard.putNumber("Pose R - Actual", aRotation)
 //        }
 
-
 //        DrivetrainFalcon.m_fieldSim.robotPose = reference.poseMeters
     }
 
     override fun end(interrupted: Boolean) {
         println("INFO: trajectory end: $trajectoryName")
-        drivetrain.setOdometryDirection(false)
         isInitialized = false
     }
 
     override fun isFinished(): Boolean {
         trajectory?.let {
-            print("INFO: checking isFinished: $trajectoryName")
+            println("INFO: checking isFinished: $trajectoryName")
             return timer.get() > it.totalTimeSeconds
         }
         return true
     }
-
 }

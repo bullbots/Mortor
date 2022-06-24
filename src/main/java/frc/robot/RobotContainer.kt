@@ -333,20 +333,20 @@ class RobotContainer {
      */
     private fun configureButtonBindings() {
         // Drivers Button Binding
-        button1.whileHeld(IntakeGroup(intake, 0.3, 0.6, shooter)).whenReleased(ShooterCargos(shooter, true) { -0.7 }
+        button1.whenHeld(IntakeGroup(intake, 0.3, 0.6, shooter)).whenReleased(ShooterCargos(shooter, true) { -0.7 }
             .withTimeout(0.3))
 
-        button2.whileHeld(StartEndCommand(
+        button2.whenHeld(StartEndCommand(
             {drivetrain.isFullSpeed = 0.5},
             {drivetrain.isFullSpeed = 1.0}
         ))
 
-        button4.whileHeld(ShooterGroup(intake, shooter, false, drivetrain::calcDist))
+        button4.whenHeld(ShooterGroup(intake, shooter, false, drivetrain::calcDist))
 
-//        button5.whileHeld(IntakeCargos(intake, -0.3, -0.3, shooter))
-        button5.whileHeld(FeedCargo(intake, -0.3))
+//        button5.whenHeld(IntakeCargos(intake, -0.3, -0.3, shooter))
+        button5.whenHeld(FeedCargo(intake, -0.3))
 
-        button6.whileHeld(ShooterGroup(intake, shooter, true) { SmartDashboard.getNumber("StaticShooter", 0.0) })
+        button6.whenHeld(ShooterGroup(intake, shooter, true) { SmartDashboard.getNumber("StaticShooter", 0.0) })
 
 //        button7.whenPressed(AlignShooter({ -imu.angle }, drivetrain::calcHeading, drivetrain).withTimeout(2.0))
         button7.whenPressed(AlignShooter({ -imu.angle }, { -95.0 }, drivetrain).withTimeout(2.0))
@@ -362,9 +362,9 @@ class RobotContainer {
 
         button9.whenPressed(InstantCommand(climber::resetEncoders, climber))
 
-        button10.whileHeld(ManualClimber(climber, -0.3))
+        button10.whenHeld(ManualClimber(climber, -0.3))
 
-        button11.whileHeld(ManualClimber(climber, 0.3))
+        button11.whenHeld(ManualClimber(climber, 0.3))
 
         // CO-Drivers Button Binding
 
@@ -373,14 +373,14 @@ class RobotContainer {
         coButton2.whenPressed(AutoClimber(climber, isGrenade=false, isDown=false))
 
         // Intake Arm Up
-//        coButton3.whileHeld(AutoArm(intake, isDown=false))
-        coButton3.whileHeld(ManualArm(intake, 0.3))
+//        coButton3.whenHeld(AutoArm(intake, isDown=false))
+        coButton3.whenHeld(ManualArm(intake, 0.3))
 
-        coButton4.whileHeld(ShooterGroup(intake, shooter, true) { 0.26 })
+        coButton4.whenHeld(ShooterGroup(intake, shooter, true) { 0.26 })
 
         // Intake Arm Down
-//        coButton5.whileHeld(AutoArm(intake, isDown=true))
-        coButton5.whileHeld(ManualArm(intake, -0.3))
+//        coButton5.whenHeld(AutoArm(intake, isDown=true))
+        coButton5.whenHeld(ManualArm(intake, -0.3))
 
         coButton6.whenPressed(ParallelCommandGroup(
             AutoClimber(climber, isGrenade=true, isDown=true),

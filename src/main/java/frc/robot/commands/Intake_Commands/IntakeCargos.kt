@@ -1,8 +1,7 @@
 package frc.robot.commands.Intake_Commands
 
-import com.revrobotics.CANSparkMax
-import com.revrobotics.ControlType
-import edu.wpi.first.wpilibj2.command.CommandBase
+import com.revrobotics.CANSparkBase
+import edu.wpi.first.wpilibj2.command.Command
 import frc.robot.Constants
 
 import frc.robot.subsystems.Intake
@@ -11,14 +10,14 @@ import frc.robot.subsystems.Shooter
 /**
  * Creates a new IntakeCargo
  */
-class IntakeCargos(private val intake: Intake, private val intakeVel: Double, private val armVel: Double, private val shooter: Shooter) : CommandBase() {
+class IntakeCargos(private val intake: Intake, private val intakeVel: Double, private val armVel: Double, private val shooter: Shooter) : Command() {
 
     // Use addRequirements() here to declare subsystem dependencies.
     init { addRequirements(intake) }
 
     // Called when the command is initially scheduled.
     override fun initialize() {
-        intake.raiseLowerSpinner.pidController.setReference(Constants.INTAKE_ARM_DOWN, CANSparkMax.ControlType.kSmartMotion)
+        intake.raiseLowerSpinner.pidController.setReference(Constants.INTAKE_ARM_DOWN, CANSparkBase.ControlType.kSmartMotion)
 
         intake.intakeSpinner.set(intakeVel)
         intake.armSpinner.set(armVel)
@@ -36,7 +35,7 @@ class IntakeCargos(private val intake: Intake, private val intakeVel: Double, pr
 
     override fun end(interrupted: Boolean) {
         intake.stop()
-        intake.raiseLowerSpinner.pidController.setReference(Constants.INTAKE_ARM_HOLD, CANSparkMax.ControlType.kSmartMotion)
+        intake.raiseLowerSpinner.pidController.setReference(Constants.INTAKE_ARM_HOLD, CANSparkBase.ControlType.kSmartMotion)
 
     }
 

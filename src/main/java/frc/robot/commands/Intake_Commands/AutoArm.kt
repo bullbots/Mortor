@@ -1,12 +1,12 @@
 package frc.robot.commands.Intake_Commands
 
-import com.revrobotics.CANSparkMax
-import edu.wpi.first.wpilibj2.command.CommandBase
+import com.revrobotics.CANSparkBase
+import edu.wpi.first.wpilibj2.command.Command
 import frc.robot.Constants
 import frc.robot.subsystems.Intake
 import kotlin.math.abs
 
-class AutoArm(private val intake: Intake, private val isDown: Boolean) : CommandBase() {
+class AutoArm(private val intake: Intake, private val isDown: Boolean) : Command() {
     private var targetTraj = 0.0
 
     init {
@@ -22,7 +22,7 @@ class AutoArm(private val intake: Intake, private val isDown: Boolean) : Command
 
     override fun initialize() {
         println("INFO: TargetTraj: $targetTraj")
-        intake.raiseLowerSpinner.pidController.setReference(targetTraj, CANSparkMax.ControlType.kSmartMotion)
+        intake.raiseLowerSpinner.pidController.setReference(targetTraj, CANSparkBase.ControlType.kSmartMotion)
     }
 
     override fun execute() {

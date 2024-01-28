@@ -1,7 +1,6 @@
 package frc.robot.subsystems
 
-import com.revrobotics.CANSparkMax
-import com.revrobotics.CANSparkMaxLowLevel
+import com.revrobotics.CANSparkBase
 import edu.wpi.first.hal.DIOJNI
 import edu.wpi.first.wpilibj.DigitalInput
 import edu.wpi.first.wpilibj.DigitalOutput
@@ -40,9 +39,9 @@ class Intake : SubsystemBase() {
         raiseLowerSpinner.pidController.setSmartMotionMaxAccel(Constants.I_MAXRPM, Constants.I_SlotIdx)
         raiseLowerSpinner.pidController.setSmartMotionAllowedClosedLoopError(Constants.I_ALLOWED_ERROR, Constants.I_SlotIdx)
 
-        intakeSpinner.idleMode = CANSparkMax.IdleMode.kBrake
-        armSpinner.idleMode = CANSparkMax.IdleMode.kBrake
-        raiseLowerSpinner.idleMode = CANSparkMax.IdleMode.kBrake
+        intakeSpinner.idleMode = CANSparkBase.IdleMode.kBrake
+        armSpinner.idleMode = CANSparkBase.IdleMode.kBrake
+        raiseLowerSpinner.idleMode = CANSparkBase.IdleMode.kBrake
 
     }
 

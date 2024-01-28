@@ -10,11 +10,9 @@ import edu.wpi.first.math.kinematics.DifferentialDriveOdometry
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds
 import edu.wpi.first.networktables.NetworkTableEntry
 import edu.wpi.first.wpilibj.RobotBase
-import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard
 import edu.wpi.first.wpilibj.smartdashboard.Field2d
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import frc.robot.Constants
 import frc.robot.util.DifferentialDriveDebug
@@ -71,7 +69,7 @@ class DrivetrainFalcon : SubsystemBase() {
 
     private var loopIdx = 0
 
-    private val m_odometry = DifferentialDriveOdometry(imu.rotation2d)
+    private val m_odometry = DifferentialDriveOdometry(imu.rotation2d, 0.0, 0.0)
 
     // Any static variables or cases must go here
     companion object {
@@ -172,7 +170,7 @@ class DrivetrainFalcon : SubsystemBase() {
         leftMasterFalcon.selectedSensorPosition = 0.0
         rightMasterFalcon.selectedSensorPosition = 0.0
 
-        m_odometry.resetPosition(pose, imu.rotation2d)
+        m_odometry.resetPosition(imu.rotation2d, 0.0, 0.0, pose)
     }
 
     fun resetGyro() { imu.reset() }
@@ -202,14 +200,14 @@ class DrivetrainFalcon : SubsystemBase() {
         rightMasterFalcon.configMotionAcceleration(Constants.RIGHT_MASTER_ACCELERATION, Constants.kTIMEOUT_MS)
     }
 
-    fun configureSmartDashBoard() {
-        leftCurrent = generateEntry("Left Current", 0, 0)
-        leftPosition = generateEntry("Left Position", 2, 0)
-        leftVelocity = generateEntry("Left Velocity", 4, 0)
-        rightCurrent = generateEntry("Right Current", 0, 2)
-        rightPosition = generateEntry("Right Position", 2, 2)
-        rightVelocity = generateEntry("Right Velocity", 4, 2)
-    }
+//    fun configureSmartDashBoard() {
+//        leftCurrent = generateEntry("Left Current", 0, 0)
+//        leftPosition = generateEntry("Left Position", 2, 0)
+//        leftVelocity = generateEntry("Left Velocity", 4, 0)
+//        rightCurrent = generateEntry("Right Current", 0, 2)
+//        rightPosition = generateEntry("Right Position", 2, 2)
+//        rightVelocity = generateEntry("Right Velocity", 4, 2)
+//    }
 
     override fun periodic() {
 //        println("DrivetrainFalcon periodic")
@@ -390,14 +388,14 @@ class DrivetrainFalcon : SubsystemBase() {
     /**
      * Helper function to generate NetworkTableEntries
      */
-    private fun generateEntry(entryName: String, columnIndex: Int, rowIndex: Int): NetworkTableEntry {
-        return Shuffleboard.getTab("Drivetrain")
-            .add(entryName, 0)
-            .withSize(2, 2)
-            .withPosition(columnIndex, rowIndex)
-            .withWidget(BuiltInWidgets.kGraph)
-            .entry
-    }
+//    private fun generateEntry(entryName: String, columnIndex: Int, rowIndex: Int): NetworkTableEntry {
+//        return Shuffleboard.getTab("Drivetrain")
+//            .add(entryName, 0)
+//            .withSize(2, 2)
+//            .withPosition(columnIndex, rowIndex)
+//            .withWidget(BuiltInWidgets.kGraph)
+//            .entry
+//    }
 
     fun driveLeft(value: Double) { leftMasterFalcon.set(value) }
 

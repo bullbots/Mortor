@@ -18,7 +18,7 @@ import frc.robot.util.TrajectoryManager
  * the package after creating this project, you must also update the build.gradle file in the
  * project.
  */
-object Robot : TimedRobot() {
+object Robot_orig : TimedRobot() {
     private lateinit var m_autonomousCommand: Command
     private lateinit var m_robotContainer: RobotContainer
     private lateinit var m_field: Field2d

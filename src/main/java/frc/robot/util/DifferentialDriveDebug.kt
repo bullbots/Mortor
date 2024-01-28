@@ -33,10 +33,10 @@ class DifferentialDriveDebug(leftMotor: MotorController, rightMotor: MotorContro
         super.arcadeDrive(xSpeed, zRotation, squareInputs)
 
         xSpeed = MathUtil.clamp(xSpeed, -1.0, 1.0)
-        xSpeed = applyDeadband(xSpeed, m_deadband)
+        xSpeed = MathUtil.applyDeadband(xSpeed, m_deadband)
 
         zRotation = MathUtil.clamp(zRotation, -1.0, 1.0)
-        zRotation = applyDeadband(zRotation, m_deadband)
+        zRotation = MathUtil.applyDeadband(zRotation, m_deadband)
 
         // Square the inputs (while preserving the sign) to increase fine control
         // while permitting full power.

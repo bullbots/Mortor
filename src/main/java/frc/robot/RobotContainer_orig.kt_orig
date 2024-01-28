@@ -7,7 +7,7 @@ import edu.wpi.first.math.geometry.Translation2d
 import edu.wpi.first.math.trajectory.Trajectory
 import edu.wpi.first.math.trajectory.TrajectoryConfig
 import edu.wpi.first.math.trajectory.TrajectoryGenerator
-import edu.wpi.first.networktables.EntryListenerFlags
+//import edu.wpi.first.networktables.EntryListenerFlags
 import edu.wpi.first.networktables.NetworkTable
 import edu.wpi.first.networktables.NetworkTableInstance
 import edu.wpi.first.wpilibj.DriverStation
@@ -33,7 +33,7 @@ import frc.robot.util.NavX
 import frc.robot.util.PIDControllerDebug
 import java.util.concurrent.atomic.AtomicReference
 
-class RobotContainer {
+class RobotContainer_orig {
 
     // Any static variables need to go in the companion object
     companion object {
@@ -316,10 +316,10 @@ class RobotContainer {
 
         val table: NetworkTable = inst.getTable("SmartDashboard")
 
-        table.addEntryListener(
-            "isRed",
-            { local_table, key, entry, value, flags -> pathColor.set(Color.valueOf(value.value as Int)) },
-            EntryListenerFlags.kNew or EntryListenerFlags.kUpdate)
+//        table.addEntryListener(
+//            "isRed",
+//            { local_table, key, entry, value, flags -> pathColor.set(Color.valueOf(value.value as Int)) },
+//            EntryListenerFlags.kNew or EntryListenerFlags.kUpdate)
         println("INFO: Initialize Autonomous Options")
         SmartDashboard.putData(m_chooser)
 
@@ -422,10 +422,6 @@ class RobotContainer {
 
             SmartDashboard.putNumber("Heading", drivetrain.calcHeading())
             SmartDashboard.putNumber("Shooter Dist", drivetrain.calcDist())
-//            SmartDashboard.putNumber("Yaw", -imu.angle)g())
-//            SmartDashboard.putNumber("Delta Error", drivetrain.calcHeading()-(-imu.angle))
-//            SmartDashboard.putNumber("Proportional Value", pidController.p * pidController.positionError)
-//            SmartDashboard.putNumber("Integral Value", pidController.i * pidController.totalError())
 
         }
     }

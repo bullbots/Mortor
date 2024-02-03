@@ -69,7 +69,7 @@ public class Constants {
     public static final double INTAKE_I = 1e-6; // 1e-6
     public static final double INTAKE_D = 0.00; // 0
     public static final double INTAKE_IZONE = 0.0;
-    public static final double I_SlotIdx = 0;
+    public static final int I_SlotIdx = 0;
     public static final double I_ALLOWED_ERROR = 0.0;
     public static final double I_MAXRPM = 60000.0; // TODO: How does this work!!!
 

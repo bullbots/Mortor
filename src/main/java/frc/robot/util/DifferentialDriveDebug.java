@@ -1,82 +1,83 @@
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
-package frc.robot.util
+package frc.robot.util;
 
-import edu.wpi.first.math.MathUtil
-import edu.wpi.first.wpilibj.drive.DifferentialDrive
-import edu.wpi.first.wpilibj.motorcontrol.MotorController
-import kotlin.math.abs
-import kotlin.math.withSign
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 
 /**
  * Wrapper for DifferentialDrive setting values
  * @param leftMotor: MotorController
  * @param rightMotor: MotorController
  */
-class DifferentialDriveDebug(leftMotor: MotorController, rightMotor: MotorController) :
-    DifferentialDrive(leftMotor, rightMotor) {
+public class DifferentialDriveDebug extends DifferentialDrive {
 
-    private var m_rightSideInvertMultiplier = -1.0
-    private val kDefaultQuickStopThreshold = 0.2
-    private val kDefaultQuickStopAlpha = 0.1
+    private double m_rightSideInvertMultiplier = -1.0;
+    private double kDefaultQuickStopThreshold = 0.2;
+    private double kDefaultQuickStopAlpha = 0.1;
 
-    private val m_quickStopThreshold = kDefaultQuickStopThreshold
-    private val m_quickStopAlpha = kDefaultQuickStopAlpha
-    private val m_quickStopAccumulator = 0.0
+    private double m_quickStopThreshold = kDefaultQuickStopThreshold;
+    private double m_quickStopAlpha = kDefaultQuickStopAlpha;
+    private double m_quickStopAccumulator = 0.0;
+
+    public DifferentialDriveDebug(MotorController leftMotor, MotorController rightMotor) {
+        super(leftMotor,rightMotor);
+    }
 
     // Run super version but then output math for setting motors.
-    override fun arcadeDrive(xSpeed: Double, zRotation: Double, squareInputs: Boolean) {
+    @Override 
+    public void arcadeDrive(double xSpeed, double zRotation, boolean squareInputs) {
 
-        var xSpeed = xSpeed
-        var zRotation = zRotation
-        super.arcadeDrive(xSpeed, zRotation, squareInputs)
+        super.arcadeDrive(xSpeed, zRotation, squareInputs);
 
-        xSpeed = MathUtil.clamp(xSpeed, -1.0, 1.0)
-        xSpeed = MathUtil.applyDeadband(xSpeed, m_deadband)
+        xSpeed = MathUtil.clamp(xSpeed, -1.0, 1.0);
+        xSpeed = MathUtil.applyDeadband(xSpeed, m_deadband);
 
-        zRotation = MathUtil.clamp(zRotation, -1.0, 1.0)
-        zRotation = MathUtil.applyDeadband(zRotation, m_deadband)
+        zRotation = MathUtil.clamp(zRotation, -1.0, 1.0);
+        zRotation = MathUtil.applyDeadband(zRotation, m_deadband);
 
         // Square the inputs (while preserving the sign) to increase fine control
         // while permitting full power.
         if (squareInputs) {
-            xSpeed = (xSpeed * xSpeed).withSign(xSpeed)
-            zRotation = (zRotation * zRotation).withSign(zRotation)
+            xSpeed = (xSpeed * xSpeed) * Math.signum(xSpeed);
+            zRotation = (zRotation * zRotation) * Math.signum(zRotation);
         }
 
-        val leftMotorOutput: Double
-        val rightMotorOutput: Double
+        double leftMotorOutput;
+        double rightMotorOutput;
 
-        val maxInput = abs(xSpeed).coerceAtLeast(abs(zRotation)).withSign(xSpeed)
+        double maxInput = Math.min(Math.abs(xSpeed),Math.abs(zRotation)) * Math.signum(xSpeed);
         if (xSpeed >= 0.0) {
             // First quadrant, else second quadrant
             if (zRotation >= 0.0) {
-                leftMotorOutput = maxInput
-                rightMotorOutput = xSpeed - zRotation
+                leftMotorOutput = maxInput;
+                rightMotorOutput = xSpeed - zRotation;
             } else {
-                leftMotorOutput = xSpeed + zRotation
-                rightMotorOutput = maxInput
+                leftMotorOutput = xSpeed + zRotation;
+                rightMotorOutput = maxInput;
             }
         } else {
             // Third quadrant, else fourth quadrant
             if (zRotation >= 0.0) {
-                leftMotorOutput = xSpeed + zRotation
-                rightMotorOutput = maxInput
+                leftMotorOutput = xSpeed + zRotation;
+                rightMotorOutput = maxInput;
             } else {
-                leftMotorOutput = maxInput
-                rightMotorOutput = xSpeed - zRotation
+                leftMotorOutput = maxInput;
+                rightMotorOutput = xSpeed - zRotation;
             }
         }
 
         // SmartDashboard.putNumber("Left Motor - ArcadeDrive", MathUtil.clamp(leftMotorOutput, -1.0, 1.0) * m_maxOutput);
-        val rightSideInvertMultiplier = if (isRightSideInverted) -1.0 else 1.0
-        val maxOutput = m_maxOutput * rightSideInvertMultiplier
+        double rightSideInvertMultiplier = isRightSideInverted ? -1.0 : 1.0;
+        double maxOutput = m_maxOutput * rightSideInvertMultiplier;
         // SmartDashboard.putNumber("Right Motor - ArcadeDrive", MathUtil.clamp(rightMotorOutput, -1.0, 1.0) * maxOutput);
     }
 
-    override fun curvatureDrive(xSpeed: Double, zRotation: Double, isQuickTurn: Boolean) {
-        super.curvatureDrive(xSpeed, zRotation, isQuickTurn)
+    @Override 
+    public void curvatureDrive(double xSpeed, double zRotation, boolean isQuickTurn) {
+        super.curvatureDrive(xSpeed, zRotation, isQuickTurn);
 
         // xSpeed = MathUtil.clamp(xSpeed, -1.0, 1.0);
         // xSpeed = applyDeadband(xSpeed, m_deadband);
@@ -140,9 +141,11 @@ class DifferentialDriveDebug(leftMotor: MotorController, rightMotor: MotorContro
         // SmartDashboard.putNumber("Right Motor - CurvatureDrive", rightMotorOutput * m_maxOutput * rightSideInvertMultiplier);
     }
 
-    var isRightSideInverted: Boolean
-        get() = m_rightSideInvertMultiplier == -1.0
-        set(rightSideInverted) {
-            m_rightSideInvertMultiplier = if (rightSideInverted) -1.0 else 1.0
-        }
+    private boolean isRightSideInverted;
+    public boolean getIsRightSideInverted() {
+        return m_rightSideInvertMultiplier == -1.0;
+    }
+    public void setIsRightSideInverted(boolean rightSideInverted) {
+        m_rightSideInvertMultiplier = rightSideInverted ? -1.0 : 1.0;
+    }
 }

@@ -21,7 +21,7 @@ public final class Shooter extends SubsystemBase {
         configureShuffleBoard();
 
         // shooterSpinner = SafeSparkMax(Constants.SHOOTER_PORT)
-        shooterSpinner = SafeTalonFX(Constants.SHOOTER_PORT, false, true);
+        shooterSpinner = new SafeTalonFX(Constants.SHOOTER_PORT, false, true);
         servo = new Servo(0);
 
         configurePID();

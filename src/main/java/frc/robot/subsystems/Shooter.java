@@ -14,6 +14,10 @@ import frc.robot.util.SafeTalonFX;
 public final class Shooter extends SubsystemBase {
     // var shooterSpinner: SafeSparkMax
     private SafeTalonFX shooterSpinner;
+
+    public SafeTalonFX getShooterSpinner() {
+        return shooterSpinner;
+    }
     private Servo servo;
     private int loopIdx = 0;
 

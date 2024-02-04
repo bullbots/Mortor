@@ -23,7 +23,7 @@ import frc.robot.util.SafeTalonFX;
 /**
  * Initializes the drivetrain using falcon500
  */
-class DrivetrainFalcon extends SubsystemBase {
+public class DrivetrainFalcon extends SubsystemBase {
 
     // These values are used for Autonomous
     private double ticks_per_wheel_revolution = 26112.0;
@@ -63,6 +63,10 @@ class DrivetrainFalcon extends SubsystemBase {
     private NetworkTableEntry rightVelocity;
 
     private double isFullSpeed = 1.0;
+
+    public double getIsFullSpeed() {
+        return isFullSpeed;
+    }
 
     private boolean m_flippedOdometry = false;
 

@@ -68,7 +68,7 @@ class DrivetrainFalcon extends SubsystemBase {
 
     private int loopIdx = 0;
 
-    private DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(imu.rotation2d, 0.0, 0.0);
+    private DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(imu.getRotation2d(), 0.0, 0.0);
 
     public static Field2d m_fieldSim = new Field2d();
 
@@ -103,7 +103,7 @@ class DrivetrainFalcon extends SubsystemBase {
         }
 
         // diffDrive.setRightSideInverted(false);
-        diffDrive.setIsSafetyEnabled(false);
+        //diffDrive.isSafetyEnabled = false; //WARN:this line of kotlin commented out because I don't believe it does anything useful
 
         // shifter.shiftLow();
 
@@ -152,7 +152,7 @@ class DrivetrainFalcon extends SubsystemBase {
             rightDist = temporary;
         }
 
-        Rotation2d rotation2d = imu.getRotation2d;
+        Rotation2d rotation2d = imu.getRotation2d();
 
         if (m_flippedOdometry) {
             rotation2d.rotateBy(Rotation2d.fromDegrees(180.0));

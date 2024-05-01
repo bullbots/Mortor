@@ -1,9 +1,9 @@
 package frc.robot.commands.Intake_Commands;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Shooter;
 
-public class Indexer extends CommandBase {
+public class Indexer extends Command {
 
     private Shooter m_shooter;
     private double m_shooterVel;
@@ -16,7 +16,9 @@ public class Indexer extends CommandBase {
     }
 
     @Override 
-    public void initialize() { m_shooter.getShooterSpinner().set(m_shooterVel); }
+    public void initialize() {
+        m_shooter.getShooterSpinner().set(m_shooterVel);
+    }
 
     @Override 
     public void execute() {}
@@ -26,5 +28,7 @@ public class Indexer extends CommandBase {
     public boolean isFinished() { return false; }
 
     @Override 
-    public void end(boolean interrupted) { m_shooter.getShooterSpinner().stopMotor(); }
+    public void end(boolean interrupted) {
+        m_shooter.getShooterSpinner().stopMotor();
+    }
 }

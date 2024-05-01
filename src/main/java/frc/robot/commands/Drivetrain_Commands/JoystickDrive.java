@@ -2,11 +2,11 @@
 package frc.robot.commands.Drivetrain_Commands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.DrivetrainFalcon;
 import java.util.function.DoubleSupplier;
 
-public class JoystickDrive  extends CommandBase {
+public class JoystickDrive  extends Command {
 
     private DrivetrainFalcon m_drivetrain; 
     private DoubleSupplier joyY;

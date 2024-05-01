@@ -25,62 +25,44 @@ import frc.robot.util.SafeTalonFX;
  */
 public class DrivetrainFalcon extends SubsystemBase {
 
+    public static Field2d m_fieldSim = new Field2d();
     // These values are used for Autonomous
     private double ticks_per_wheel_revolution = 26112.0;
-    private double ticks_per_foot = ticks_per_wheel_revolution / (Constants.WHEEL_DIAMETER_FT * Math.PI); // .8 inches is diameter of wheel in feet
 
     // NEED THIS FOR AUTONOMOUS
     // private val max_ticks_per_hundred_milliseconds: Double = ticks_per_foot * Constants.MAX_SPEED_LOW_GEAR / 10
-
+    private double ticks_per_foot = ticks_per_wheel_revolution / (Constants.WHEEL_DIAMETER_FT * Math.PI); // .8 inches is diameter of wheel in feet
     // Initializing Master Falcon Motors
     private SafeTalonFX leftMasterFalcon = new SafeTalonFX(Constants.LEFT_MASTER_PORT, true, false); // change to false for no PID?
     private SafeTalonFX rightMasterFalcon = new SafeTalonFX(Constants.RIGHT_MASTER_PORT, true, false);
-
     // Initializing Slave Falcon Motors
     private SafeTalonFX leftSlaveFalcon = new SafeTalonFX(Constants.LEFT_SLAVE_PORT, true, false);
-    private SafeTalonFX rightSlaveFalcon = new SafeTalonFX(Constants.RIGHT_SLAVE_PORT, true, false);
 
 //    private val leftGroup = MotorControllerGroup(leftMasterFalcon, leftSlaveFalcon)
 //    private val rightGroup = MotorControllerGroup(rightMasterFalcon, rightSlaveFalcon)
-
-//    private val kinematics = DifferentialDriveKinematics(Constants.TRACK_WIDTH)
+    private SafeTalonFX rightSlaveFalcon = new SafeTalonFX(Constants.RIGHT_SLAVE_PORT, true, false);
+    //    private val kinematics = DifferentialDriveKinematics(Constants.TRACK_WIDTH)
     private DifferentialDriveDebug diffDrive = new DifferentialDriveDebug(leftMasterFalcon, rightMasterFalcon);
     private NavX imu = new NavX();
-
     private PIDControllerDebug leftPIDController = new PIDControllerDebug(0.02, 0.0, 0.0);
     private PIDControllerDebug rightPIDController = new PIDControllerDebug(0.02, 0.0, 0.0);
-
     // TODO: ks and kv values need to be determined for the robot
     private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(1.0, 3.0);
-
     // WARN: In kotlin these were lateinit, don't know if that was important
-    private NetworkTableEntry leftCurrent; 
+    private NetworkTableEntry leftCurrent;
     private NetworkTableEntry leftPosition;
-    private NetworkTableEntry leftVelocity; 
-
+    private NetworkTableEntry leftVelocity;
     private NetworkTableEntry rightCurrent;
-    private NetworkTableEntry rightPosition; 
+    private NetworkTableEntry rightPosition;
     private NetworkTableEntry rightVelocity;
-
     private double isFullSpeed = 1.0;
-
-    public double getIsFullSpeed() {
-        return isFullSpeed;
-    }
-
     private boolean m_flippedOdometry = false;
 
     private int loopIdx = 0;
 
     private DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(imu.getRotation2d(), 0.0, 0.0);
 
-    public static Field2d m_fieldSim = new Field2d();
-
-    public enum CoastMode {
-        Coast, Brake
-    }
-
-    DrivetrainFalcon() {
+    public DrivetrainFalcon() {
         if (RobotBase.isReal()) {
 
             leftSlaveFalcon.follow(leftMasterFalcon);
@@ -121,11 +103,14 @@ public class DrivetrainFalcon extends SubsystemBase {
 //        SmartDashboard.putData("Field", m_fieldSim)
     }
 
+    public double getIsFullSpeed() {
+        return isFullSpeed;
+    }
 
     private void setCoastMode(CoastMode coastMode) {
         // Sets neutralMode to Coast or Brake depending on coastMode
         var neutralMode = NeutralMode.Coast; // By default this is Coast
-        if(coastMode == CoastMode.Coast) {
+        if (coastMode == CoastMode.Coast) {
             neutralMode = NeutralMode.Coast;
         } else if (coastMode == CoastMode.Brake) {
             neutralMode = NeutralMode.Brake;
@@ -136,7 +121,9 @@ public class DrivetrainFalcon extends SubsystemBase {
         leftSlaveFalcon.setNeutralMode(neutralMode);
     }
 
-    public void setOdometryDirection(boolean invert) { m_flippedOdometry = invert; }
+    public void setOdometryDirection(boolean invert) {
+        m_flippedOdometry = invert;
+    }
 
     public double getAverageDist() {
         double leftDist = leftMasterFalcon.getSelectedSensorPosition() / ticks_per_foot;
@@ -150,7 +137,7 @@ public class DrivetrainFalcon extends SubsystemBase {
 
 //        println("INFO: Left Dist: $leftDist, Right Dist: $rightDist")
 
-        if(m_flippedOdometry) {
+        if (m_flippedOdometry) {
             double temporary = -leftDist;
             leftDist = -rightDist;
             rightDist = temporary;
@@ -173,9 +160,13 @@ public class DrivetrainFalcon extends SubsystemBase {
         m_odometry.resetPosition(imu.getRotation2d(), 0.0, 0.0, pose);
     }
 
-    public void resetGyro() { imu.reset(); }
+    public void resetGyro() {
+        imu.reset();
+    }
 
-    public Pose2d  getPose() { return m_odometry.getPoseMeters(); }
+    public Pose2d getPose() {
+        return m_odometry.getPoseMeters();
+    }
 
     public void configurePID() {
 
@@ -200,16 +191,7 @@ public class DrivetrainFalcon extends SubsystemBase {
         rightMasterFalcon.configMotionAcceleration(Constants.RIGHT_MASTER_ACCELERATION, Constants.kTIMEOUT_MS);
     }
 
-//    fun configureSmartDashBoard() {
-//        leftCurrent = generateEntry("Left Current", 0, 0)
-//        leftPosition = generateEntry("Left Position", 2, 0)
-//        leftVelocity = generateEntry("Left Velocity", 4, 0)
-//        rightCurrent = generateEntry("Right Current", 0, 2)
-//        rightPosition = generateEntry("Right Position", 2, 2)
-//        rightVelocity = generateEntry("Right Velocity", 4, 2)
-//    }
-
-    @Override 
+    @Override
     public void periodic() {
 //        println("DrivetrainFalcon periodic")
 //        SmartDashboard.putNumber("Encoder Ticks - Left", leftMasterFalcon.selectedSensorPosition)
@@ -231,7 +213,6 @@ public class DrivetrainFalcon extends SubsystemBase {
 //        SmartDashboard.putNumber("Left Slave Current", leftSlaveFalcon.statorCurrent)
 
         updateOdometry();
-
 
 
         loopIdx++;
@@ -277,11 +258,19 @@ public class DrivetrainFalcon extends SubsystemBase {
         }
     }
 
+//    fun configureSmartDashBoard() {
+//        leftCurrent = generateEntry("Left Current", 0, 0)
+//        leftPosition = generateEntry("Left Position", 2, 0)
+//        leftVelocity = generateEntry("Left Velocity", 4, 0)
+//        rightCurrent = generateEntry("Right Current", 0, 2)
+//        rightPosition = generateEntry("Right Position", 2, 2)
+//        rightVelocity = generateEntry("Right Velocity", 4, 2)
+//    }
+
     public void arcadeDrive(double speed, double rotation, boolean squareInputs) {
 
         diffDrive.arcadeDrive(speed, rotation, squareInputs);
     }
-
 
     public void curvatureDrive(double speed, double rotation, boolean isQuickTurn) {
         diffDrive.curvatureDrive(speed, rotation, isQuickTurn);
@@ -305,6 +294,7 @@ public class DrivetrainFalcon extends SubsystemBase {
 
         return dist;
     }
+
     /**
      * @return atanDegree: The heading the robot needs to face towards the goal
      */
@@ -323,9 +313,9 @@ public class DrivetrainFalcon extends SubsystemBase {
         double leftFeedforward = feedforward.calculate(speeds.leftMetersPerSecond);
         double rightFeedforward = feedforward.calculate(speeds.rightMetersPerSecond);
         double leftOutput =
-            leftPIDController.calculate(leftMasterFalcon.getSelectedSensorPosition(), speeds.leftMetersPerSecond);
+                leftPIDController.calculate(leftMasterFalcon.getSelectedSensorPosition(), speeds.leftMetersPerSecond);
         double rightOutput =
-            rightPIDController.calculate(rightMasterFalcon.getSelectedSensorPosition(), speeds.rightMetersPerSecond);
+                rightPIDController.calculate(rightMasterFalcon.getSelectedSensorPosition(), speeds.rightMetersPerSecond);
 
 //        leftGroup.setVoltage(leftOutput + leftFeedforward)
 //        rightGroup.setVoltage(rightOutput + rightFeedforward)
@@ -335,7 +325,7 @@ public class DrivetrainFalcon extends SubsystemBase {
     /**
      * Controls the robot using arcade drive.
      *
-     * @param xSpeed: Double / The speed for the X axis
+     * @param xSpeed:   Double / The speed for the X axis
      * @param rotation: Double / The rotation
      */
     public void drive(double xSpeed, double rotation) {
@@ -343,33 +333,34 @@ public class DrivetrainFalcon extends SubsystemBase {
         diffDrive.arcadeDrive(xSpeed, rotation);
     }
 
+    /**
+     * @return double array of positions [left, right]
+     */
+    public double[] getPositions() {
+        double pos[] = new double[2];
+        pos[0] = leftMasterFalcon.getSelectedSensorPosition();
+        pos[1] = rightMasterFalcon.getSelectedSensorPosition();
+        return pos;
+    }
+
 //    override fun simulationPeriodic() {
 //        drivetrainSim
 //    }
 
     /**
-     * @return double array of positions [left, right]
-     */
-    public double[] getPositions() {
-	double pos[] = new double[2];
-        pos[0] = leftMasterFalcon.getSelectedSensorPosition();
-	pos[1] = rightMasterFalcon.getSelectedSensorPosition();
-        return pos;
-    }
-
-    /**
      * @return double array of velocities [left, right]
      */
     public double[] getVelocities() {
-	double velocites[] = new double[2];
+        double velocites[] = new double[2];
         velocites[0] = leftMasterFalcon.getSelectedSensorVelocity();
-	velocites[1] = rightMasterFalcon.getSelectedSensorVelocity();
+        velocites[1] = rightMasterFalcon.getSelectedSensorVelocity();
         return velocites;
     }
 
     /**
      * Sets the left and right motors to a percent output
-     * @param leftPercent Double
+     *
+     * @param leftPercent  Double
      * @param rightPercent Double
      */
     public void set(double leftPercent, double rightPercent) {
@@ -390,20 +381,15 @@ public class DrivetrainFalcon extends SubsystemBase {
         rightMasterFalcon.stopMotor();
     }
 
+    void driveLeft(double value) {
+        leftMasterFalcon.set(value);
+    }
 
-    /**
-     * Helper function to generate NetworkTableEntries
-     */
-//    private fun generateEntry(entryName: String, columnIndex: Int, rowIndex: Int): NetworkTableEntry {
-//        return Shuffleboard.getTab("Drivetrain")
-//            .add(entryName, 0)
-//            .withSize(2, 2)
-//            .withPosition(columnIndex, rowIndex)
-//            .withWidget(BuiltInWidgets.kGraph)
-//            .entry
-//    }
+    void driveRight(double value) {
+        rightMasterFalcon.set(value);
+    }
 
-    fun driveLeft(double value) { leftMasterFalcon.set(value); }
-
-    fun driveRight(double value) { rightMasterFalcon.set(value); }
+    public enum CoastMode {
+        Coast, Brake
+    }
 }

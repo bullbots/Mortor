@@ -11,7 +11,7 @@ import java.lang.Math;
  * @param usePID Boolean: By default this value is false.
  * @param isDrivetrain Boolean: By default this value is true.
  */
-public class SafeTalonFX  extends WPI_TalonFX {
+public class SafeTalonFX extends WPI_TalonFX {
 
     private double maxSpeed = 21000.0;
     private double deadBand = 0.02;

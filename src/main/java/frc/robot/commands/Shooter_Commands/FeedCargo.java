@@ -1,9 +1,9 @@
 package frc.robot.commands.Shooter_Commands;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Intake;
 
-public class FeedCargo extends CommandBase {
+public class FeedCargo extends Command {
 
     private Intake m_intake;
     private double m_intakeVel;

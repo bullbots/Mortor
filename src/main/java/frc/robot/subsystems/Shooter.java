@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -31,7 +32,7 @@ public final class Shooter extends SubsystemBase {
         configurePID();
 
         // shooterSpinner.idleMode = CANSparkMax.IdleMode.kCoast
-        shooterSpinner.setNeutralMode(NeutralMode.Coast);
+        shooterSpinner.setNeutralMode(NeutralModeValue.Coast);
     }
 
     private void configurePID() {
@@ -40,10 +41,10 @@ public final class Shooter extends SubsystemBase {
 //        shooterSpinner.pidController.i = Constants.SHOOTER_I
 //        shooterSpinner.pidController.d = Constants.SHOOTER_D
 
-        shooterSpinner.config_kF(Constants.kSlotIdx, Constants.SHOOTER_KFF, Constants.kTIMEOUT_MS);
-        shooterSpinner.config_kP(Constants.kSlotIdx, Constants.SHOOTER_KP, Constants.kTIMEOUT_MS);
-        shooterSpinner.config_kI(Constants.kSlotIdx, Constants.SHOOTER_KI, Constants.kTIMEOUT_MS);
-        shooterSpinner.config_kD(Constants.kSlotIdx, Constants.SHOOTER_KD, Constants.kTIMEOUT_MS);
+//        shooterSpinner.config_kF(Constants.kSlotIdx, Constants.SHOOTER_KFF, Constants.kTIMEOUT_MS);
+//        shooterSpinner.config_kP(Constants.kSlotIdx, Constants.SHOOTER_KP, Constants.kTIMEOUT_MS);
+//        shooterSpinner.config_kI(Constants.kSlotIdx, Constants.SHOOTER_KI, Constants.kTIMEOUT_MS);
+//        shooterSpinner.config_kD(Constants.kSlotIdx, Constants.SHOOTER_KD, Constants.kTIMEOUT_MS);
     }
 
 

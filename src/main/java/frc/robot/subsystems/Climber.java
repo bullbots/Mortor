@@ -1,7 +1,8 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
+import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.Counter;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -16,6 +17,8 @@ public class Climber extends SubsystemBase {
     private Counter limitSwitch;
 
     private double delta = 0.0;
+
+    private final PositionVoltage m_voltagePosition = new PositionVoltage(0, 0, false, 0, 0, false, false, false);
 
     public enum State {
         BOTTOM,
@@ -33,16 +36,16 @@ public class Climber extends SubsystemBase {
         // Initializing Motor(s)
         climberMotor = new SafeTalonFX(Constants.CLIMBER_PORT, false, false);
 
-        climberMotor.setNeutralMode(NeutralMode.Brake);
+        climberMotor.setNeutralMode(NeutralModeValue.Brake);
 
-        climberMotor.selectProfileSlot(Constants.kSlotIdx, Constants.kPIDLoopIdx);
-        climberMotor.config_kF(Constants.kSlotIdx, Constants.CLIMBER_KFF, Constants.kTIMEOUT_MS);
-        climberMotor.config_kP(Constants.kSlotIdx, Constants.CLIMBER_KP, Constants.kTIMEOUT_MS);
-        climberMotor.config_kI(Constants.kSlotIdx, Constants.CLIMBER_KI, Constants.kTIMEOUT_MS);
-        climberMotor.config_kD(Constants.kSlotIdx, Constants.CLIMBER_KD, Constants.kTIMEOUT_MS);
-
-        climberMotor.configMotionCruiseVelocity(21000.0, Constants.kTIMEOUT_MS);
-        climberMotor.configMotionAcceleration(21000.0, Constants.kTIMEOUT_MS);
+//        climberMotor.selectProfileSlot(Constants.kSlotIdx, Constants.kPIDLoopIdx);
+//        climberMotor.config_kF(Constants.kSlotIdx, Constants.CLIMBER_KFF, Constants.kTIMEOUT_MS);
+//        climberMotor.config_kP(Constants.kSlotIdx, Constants.CLIMBER_KP, Constants.kTIMEOUT_MS);
+//        climberMotor.config_kI(Constants.kSlotIdx, Constants.CLIMBER_KI, Constants.kTIMEOUT_MS);
+//        climberMotor.config_kD(Constants.kSlotIdx, Constants.CLIMBER_KD, Constants.kTIMEOUT_MS);
+//
+//        climberMotor.configMotionCruiseVelocity(21000.0, Constants.kTIMEOUT_MS);
+//        climberMotor.configMotionAcceleration(21000.0, Constants.kTIMEOUT_MS);
 
         limitSwitch = new Counter(Counter.Mode.kPulseLength);
 
@@ -76,17 +79,19 @@ public class Climber extends SubsystemBase {
 //        }
 //    }
 
-    public void setAuto(TalonFXControlMode controlMode, double encoderVal) {
+    public void setAuto(double encoderVal) {
         if (limitSwitch.get() > 0) {
             if (encoderVal > 0) {
-                climberMotor.set(controlMode, encoderVal);
+//                climberMotor.set(controlMode, encoderVal);
+                climberMotor.setControl(m_voltagePosition.withPosition(encoderVal));
                 limitSwitch.reset();
             } else {
                 System.out.println("WARNING: THE CLIMBER IS TOO LOW!!!!!!");
                 climberMotor.stopMotor();
             }
         } else {
-            climberMotor.set(controlMode, encoderVal);
+//            climberMotor.set(controlMode, encoderVal);
+            climberMotor.setControl(m_voltagePosition.withPosition(encoderVal));
         }
     }
 
@@ -105,11 +110,11 @@ public class Climber extends SubsystemBase {
     }
 
     public void resetEncoders() {
-        climberMotor.setSelectedSensorPosition(0.0);
+        climberMotor.setPosition(0.0);
     }
 
     public double getEncoderPos() {
-        return climberMotor.getSelectedSensorPosition(Constants.kPIDLoopIdx);
+        return climberMotor.getPosition().getValue();
     }
 
 //        override fun periodic() {

@@ -3,6 +3,10 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -65,17 +69,17 @@ public class DrivetrainFalcon extends SubsystemBase {
     public DrivetrainFalcon() {
         if (RobotBase.isReal()) {
 
-            leftSlaveFalcon.follow(leftMasterFalcon);
-            rightSlaveFalcon.follow(rightMasterFalcon);
-
             rightMasterFalcon.setInverted(true);
-            rightSlaveFalcon.setInverted(InvertType.FollowMaster);
+            rightSlaveFalcon.setInverted(true);
             leftMasterFalcon.setInverted(false);
-            leftSlaveFalcon.setInverted(InvertType.FollowMaster);
+            leftSlaveFalcon.setInverted(false);
 
-            setCoastMode(CoastMode.Brake);
+            leftSlaveFalcon.setControl(new Follower(leftMasterFalcon.getDeviceID(), false));
+            rightSlaveFalcon.setControl(new Follower(rightMasterFalcon.getDeviceID(), false));
 
-            // leftMasterFalcon.configClosedloopRamp(Constants.DRIVETRAIN_RAMP);
+            setNeutralMode(NeutralModeValue.Brake);
+
+//             leftMasterFalcon.configClosedloopRamp(Constants.DRIVETRAIN_RAMP);
             // rightMasterFalcon.configClosedloopRamp(Constants.DRIVETRAIN_RAMP);
 
             // orchestra = new Orchestra();
@@ -107,18 +111,9 @@ public class DrivetrainFalcon extends SubsystemBase {
         return isFullSpeed;
     }
 
-    private void setCoastMode(CoastMode coastMode) {
-        // Sets neutralMode to Coast or Brake depending on coastMode
-        var neutralMode = NeutralMode.Coast; // By default this is Coast
-        if (coastMode == CoastMode.Coast) {
-            neutralMode = NeutralMode.Coast;
-        } else if (coastMode == CoastMode.Brake) {
-            neutralMode = NeutralMode.Brake;
-        }
-        rightMasterFalcon.setNeutralMode(neutralMode);
-        rightSlaveFalcon.setNeutralMode(neutralMode);
-        leftMasterFalcon.setNeutralMode(neutralMode);
-        leftSlaveFalcon.setNeutralMode(neutralMode);
+    private void setNeutralMode(NeutralModeValue coastMode) {
+        rightMasterFalcon.setNeutralMode(coastMode);
+        leftMasterFalcon.setNeutralMode(coastMode);
     }
 
     public void setOdometryDirection(boolean invert) {
@@ -126,14 +121,16 @@ public class DrivetrainFalcon extends SubsystemBase {
     }
 
     public double getAverageDist() {
-        double leftDist = leftMasterFalcon.getSelectedSensorPosition() / ticks_per_foot;
-        double rightDist = rightMasterFalcon.getSelectedSensorPosition() / ticks_per_foot;
+        double leftDist = leftMasterFalcon.getPosition().getValue() / ticks_per_foot;
+        double rightDist = rightMasterFalcon.getPosition().getValue() / ticks_per_foot;
         return (leftDist + rightDist) * 0.5;
     }
 
     private void updateOdometry() {
-        double leftDist = leftMasterFalcon.getSelectedSensorPosition() / ticks_per_foot;
-        double rightDist = rightMasterFalcon.getSelectedSensorPosition() / ticks_per_foot;
+//        double leftDist = leftMasterFalcon.getSelectedSensorPosition() / ticks_per_foot;
+//        double rightDist = rightMasterFalcon.getSelectedSensorPosition() / ticks_per_foot;
+        double leftDist = leftMasterFalcon.getPosition().getValue();
+        double rightDist = rightMasterFalcon.getPosition().getValue();
 
 //        println("INFO: Left Dist: $leftDist, Right Dist: $rightDist")
 
@@ -154,8 +151,8 @@ public class DrivetrainFalcon extends SubsystemBase {
     }
 
     public void resetOdometry(Pose2d pose) {
-        leftMasterFalcon.setSelectedSensorPosition(0.0);
-        rightMasterFalcon.setSelectedSensorPosition(0.0);
+//        leftMasterFalcon.setSelectedSensorPosition(0.0);
+//        rightMasterFalcon.setSelectedSensorPosition(0.0);
 
         m_odometry.resetPosition(imu.getRotation2d(), 0.0, 0.0, pose);
     }
@@ -169,26 +166,24 @@ public class DrivetrainFalcon extends SubsystemBase {
     }
 
     public void configurePID() {
-
         // Set Velocity PID Constants in slot 0
-        leftMasterFalcon.config_kF(0, Constants.LEFT_VELOCITY_FF);
-        leftMasterFalcon.config_kP(0, Constants.LEFT_VELOCITY_P);
-        leftMasterFalcon.config_kI(0, Constants.LEFT_VELOCITY_I);
-        leftMasterFalcon.config_kD(0, Constants.LEFT_VELOCITY_D);
-
-        rightMasterFalcon.config_kF(0, Constants.RIGHT_VELOCITY_FF);
-        rightMasterFalcon.config_kP(0, Constants.RIGHT_VELOCITY_P);
-        rightMasterFalcon.config_kI(0, Constants.RIGHT_VELOCITY_I);
-        rightMasterFalcon.config_kD(0, Constants.RIGHT_VELOCITY_D);
-
+//        leftMasterFalcon.config_kF(0, Constants.LEFT_VELOCITY_FF);
+//        leftMasterFalcon.config_kP(0, Constants.LEFT_VELOCITY_P);
+//        leftMasterFalcon.config_kI(0, Constants.LEFT_VELOCITY_I);
+//        leftMasterFalcon.config_kD(0, Constants.LEFT_VELOCITY_D);
+//
+//        rightMasterFalcon.config_kF(0, Constants.RIGHT_VELOCITY_FF);
+//        rightMasterFalcon.config_kP(0, Constants.RIGHT_VELOCITY_P);
+//        rightMasterFalcon.config_kI(0, Constants.RIGHT_VELOCITY_I);
+//        rightMasterFalcon.config_kD(0, Constants.RIGHT_VELOCITY_D);
     }
 
     public void configureMotionMagic() {
-        leftMasterFalcon.configMotionCruiseVelocity(Constants.LEFT_MASTER_VELOCITY, Constants.kTIMEOUT_MS);
-        leftMasterFalcon.configMotionAcceleration(Constants.LEFT_MASTER_ACCELERATION, Constants.kTIMEOUT_MS);
-
-        rightMasterFalcon.configMotionCruiseVelocity(Constants.RIGHT_MASTER_VELOCITY, Constants.kTIMEOUT_MS);
-        rightMasterFalcon.configMotionAcceleration(Constants.RIGHT_MASTER_ACCELERATION, Constants.kTIMEOUT_MS);
+//        leftMasterFalcon.configMotionCruiseVelocity(Constants.LEFT_MASTER_VELOCITY, Constants.kTIMEOUT_MS);
+//        leftMasterFalcon.configMotionAcceleration(Constants.LEFT_MASTER_ACCELERATION, Constants.kTIMEOUT_MS);
+//
+//        rightMasterFalcon.configMotionCruiseVelocity(Constants.RIGHT_MASTER_VELOCITY, Constants.kTIMEOUT_MS);
+//        rightMasterFalcon.configMotionAcceleration(Constants.RIGHT_MASTER_ACCELERATION, Constants.kTIMEOUT_MS);
     }
 
     @Override
@@ -282,8 +277,8 @@ public class DrivetrainFalcon extends SubsystemBase {
      */
     public void resetEncoders() {
         System.out.println("Reset Encoders called");
-        leftMasterFalcon.setSelectedSensorPosition(0.0);
-        rightMasterFalcon.setSelectedSensorPosition(0.0);
+        leftMasterFalcon.setPosition(0.0);
+        rightMasterFalcon.setPosition(0.0);
     }
 
     public double calcDist() {
@@ -313,9 +308,9 @@ public class DrivetrainFalcon extends SubsystemBase {
         double leftFeedforward = feedforward.calculate(speeds.leftMetersPerSecond);
         double rightFeedforward = feedforward.calculate(speeds.rightMetersPerSecond);
         double leftOutput =
-                leftPIDController.calculate(leftMasterFalcon.getSelectedSensorPosition(), speeds.leftMetersPerSecond);
+                leftPIDController.calculate(leftMasterFalcon.getPosition().getValue(), speeds.leftMetersPerSecond);
         double rightOutput =
-                rightPIDController.calculate(rightMasterFalcon.getSelectedSensorPosition(), speeds.rightMetersPerSecond);
+                rightPIDController.calculate(rightMasterFalcon.getPosition().getValue(), speeds.rightMetersPerSecond);
 
 //        leftGroup.setVoltage(leftOutput + leftFeedforward)
 //        rightGroup.setVoltage(rightOutput + rightFeedforward)
@@ -338,8 +333,8 @@ public class DrivetrainFalcon extends SubsystemBase {
      */
     public double[] getPositions() {
         double pos[] = new double[2];
-        pos[0] = leftMasterFalcon.getSelectedSensorPosition();
-        pos[1] = rightMasterFalcon.getSelectedSensorPosition();
+        pos[0] = leftMasterFalcon.getPosition().getValue();
+        pos[1] = rightMasterFalcon.getPosition().getValue();
         return pos;
     }
 
@@ -352,8 +347,8 @@ public class DrivetrainFalcon extends SubsystemBase {
      */
     public double[] getVelocities() {
         double velocites[] = new double[2];
-        velocites[0] = leftMasterFalcon.getSelectedSensorVelocity();
-        velocites[1] = rightMasterFalcon.getSelectedSensorVelocity();
+        velocites[0] = leftMasterFalcon.getVelocity().getValue();
+        velocites[1] = rightMasterFalcon.getVelocity().getValue();
         return velocites;
     }
 
@@ -369,8 +364,8 @@ public class DrivetrainFalcon extends SubsystemBase {
     }
 
     public void set(ControlMode controlMode, double leftMagnitude, double rightMagnitude) {
-        leftMasterFalcon.set(controlMode, leftMagnitude);
-        rightMasterFalcon.set(controlMode, rightMagnitude);
+        leftMasterFalcon.set(leftMagnitude);
+        rightMasterFalcon.set(rightMagnitude);
     }
 
     /**

@@ -38,7 +38,7 @@ public class IntakeCargos extends Command {
     // Called every time the scheduler runs while the command is scheduled.
     @Override 
     public void execute() {
-        if (m_shooter.getShooterSpinner().getStatorCurrent() > 50) {
+        if (m_shooter.getShooterSpinner().getStatorCurrent().getValue() > 50) {
             m_intake.getIntakeSpinner().stopMotor();
         } else {
             m_intake.getIntakeSpinner().set(m_intakeVel);

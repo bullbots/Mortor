@@ -1,61 +1,90 @@
 package frc.robot.util;
 
 import com.ctre.phoenix.motorcontrol.*;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix6.StatusCode;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import frc.robot.Constants;
+
 import java.lang.Math;
 
-/**
- * Wrapper used to prevent Falcon 500 from burning out or being damaged
- * @param deviceNumber Int
- * @param usePID Boolean: By default this value is false.
- * @param isDrivetrain Boolean: By default this value is true.
- */
-public class SafeTalonFX extends WPI_TalonFX {
 
-    private double maxSpeed = 21000.0;
+public class SafeTalonFX extends TalonFX {
+
+    // Max RPM 6380 rpm (106.3 rps)
+    private double maxSpeed = 106.3;
     private double deadBand = 0.02;
     private boolean usePID;
 
-    public SafeTalonFX(int deviceNumber, boolean isDrivetrain, boolean usePID) {
-	super(deviceNumber);
-        configFactoryDefault();
+    private final VelocityVoltage m_voltageVelocity = new VelocityVoltage(0, 0, true, 0, 0, false, false, false);
 
-	this.usePID = usePID;
+    public SafeTalonFX(int deviceNumber, boolean isDrivetrain, boolean usePID) {
+        super(deviceNumber);
+
+        var toConfigure = new TalonFXConfiguration();
+
+        var motorOutputConfig = new MotorOutputConfigs();
+//        motorOutputConfig.NeutralMode = NeutralModeValue.Brake;
+
+        this.usePID = usePID;
 
         if (isDrivetrain) {
+            // Old commented-out settings
 //            configStatorCurrentLimit(StatorCurrentLimitConfiguration(true, 20.0, 25.0, 1.0))
 //            configSupplyCurrentLimit(SupplyCurrentLimitConfiguration(true, 10.0, 15.0,0.5))
 //            configStatorCurrentLimit(StatorCurrentLimitConfiguration(true, 40.0, 25.0, 1.0))
 //            configSupplyCurrentLimit(SupplyCurrentLimitConfiguration(true, 20.0, 15.0,0.5))
         } else {
-            configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 100.0, 75.0, 1.0));
-            configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 80.0, 60.0,0.5));
+            var currentLimitsConfig = new CurrentLimitsConfigs();
+
+            currentLimitsConfig.StatorCurrentLimit = 100;
+            currentLimitsConfig.StatorCurrentLimitEnable = true;
+
+            currentLimitsConfig.SupplyCurrentLimit = 80;
+            currentLimitsConfig.SupplyCurrentThreshold = 60;
+            currentLimitsConfig.withSupplyTimeThreshold(60);
+            currentLimitsConfig.SupplyCurrentLimitEnable = true;
+
+            // Old not-commented-out settings
+//            configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 100.0, 75.0, 1.0));
+//            configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 80.0, 60.0, 0.5));
+            toConfigure.CurrentLimits = currentLimitsConfig;
         }
 
-        configNeutralDeadband(deadBand);
+//        motorOutputConfig.withDutyCycleNeutralDeadband(deadBand);
 
-        setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, Constants.kTIMEOUT_MS);
-        setStatusFramePeriod(StatusFrame.Status_10_MotionMagic, 10, Constants.kTIMEOUT_MS);
+        // Uncomment to get Velocity Closed Loop control.
+        /* Voltage-based velocity requires a feed forward to account for the back-emf of the motor */
+        toConfigure.Slot0.kP = 0.11; // An error of 1 rotation per second results in 2V output
+        toConfigure.Slot0.kI = 0.5; // An error of 1 rotation per second increases output by 0.5V every second
+        toConfigure.Slot0.kD = 0.0001; // A change of 1 rotation per second squared results in 0.01 volts output
+        toConfigure.Slot0.kV = 0.12; // Falcon 500 is a 500kV motor, 500rpm per V = 8.333 rps per V, 1/8.33 = 0.12 volts / Rotation per second
+        // Peak output of 8 volts
+        toConfigure.Voltage.PeakForwardVoltage = 8;
+        toConfigure.Voltage.PeakReverseVoltage = -8;
 
-        // configStatorCurrentLimit(config);
-        configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 30);
-        configNominalOutputForward(0.0, 30);
-        configNominalOutputReverse(0.0, 30);
-        configPeakOutputForward(1.0, 30);
-        configPeakOutputReverse(-1.0, 30);
-        setSelectedSensorPosition(0.0, Constants.kPIDLoopIdx, Constants.kTIMEOUT_MS);
+        toConfigure.MotorOutput = motorOutputConfig;
+
+        /* Retry config apply up to 5 times, report if failure */
+        StatusCode status = StatusCode.StatusCodeNotInitialized;
+        for (int i = 0; i < 5; ++i) {
+            status = getConfigurator().apply(toConfigure);
+            if (status.isOK()) break;
+        }
+        if(!status.isOK()) {
+            System.out.println("Could not apply configs, error code: " + status.toString());
+        }
     }
 
-    /**
-     * Moves the motor at a percent of its max speed
-     * @param percentOutput A double from -1 to 1
-     */
     //@Override 
     public void set(Double percentOutput) {
         if (usePID && Math.abs(percentOutput) > 0.1) {
-            super.set(ControlMode.Velocity, percentOutput * maxSpeed);
-//            println("INFO: velocity: ${percentOutput * maxSpeed}")
+            setControl(m_voltageVelocity.withVelocity(percentOutput * maxSpeed));
+//            System.out.print("INFO: velocity: " + percentOutput * maxSpeed);
         } else {
             super.set(percentOutput);
         }

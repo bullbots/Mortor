@@ -43,7 +43,7 @@ public class AutoClimber extends Command {
 
     @Override
     public void execute() {
-        climber.setAuto(TalonFXControlMode.MotionMagic, targetTraj);
+        climber.setAuto(targetTraj);
     }
 
     @Override

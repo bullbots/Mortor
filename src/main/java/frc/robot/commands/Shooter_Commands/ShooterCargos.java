@@ -14,12 +14,12 @@ public class ShooterCargos extends Command {
     private double velocity = 0.0;
     private Shooter m_shooter;
     private boolean m_staticVal;
-    private DoubleSupplier m_dist;
+    private DoubleSupplier dist;
     // Use addRequirements() here to declare subsystem dependencies.
     public ShooterCargos(Shooter shooter, boolean staticVal, DoubleSupplier dist) {
         m_shooter = shooter;
         m_staticVal = staticVal;
-        m_dist = dist;
+        this.dist = dist;
         addRequirements(shooter);
     }
 
@@ -28,10 +28,36 @@ public class ShooterCargos extends Command {
     public void initialize() {
         // var shooterVel = SmartDashboard.getNumber("StaticShooter", 0.3)
         if(m_staticVal) {
-            velocity = m_dist.getAsDouble();
-            m_shooter.getShooterSpinner().set(m_dist.getAsDouble());
+            velocity = dist.getAsDouble();
+            m_shooter.getShooterSpinner().set(dist.getAsDouble());
         } else {
             // dist() is in feet
+
+            var velocity = 0.0;
+
+            if ((0.0 <= dist.getAsDouble()) && (dist.getAsDouble() <= 5.0)) {
+                velocity = 0.26;
+            }
+            else if ((5.0 < dist.getAsDouble()) && (dist.getAsDouble() <= 7.0)) {
+                velocity = MathUtil.interpolate(0.38, 0.41, (dist.getAsDouble()-5) / 2);
+            }
+            else if ((7.0 < dist.getAsDouble()) && (dist.getAsDouble() <= 9.0)) {
+                velocity = MathUtil.interpolate(0.40, 0.43, (dist.getAsDouble()-7) / 2);
+            }
+            else if ((9.0 < dist.getAsDouble()) && (dist.getAsDouble() <= 11.0)) {
+                velocity = MathUtil.interpolate(0.42, 0.45, (dist.getAsDouble()-9) / 2);
+            }
+            else if ((11.0 < dist.getAsDouble()) && (dist.getAsDouble() <= 13.0)) {
+                velocity = MathUtil.interpolate(0.44, 0.46, (dist.getAsDouble()-11) / 2);
+            }
+            else if ((13.0 < dist.getAsDouble()) && (dist.getAsDouble() <= 15.0)) {
+                velocity = MathUtil.interpolate(0.46, 0.49, (dist.getAsDouble()-13) / 2);
+            }
+            else if ((15.0 < dist.getAsDouble()) && (dist.getAsDouble() <= 17.0)) {
+                velocity = MathUtil.interpolate(0.48, 0.52, (dist.getAsDouble()-15) / 2);
+            }
+
+
 	    /* TODO:translate this to java
             velocity = when (dist()) {
                 in 0.0..5.0 -> 0.26
@@ -45,6 +71,8 @@ public class ShooterCargos extends Command {
             }
             shooter.shooterSpinner.set(velocity)
             */
+
+            m_shooter.getShooterSpinner().set(velocity);
         }
 //        println(velocity) // Debugging Values
     }

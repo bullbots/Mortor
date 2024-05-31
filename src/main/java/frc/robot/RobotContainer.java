@@ -8,6 +8,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.Drivetrain_Commands.JoystickDrive;
 import frc.robot.commands.Intake_Commands.IntakeGroup;
 import frc.robot.commands.Shooter_Commands.ShooterCargos;
 import frc.robot.subsystems.Climber;
@@ -112,6 +113,11 @@ public class RobotContainer
     {
         // Configure the trigger bindings
         configureBindings();
+
+        drivetrain.setDefaultCommand(new JoystickDrive(drivetrain,
+                () -> -stick.getY() * ((button3.getAsBoolean()) ? -1.0 : 1.0),  // Because Negative Y is forward on the joysticks
+                () -> stick.getX(),
+                () ->(stick.getZ() - 1) / -2.0));
     }
     
     

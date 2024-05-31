@@ -5,10 +5,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Shooter;
 import java.util.function.DoubleSupplier;
 
-/**
- * ShooterCargo initialize the velocity of the staticShooter
- * @param shooter: StaticShooter
- */
+
 public class ShooterCargos extends Command {
 
     private double velocity = 0.0;

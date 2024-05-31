@@ -1,11 +1,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.InvertType;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -14,8 +10,6 @@ import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -31,27 +25,29 @@ public class DrivetrainFalcon extends SubsystemBase {
 
     public static Field2d m_fieldSim = new Field2d();
     // These values are used for Autonomous
-    private double ticks_per_wheel_revolution = 26112.0;
+    private final double ticks_per_wheel_revolution = 26112.0;
 
     // NEED THIS FOR AUTONOMOUS
     // private val max_ticks_per_hundred_milliseconds: Double = ticks_per_foot * Constants.MAX_SPEED_LOW_GEAR / 10
-    private double ticks_per_foot = ticks_per_wheel_revolution / (Constants.WHEEL_DIAMETER_FT * Math.PI); // .8 inches is diameter of wheel in feet
+    private final double ticks_per_foot = ticks_per_wheel_revolution / (Constants.WHEEL_DIAMETER_FT * Math.PI); // .8 inches is diameter of wheel in feet
     // Initializing Master Falcon Motors
-    private SafeTalonFX leftMasterFalcon = new SafeTalonFX(Constants.LEFT_MASTER_PORT, true, false); // change to false for no PID?
-    private SafeTalonFX rightMasterFalcon = new SafeTalonFX(Constants.RIGHT_MASTER_PORT, true, false);
+    private final SafeTalonFX leftMasterFalcon = new SafeTalonFX(Constants.LEFT_MASTER_PORT, true, false); // change to false for no PID?
+    private final SafeTalonFX rightMasterFalcon = new SafeTalonFX(Constants.RIGHT_MASTER_PORT, true, false);
     // Initializing Slave Falcon Motors
-    private SafeTalonFX leftSlaveFalcon = new SafeTalonFX(Constants.LEFT_SLAVE_PORT, true, false);
+    private final SafeTalonFX leftSlaveFalcon = new SafeTalonFX(Constants.LEFT_SLAVE_PORT, true, false);
 
-//    private val leftGroup = MotorControllerGroup(leftMasterFalcon, leftSlaveFalcon)
+    //    private val leftGroup = MotorControllerGroup(leftMasterFalcon, leftSlaveFalcon)
 //    private val rightGroup = MotorControllerGroup(rightMasterFalcon, rightSlaveFalcon)
-    private SafeTalonFX rightSlaveFalcon = new SafeTalonFX(Constants.RIGHT_SLAVE_PORT, true, false);
+    private final SafeTalonFX rightSlaveFalcon = new SafeTalonFX(Constants.RIGHT_SLAVE_PORT, true, false);
     //    private val kinematics = DifferentialDriveKinematics(Constants.TRACK_WIDTH)
-    private DifferentialDriveDebug diffDrive = new DifferentialDriveDebug(leftMasterFalcon, rightMasterFalcon);
-    private NavX imu = new NavX();
-    private PIDControllerDebug leftPIDController = new PIDControllerDebug(0.02, 0.0, 0.0);
-    private PIDControllerDebug rightPIDController = new PIDControllerDebug(0.02, 0.0, 0.0);
+    private final DifferentialDriveDebug diffDrive = new DifferentialDriveDebug(leftMasterFalcon, rightMasterFalcon);
+    private final NavX imu = new NavX();
+    private final PIDControllerDebug leftPIDController = new PIDControllerDebug(0.02, 0.0, 0.0);
+    private final PIDControllerDebug rightPIDController = new PIDControllerDebug(0.02, 0.0, 0.0);
     // TODO: ks and kv values need to be determined for the robot
-    private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(1.0, 3.0);
+    private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(1.0, 3.0);
+    private final double isFullSpeed = 1.0;
+    private final DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(imu.getRotation2d(), 0.0, 0.0);
     // WARN: In kotlin these were lateinit, don't know if that was important
     private NetworkTableEntry leftCurrent;
     private NetworkTableEntry leftPosition;
@@ -59,12 +55,8 @@ public class DrivetrainFalcon extends SubsystemBase {
     private NetworkTableEntry rightCurrent;
     private NetworkTableEntry rightPosition;
     private NetworkTableEntry rightVelocity;
-    private double isFullSpeed = 1.0;
     private boolean m_flippedOdometry = false;
-
     private int loopIdx = 0;
-
-    private DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(imu.getRotation2d(), 0.0, 0.0);
 
     public DrivetrainFalcon() {
         if (RobotBase.isReal()) {
@@ -332,7 +324,7 @@ public class DrivetrainFalcon extends SubsystemBase {
      * @return double array of positions [left, right]
      */
     public double[] getPositions() {
-        double pos[] = new double[2];
+        double[] pos = new double[2];
         pos[0] = leftMasterFalcon.getPosition().getValue();
         pos[1] = rightMasterFalcon.getPosition().getValue();
         return pos;
@@ -346,7 +338,7 @@ public class DrivetrainFalcon extends SubsystemBase {
      * @return double array of velocities [left, right]
      */
     public double[] getVelocities() {
-        double velocites[] = new double[2];
+        double[] velocites = new double[2];
         velocites[0] = leftMasterFalcon.getVelocity().getValue();
         velocites[1] = rightMasterFalcon.getVelocity().getValue();
         return velocites;

@@ -26,7 +26,7 @@ public class ShooterCargos extends Command {
         // var shooterVel = SmartDashboard.getNumber("StaticShooter", 0.3)
         if(m_staticVal) {
             velocity = dist.getAsDouble();
-            m_shooter.getShooterSpinner().set(dist.getAsDouble());
+            m_shooter.getShooterSpinner().set(velocity);
         } else {
             // dist() is in feet
 

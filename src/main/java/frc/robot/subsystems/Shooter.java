@@ -33,7 +33,8 @@ public final class Shooter extends SubsystemBase {
 
         // shooterSpinner.idleMode = CANSparkMax.IdleMode.kCoast
         shooterSpinner.setNeutralMode(NeutralModeValue.Coast);
-        shooterSpinner.setInverted(true);
+       //shooterSpinner.setInverted(true);
+        
     }
 
     private void configurePID() {

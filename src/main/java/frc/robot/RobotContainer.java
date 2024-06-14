@@ -7,10 +7,12 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.Drivetrain_Commands.JoystickDrive;
 import frc.robot.commands.Intake_Commands.IntakeGroup;
 import frc.robot.commands.Shooter_Commands.ShooterCargos;
+import frc.robot.commands.Shooter_Commands.ShooterGroup;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.DrivetrainFalcon;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -142,8 +144,9 @@ public class RobotContainer
 
 //        driverController.button(1).whileTrue()
         button1.whileTrue(new IntakeGroup(intake, 0.3, 0.6, shooter))
-                .whileFalse(new ShooterCargos(shooter, true, ()->-0.7));
+                .whileFalse(new ShooterCargos(shooter, true, ()->-0.3).withTimeout(0.3));
 
+        button6.whileTrue(new ShooterGroup(intake, shooter, true, ()->0.3));
 //        button1.whenHeld(IntakeGroup(intake, 0.3, 0.6, shooter)).whenReleased(ShooterCargos(shooter, true) { -0.7 }
 //            .withTimeout(0.3))
     }

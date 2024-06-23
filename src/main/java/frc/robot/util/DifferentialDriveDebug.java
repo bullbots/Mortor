@@ -24,6 +24,7 @@ public class DifferentialDriveDebug extends DifferentialDrive {
 
     public DifferentialDriveDebug(MotorController leftMotor, MotorController rightMotor) {
         super(leftMotor,rightMotor);
+        setSafetyEnabled(false);
     }
 
     // Run super version but then output math for setting motors.

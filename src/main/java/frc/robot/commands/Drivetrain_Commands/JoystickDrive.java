@@ -26,18 +26,19 @@ public class JoystickDrive  extends Command {
 
     @Override 
     public void execute() {
-        double _joyY = Math.signum(joyY.getAsDouble())*Math.pow(joyY.getAsDouble(),2) * m_drivetrain.getIsFullSpeed();
-        double _joyX = Math.signum(joyX.getAsDouble())*Math.pow(joyX.getAsDouble(),2) * m_drivetrain.getIsFullSpeed();
+        double _joyY = clampAndSquareJoystick(joyY.getAsDouble());
+        double _joyX = clampAndSquareJoystick(joyX.getAsDouble());
         boolean turnInPlace = true;
         m_drivetrain.curvatureDrive(_joyY, _joyX, turnInPlace);
-//        SmartDashboard.putNumber("JoyX", joyX.asDouble)
-//        SmartDashboard.putNumber("JoyX", _joyX)
-//        SmartDashboard.putNumber("JoyY", _joyY)
+    }
+
+    private double clampAndSquareJoystick(double value) {
+        return Math.signum(value) * Math.pow(value, 2) * m_drivetrain.getIsFullSpeed();
     }
 
     @Override 
     public void end(boolean interrupted) {
-        m_drivetrain.set(0.0, 0.0);
+        m_drivetrain.stop();
     }
 
     @Override 

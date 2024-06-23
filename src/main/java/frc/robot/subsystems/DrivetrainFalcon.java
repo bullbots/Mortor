@@ -3,14 +3,19 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.DifferentialDriveDebug;
@@ -48,17 +53,14 @@ public class DrivetrainFalcon extends SubsystemBase {
     private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(1.0, 3.0);
     private final double isFullSpeed = 1.0;
     private final DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(imu.getRotation2d(), 0.0, 0.0);
-    // WARN: In kotlin these were lateinit, don't know if that was important
-    private NetworkTableEntry leftCurrent;
-    private NetworkTableEntry leftPosition;
-    private NetworkTableEntry leftVelocity;
-    private NetworkTableEntry rightCurrent;
-    private NetworkTableEntry rightPosition;
-    private NetworkTableEntry rightVelocity;
-    private boolean m_flippedOdometry = false;
     private int loopIdx = 0;
 
     public DrivetrainFalcon() {
+
+        resetAll();
+
+        configurePathPlanner();
+
         if (RobotBase.isReal()) {
 
             rightMasterFalcon.setInverted(true);
@@ -90,13 +92,40 @@ public class DrivetrainFalcon extends SubsystemBase {
         // shifter.shiftLow();
 
         configurePID();
-        // configureMotionMagic();
 
-//        configureSmartDashBoard()
+//        resetEncoders();
 
-        resetEncoders();
 
-//        SmartDashboard.putData("Field", m_fieldSim)
+
+        SmartDashboard.putData("Field", m_fieldSim);
+    }
+
+    private void resetAll() {
+        var pose = new Pose2d();
+        resetPose(pose);
+    }
+
+    private void configurePathPlanner() {
+        AutoBuilder.configureRamsete(
+                m_odometry::getPoseMeters,
+                this::resetPose,
+                this::getCurrentChassisSpeeds,
+                this::curvatureDriveChassisSpeeds,
+                // b?,
+                // zeta?,
+                new ReplanningConfig(), // Default path replanning config. See the API for the options here
+                () -> {
+                    // Boolean supplier that controls when the path will be mirrored for the red alliance
+                    // This will flip the path being followed to the red side of the field.
+                    // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+                    var alliance = DriverStation.getAlliance();
+                    if (alliance.isPresent()) {
+                        return alliance.get() == DriverStation.Alliance.Red;
+                    }
+                    return false;
+                },
+                this // Reference to this subsystem to set requirements
+        );
     }
 
     public double getIsFullSpeed() {
@@ -108,53 +137,30 @@ public class DrivetrainFalcon extends SubsystemBase {
         leftMasterFalcon.setNeutralMode(coastMode);
     }
 
-    public void setOdometryDirection(boolean invert) {
-        m_flippedOdometry = invert;
-    }
-
     public double getAverageDist() {
         double leftDist = leftMasterFalcon.getPosition().getValue() / ticks_per_foot;
         double rightDist = rightMasterFalcon.getPosition().getValue() / ticks_per_foot;
         return (leftDist + rightDist) * 0.5;
     }
 
-    private void updateOdometry() {
-//        double leftDist = leftMasterFalcon.getSelectedSensorPosition() / ticks_per_foot;
-//        double rightDist = rightMasterFalcon.getSelectedSensorPosition() / ticks_per_foot;
-        double leftDist = leftMasterFalcon.getPosition().getValue();
-        double rightDist = rightMasterFalcon.getPosition().getValue();
+    public void resetPose(Pose2d pose) {
+        System.out.println("INFO: DrivetrainFalcon.resetOdometry");
+        resetEncoders();
+        // Ideally these should both be zero now.
+        var leftDist = leftMasterFalcon.getPosition().getValue();
+        var rightDist = leftMasterFalcon.getPosition().getValue();
 
-//        println("INFO: Left Dist: $leftDist, Right Dist: $rightDist")
-
-        if (m_flippedOdometry) {
-            double temporary = -leftDist;
-            leftDist = -rightDist;
-            rightDist = temporary;
+        var alliance = DriverStation.getAlliance();
+        if (alliance.isPresent()) {
+            // We are using Blue-alliance always field orientation.
+            if (alliance.get() == DriverStation.Alliance.Red) {
+                imu.setAngleOffset(180.0);
+            } else {
+                imu.setAngleOffset(0.0);
+            }
         }
 
-        Rotation2d rotation2d = imu.getRotation2d();
-
-        if (m_flippedOdometry) {
-            rotation2d.rotateBy(Rotation2d.fromDegrees(180.0));
-        }
-
-        m_odometry.update(rotation2d, leftDist, rightDist);
-
-    }
-
-    public void resetOdometry(Pose2d pose) {
-//        leftMasterFalcon.setSelectedSensorPosition(0.0);
-//        rightMasterFalcon.setSelectedSensorPosition(0.0);
-
-        m_odometry.resetPosition(imu.getRotation2d(), 0.0, 0.0, pose);
-    }
-
-    public void resetGyro() {
-        imu.reset();
-    }
-
-    public Pose2d getPose() {
-        return m_odometry.getPoseMeters();
+        m_odometry.resetPosition(imu.getRotation2d(), leftDist, rightDist, pose);
     }
 
     public void configurePID() {
@@ -178,43 +184,13 @@ public class DrivetrainFalcon extends SubsystemBase {
 //        rightMasterFalcon.configMotionAcceleration(Constants.RIGHT_MASTER_ACCELERATION, Constants.kTIMEOUT_MS);
     }
 
-    @Override
-    public void periodic() {
-//        println("DrivetrainFalcon periodic")
-//        SmartDashboard.putNumber("Encoder Ticks - Left", leftMasterFalcon.selectedSensorPosition)
-//        SmartDashboard.putNumber("Encoder Ticks - Right", rightMasterFalcon.selectedSensorPosition)
-//        SmartDashboard.putNumber(
-//            "Encoder Rate (Normalized) - Left",
-//            leftMasterFalcon.selectedSensorVelocity / max_ticks_per_hundred_milliseconds
-//        )
-//        SmartDashboard.putNumber(
-//            "Encoder Rate (Normalized) - Right",
-//            rightMasterFalcon.selectedSensorVelocity / max_ticks_per_hundred_milliseconds
-//        )
-//
-//        SmartDashboard.putNumber("NavX Angle", gyro.rotation2d.degrees)
-//
-//        SmartDashboard.putNumber("Right Master Current", rightMasterFalcon.statorCurrent)
-//        SmartDashboard.putNumber("Right Slave Current", rightSlaveFalcon.statorCurrent)
-//        SmartDashboard.putNumber("Left Master Current", leftMasterFalcon.statorCurrent)
-//        SmartDashboard.putNumber("Left Slave Current", leftSlaveFalcon.statorCurrent)
-
-        updateOdometry();
-
-
+    private void debugPeriodic() {
         loopIdx++;
         if (loopIdx == 10) {
             loopIdx = 0;
 
             if (RobotBase.isReal()) {
-//                SmartDashboard.putNumber("Left Encoder", leftMasterFalcon.selectedSensorPosition)
-//                SmartDashboard.putNumber("Right Encoder", rightMasterFalcon.selectedSensorPosition)
-//                SmartDashboard.putNumber("Left Drive Speed", leftMasterFalcon.selectedSensorVelocity / 22000)
-//                SmartDashboard.putNumber("Right Drive Speed", rightMasterFalcon.selectedSensorVelocity / 22000)
-//                SmartDashboard.putNumber("Left Drive Stator Current", leftMasterFalcon.statorCurrent)
-//                SmartDashboard.putNumber("Right Drive Stator Current", rightMasterFalcon.statorCurrent)
-//                SmartDashboard.putNumber("Left Drive Supply Current", leftMasterFalcon.supplyCurrent)
-//                SmartDashboard.putNumber("Right Drive Supply Current", rightMasterFalcon.supplyCurrent)
+//                SmartDashboard.putNumber("L
 
 //                SmartDashboard.putNumber("Heading", calcHeading())
 
@@ -245,98 +221,64 @@ public class DrivetrainFalcon extends SubsystemBase {
         }
     }
 
-//    fun configureSmartDashBoard() {
-//        leftCurrent = generateEntry("Left Current", 0, 0)
-//        leftPosition = generateEntry("Left Position", 2, 0)
-//        leftVelocity = generateEntry("Left Velocity", 4, 0)
-//        rightCurrent = generateEntry("Right Current", 0, 2)
-//        rightPosition = generateEntry("Right Position", 2, 2)
-//        rightVelocity = generateEntry("Right Velocity", 4, 2)
-//    }
+    private void curvatureDriveChassisSpeeds(ChassisSpeeds chassisSpeeds) {
+        double speed = chassisSpeeds.vxMetersPerSecond / Constants.MAX_METERS_PER_SECOND_VELOCITY;
+        double rotation = chassisSpeeds.omegaRadiansPerSecond / Constants.MAX_ANGULAR_VELOCITY;
+        curvatureDrive(speed, rotation);
+    }
 
-    public void arcadeDrive(double speed, double rotation, boolean squareInputs) {
-
-        diffDrive.arcadeDrive(speed, rotation, squareInputs);
+    private void curvatureDrive(double speed, double rotation) {
+        curvatureDrive(speed, rotation, false);
     }
 
     public void curvatureDrive(double speed, double rotation, boolean isQuickTurn) {
         diffDrive.curvatureDrive(speed, rotation, isQuickTurn);
-//        diffDrive.arcadeDrive(speed, rotation, squareInputs=false)
     }
 
-    /**
-     * Sets the encoder values back to zero
-     */
     public void resetEncoders() {
-        System.out.println("Reset Encoders called");
+        System.out.println("INFO: DrivetrainFalcon.resetEncoders");
         leftMasterFalcon.setPosition(0.0);
         rightMasterFalcon.setPosition(0.0);
     }
 
-    public double calcDist() {
-        double x = m_odometry.getPoseMeters().getX();
-        double y = m_odometry.getPoseMeters().getY();
-
-        double dist = Math.hypot(x, y);
-
-        return dist;
-    }
-
-    /**
-     * @return atanDegree: The heading the robot needs to face towards the goal
-     */
-    public double calcHeading() {
-        double x = m_odometry.getPoseMeters().getX();
-        double y = m_odometry.getPoseMeters().getY();
-//        val delta = ((m_odometry.poseMeters.rotation.degrees % 360) + 360) % 360 - 180 // delta % 360 is to set the input between -360 and 360
-        double atanDegree = Math.toDegrees(Math.atan2(y, x));
-
-//        println("INFO: X Position: $x, Y Position: $y, Delta: $delta, Heading: $atanDegree")
-
-        return atanDegree;
-    }
-
-    public void setSpeeds(DifferentialDriveWheelSpeeds speeds) {
-        double leftFeedforward = feedforward.calculate(speeds.leftMetersPerSecond);
-        double rightFeedforward = feedforward.calculate(speeds.rightMetersPerSecond);
-        double leftOutput =
-                leftPIDController.calculate(leftMasterFalcon.getPosition().getValue(), speeds.leftMetersPerSecond);
-        double rightOutput =
-                rightPIDController.calculate(rightMasterFalcon.getPosition().getValue(), speeds.rightMetersPerSecond);
-
-//        leftGroup.setVoltage(leftOutput + leftFeedforward)
-//        rightGroup.setVoltage(rightOutput + rightFeedforward)
-
-    }
-
-    /**
-     * Controls the robot using arcade drive.
-     *
-     * @param xSpeed:   Double / The speed for the X axis
-     * @param rotation: Double / The rotation
-     */
-    public void drive(double xSpeed, double rotation) {
-//        setSpeeds(kinematics.toWheelSpeeds(ChassisSpeeds(xSpeed, 0.0, rotation)))
-        diffDrive.arcadeDrive(xSpeed, rotation);
-    }
-
-    /**
-     * @return double array of positions [left, right]
-     */
-    public double[] getPositions() {
-        double[] pos = new double[2];
-        pos[0] = leftMasterFalcon.getPosition().getValue();
-        pos[1] = rightMasterFalcon.getPosition().getValue();
-        return pos;
-    }
-
-//    override fun simulationPeriodic() {
-//        drivetrainSim
+//    public double calcDist() {
+//        double x = m_odometry.getPoseMeters().getX();
+//        double y = m_odometry.getPoseMeters().getY();
+//        double dist = Math.hypot(x, y);
+//        return dist;
 //    }
 
-    /**
-     * @return double array of velocities [left, right]
-     */
+//    public double calcHeading() {
+//        double x = m_odometry.getPoseMeters().getX();
+//        double y = m_odometry.getPoseMeters().getY();
+////        val delta = ((m_odometry.poseMeters.rotation.degrees % 360) + 360) % 360 - 180 // delta % 360 is to set the input between -360 and 360
+//        double atanDegree = Math.toDegrees(Math.atan2(y, x));
+//        return atanDegree;
+//    }
+
+//    public void setSpeeds(DifferentialDriveWheelSpeeds speeds) {
+//        double leftFeedforward = feedforward.calculate(speeds.leftMetersPerSecond);
+//        double rightFeedforward = feedforward.calculate(speeds.rightMetersPerSecond);
+//        double leftOutput =
+//                leftPIDController.calculate(leftMasterFalcon.getPosition().getValue(), speeds.leftMetersPerSecond);
+//        double rightOutput =
+//                rightPIDController.calculate(rightMasterFalcon.getPosition().getValue(), speeds.rightMetersPerSecond);
+////        leftGroup.setVoltage(leftOutput + leftFeedforward)
+////        rightGroup.setVoltage(rightOutput + rightFeedforward)
+//    }
+
+//    public void drive(double xSpeed, double rotation) {
+////        setSpeeds(kinematics.toWheelSpeeds(ChassisSpeeds(xSpeed, 0.0, rotation)))
+//        diffDrive.arcadeDrive(xSpeed, rotation);
+//    }
+
+//    public double[] getPositions() {
+//        double[] pos = new double[2];
+//        pos[0] = leftMasterFalcon.getPosition().getValue();
+//        pos[1] = rightMasterFalcon.getPosition().getValue();
+//        return pos;
+//    }
+
     public double[] getVelocities() {
         double[] velocites = new double[2];
         velocites[0] = leftMasterFalcon.getVelocity().getValue();
@@ -344,39 +286,42 @@ public class DrivetrainFalcon extends SubsystemBase {
         return velocites;
     }
 
-    /**
-     * Sets the left and right motors to a percent output
-     *
-     * @param leftPercent  Double
-     * @param rightPercent Double
-     */
-    public void set(double leftPercent, double rightPercent) {
-        leftMasterFalcon.set(leftPercent);
-        rightMasterFalcon.set(rightPercent);
+    public DifferentialDriveWheelSpeeds getDifferentialDriveWheelSpeeds() {
+        return new DifferentialDriveWheelSpeeds(m_leftEncoder.getRate(), m_rightEncoder.getRate());
     }
 
-    public void set(ControlMode controlMode, double leftMagnitude, double rightMagnitude) {
-        leftMasterFalcon.set(leftMagnitude);
-        rightMasterFalcon.set(rightMagnitude);
+    public ChassisSpeeds getCurrentChassisSpeeds() {
+        var diffWheelSpeeds = getDifferentialDriveWheelSpeeds();
+        return Constants.DriveConstants.kDriveKinematics.toChassisSpeeds(difWheelSpeeds);
     }
 
-    /**
-     * Immediately stops the drivetrain, only use in emergencies
-     */
+//    public void set(double leftPercent, double rightPercent) {
+//        leftMasterFalcon.set(leftPercent);
+//        rightMasterFalcon.set(rightPercent);
+//    }
+
+//    public void set(ControlMode controlMode, double leftMagnitude, double rightMagnitude) {
+//        leftMasterFalcon.set(leftMagnitude);
+//        rightMasterFalcon.set(rightMagnitude);
+//    }
+
     public void stop() {
         leftMasterFalcon.stopMotor();
         rightMasterFalcon.stopMotor();
     }
 
-    void driveLeft(double value) {
-        leftMasterFalcon.set(value);
+    private void updateOdometry() {
+        Rotation2d rotation2d = imu.getRotation2d();
+        double leftDist = leftMasterFalcon.getPosition().getValue();
+        double rightDist = rightMasterFalcon.getPosition().getValue();
+
+        m_odometry.update(rotation2d, leftDist, rightDist);
     }
 
-    void driveRight(double value) {
-        rightMasterFalcon.set(value);
-    }
-
-    public enum CoastMode {
-        Coast, Brake
+    @Override
+    public void periodic() {
+        updateOdometry();
+        m_fieldSim.setRobotPose(m_odometry.getPoseMeters());
+        debugPeriodic();
     }
 }

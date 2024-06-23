@@ -2,6 +2,7 @@ package frc.robot.util;
 
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -10,17 +11,16 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class NavX extends AHRS {
 
-    private double angleDelta = 0.0;
-
+    private double angleOffset = 0.0;
 
     @Override 
     public double getAngle() {
-        double angle = super.getAngle() - angleDelta;
+        double angle = super.getAngle() - angleOffset;
         angle = MathUtil.inputModulus(angle, -180.0, 180.0);
-
         return angle;
     }
 
-//    override fun reset() { angleDelta = super.getAngle() }
-
+    public void setAngleOffset(double setValue) {
+        this.angleOffset = setValue + super.getAngle();
+    }
 }

@@ -116,7 +116,7 @@ public class RobotContainer
 
         drivetrain.setDefaultCommand(new JoystickDrive(drivetrain,
                 () -> -stick.getY() * ((button3.getAsBoolean()) ? -1.0 : 1.0),  // Because Negative Y is forward on the joysticks
-                () -> stick.getX(),
+                () -> stick.getX() * ((button3.getAsBoolean()) ? 1.0 : -1.0),
                 () ->(stick.getZ() - 1) / -2.0));
     }
     

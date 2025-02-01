@@ -146,7 +146,7 @@ public class RobotContainer
         button1.whileTrue(new IntakeGroup(intake, 0.3, 0.6, shooter))
                 .whileFalse(new ShooterCargos(shooter, true, ()->-0.3).withTimeout(0.3));
 
-        button6.whileTrue(new ShooterGroup(intake, shooter, true, ()->0.3));
+        button6.whileTrue(new ShooterGroup(intake, shooter, true, ()->0.4));
 //        button1.whenHeld(IntakeGroup(intake, 0.3, 0.6, shooter)).whenReleased(ShooterCargos(shooter, true) { -0.7 }
 //            .withTimeout(0.3))
     }

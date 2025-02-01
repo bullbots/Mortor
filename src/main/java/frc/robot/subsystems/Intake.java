@@ -5,8 +5,6 @@ import com.revrobotics.CANSparkLowLevel;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.SafeSparkMax;
-import kotlin.jvm.internal.Intrinsics;
-import org.jetbrains.annotations.NotNull;
 
 
 public final class Intake extends SubsystemBase {
@@ -46,28 +44,24 @@ public final class Intake extends SubsystemBase {
         return intakeSpinner;
     }
 
-    public void setIntakeSpinner(@NotNull SafeSparkMax var1) {
-        Intrinsics.checkNotNullParameter(var1, "<set-?>");
+    public void setIntakeSpinner(SafeSparkMax var1) {
         this.intakeSpinner = var1;
     }
 
-    @NotNull
+
     public SafeSparkMax getArmSpinner() {
         return this.armSpinner;
     }
 
-    public void setArmSpinner(@NotNull SafeSparkMax var1) {
-        Intrinsics.checkNotNullParameter(var1, "<set-?>");
+    public void setArmSpinner(SafeSparkMax var1) {
         this.armSpinner = var1;
     }
 
-    @NotNull
     public SafeSparkMax getRaiseLowerSpinner() {
         return raiseLowerSpinner;
     }
 
-    public final void setRaiseLowerSpinner(@NotNull SafeSparkMax var1) {
-        Intrinsics.checkNotNullParameter(var1, "<set-?>");
+    public final void setRaiseLowerSpinner(SafeSparkMax var1) {
         this.raiseLowerSpinner = var1;
     }
 

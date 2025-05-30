@@ -31,14 +31,14 @@ public class DrivetrainFalcon extends SubsystemBase {
     // private val max_ticks_per_hundred_milliseconds: Double = ticks_per_foot * Constants.MAX_SPEED_LOW_GEAR / 10
     private final double ticks_per_foot = ticks_per_wheel_revolution / (Constants.WHEEL_DIAMETER_FT * Math.PI); // .8 inches is diameter of wheel in feet
     // Initializing Master Falcon Motors
-    private final SafeTalonFX leftMasterFalcon = new SafeTalonFX(Constants.LEFT_MASTER_PORT, true, false); // change to false for no PID?
-    private final SafeTalonFX rightMasterFalcon = new SafeTalonFX(Constants.RIGHT_MASTER_PORT, true, false);
+    private final SafeTalonFX leftMasterFalcon = new SafeTalonFX(Constants.LEFT_MASTER_PORT, true, false, true); // change to false for no PID?
+    private final SafeTalonFX rightMasterFalcon = new SafeTalonFX(Constants.RIGHT_MASTER_PORT, true, false, true);
     // Initializing Slave Falcon Motors
-    private final SafeTalonFX leftSlaveFalcon = new SafeTalonFX(Constants.LEFT_SLAVE_PORT, true, false);
+    private final SafeTalonFX leftSlaveFalcon = new SafeTalonFX(Constants.LEFT_SLAVE_PORT, true, false, true);
 
     //    private val leftGroup = MotorControllerGroup(leftMasterFalcon, leftSlaveFalcon)
 //    private val rightGroup = MotorControllerGroup(rightMasterFalcon, rightSlaveFalcon)
-    private final SafeTalonFX rightSlaveFalcon = new SafeTalonFX(Constants.RIGHT_SLAVE_PORT, true, false);
+    private final SafeTalonFX rightSlaveFalcon = new SafeTalonFX(Constants.RIGHT_SLAVE_PORT, true, false, true);
     //    private val kinematics = DifferentialDriveKinematics(Constants.TRACK_WIDTH)
     private final DifferentialDriveDebug diffDrive = new DifferentialDriveDebug(leftMasterFalcon, rightMasterFalcon);
     private final NavX imu = new NavX();

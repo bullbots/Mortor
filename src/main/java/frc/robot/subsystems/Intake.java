@@ -1,17 +1,20 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkLowLevel;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.SafeSparkMax;
+import frc.robot.util.SafeTalonFX;
 
 
 public final class Intake extends SubsystemBase {
 
     private SafeSparkMax intakeSpinner;
     private SafeSparkMax armSpinner;
-    private SafeSparkMax raiseLowerSpinner;
+    // private SafeSparkMax raiseLowerSpinner;
+    private SafeTalonFX raiseLowerSpinner; // = new SafeTalonFX(Constants.LEFT_MASTER_PORT, true, false);
     private int loopIdx;
 
     public Intake() {
@@ -20,24 +23,26 @@ public final class Intake extends SubsystemBase {
 
         intakeSpinner = new SafeSparkMax(Constants.INTAKE_SPINNER_PORT, CANSparkLowLevel.MotorType.kBrushless);
         armSpinner = new SafeSparkMax(Constants.INTAKE_ARM_SPINNER_PORT, CANSparkLowLevel.MotorType.kBrushless);
-        raiseLowerSpinner = new SafeSparkMax(Constants.RAISE_LOWER_ARM_PORT, CANSparkLowLevel.MotorType.kBrushless);
+        // raiseLowerSpinner = new SafeSparkMax(Constants.RAISE_LOWER_ARM_PORT, CANSparkLowLevel.MotorType.kBrushless);
+        raiseLowerSpinner = new SafeTalonFX(Constants.RAISE_LOWER_ARM_PORT, false, true, false);
 
-        var pidController = raiseLowerSpinner.getPIDController();
-        pidController.setP(Constants.INTAKE_P);
-        pidController.setI(Constants.INTAKE_I);
-        pidController.setD(Constants.INTAKE_D);
-        pidController.setFF(Constants.INTAKE_FF);
-        pidController.setIZone(Constants.INTAKE_IZONE);
-        pidController.setOutputRange(-1.0, 1.0);
+        // var pidController = raiseLowerSpinner.getPIDController();
+        // pidController.setP(Constants.INTAKE_P);
+        // pidController.setI(Constants.INTAKE_I);
+        // pidController.setD(Constants.INTAKE_D);
+        // pidController.setFF(Constants.INTAKE_FF);
+        // pidController.setIZone(Constants.INTAKE_IZONE);
+        // pidController.setOutputRange(-1.0, 1.0);
 
-        pidController.setSmartMotionMaxVelocity(Constants.I_MAXRPM, Constants.I_SlotIdx);
-        pidController.setSmartMotionMinOutputVelocity(0.0, Constants.I_SlotIdx);
-        pidController.setSmartMotionMaxAccel(Constants.I_MAXRPM, Constants.I_SlotIdx);
-        pidController.setSmartMotionAllowedClosedLoopError(Constants.I_ALLOWED_ERROR, Constants.I_SlotIdx);
+        // pidController.setSmartMotionMaxVelocity(Constants.I_MAXRPM, Constants.I_SlotIdx);
+        // pidController.setSmartMotionMinOutputVelocity(0.0, Constants.I_SlotIdx);
+        // pidController.setSmartMotionMaxAccel(Constants.I_MAXRPM, Constants.I_SlotIdx);
+        // pidController.setSmartMotionAllowedClosedLoopError(Constants.I_ALLOWED_ERROR, Constants.I_SlotIdx);
 
         intakeSpinner.setIdleMode(CANSparkBase.IdleMode.kBrake);
         armSpinner.setIdleMode(CANSparkBase.IdleMode.kBrake);
-        raiseLowerSpinner.setIdleMode(CANSparkBase.IdleMode.kBrake);
+        // raiseLowerSpinner.setIdleMode(CANSparkBase.IdleMode.kBrake);
+        raiseLowerSpinner.setNeutralMode(NeutralModeValue.Brake);
     }
     
     public SafeSparkMax getIntakeSpinner() {
@@ -57,11 +62,11 @@ public final class Intake extends SubsystemBase {
         this.armSpinner = var1;
     }
 
-    public SafeSparkMax getRaiseLowerSpinner() {
+    public SafeTalonFX getRaiseLowerSpinner() {
         return raiseLowerSpinner;
     }
 
-    public final void setRaiseLowerSpinner(SafeSparkMax var1) {
+    public final void setRaiseLowerSpinner(SafeTalonFX var1) {
         this.raiseLowerSpinner = var1;
     }
 

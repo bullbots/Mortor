@@ -15,7 +15,8 @@ public class IntakeArmUp extends Command {
 
     @Override
     public void initialize() {
-        intake.getRaiseLowerSpinner().getPIDController().setReference(Constants.INTAKE_ARM_UP, CANSparkBase.ControlType.kSmartMotion);
+        // intake.getRaiseLowerSpinner().getPIDController().setReference(Constants.INTAKE_ARM_UP, CANSparkBase.ControlType.kSmartMotion);
+        intake.getRaiseLowerSpinner().set(Constants.INTAKE_ARM_UP);
     }
 
     @Override

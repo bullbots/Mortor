@@ -34,7 +34,7 @@ public class Climber extends SubsystemBase {
 //        configureShuffleBoard()
 
         // Initializing Motor(s)
-        climberMotor = new SafeTalonFX(Constants.CLIMBER_PORT, false, false);
+        climberMotor = new SafeTalonFX(Constants.CLIMBER_PORT, false, false, false);
 
         climberMotor.setNeutralMode(NeutralModeValue.Brake);
 

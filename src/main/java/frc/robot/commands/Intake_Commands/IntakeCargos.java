@@ -29,7 +29,8 @@ public class IntakeCargos extends Command {
     // Called when the command is initially scheduled.
     @Override 
     public void initialize() {
-        m_intake.getRaiseLowerSpinner().getPIDController().setReference(Constants.INTAKE_ARM_DOWN, CANSparkBase.ControlType.kSmartMotion);
+        // m_intake.getRaiseLowerSpinner().getPIDController().setReference(Constants.INTAKE_ARM_DOWN, CANSparkBase.ControlType.kSmartMotion);
+        m_intake.getRaiseLowerSpinner().set(Constants.INTAKE_ARM_DOWN);
 
         m_intake.getIntakeSpinner().set(m_intakeVel);
         m_intake.getArmSpinner().set(m_armVel);
@@ -49,7 +50,8 @@ public class IntakeCargos extends Command {
     @Override 
     public void end(boolean interrupted) {
         m_intake.stop();
-        m_intake.getRaiseLowerSpinner().getPIDController().setReference(Constants.INTAKE_ARM_HOLD, CANSparkBase.ControlType.kSmartMotion);
+        // m_intake.getRaiseLowerSpinner().getPIDController().setReference(Constants.INTAKE_ARM_HOLD, CANSparkBase.ControlType.kSmartMotion);
+        m_intake.getRaiseLowerSpinner().set(Constants.INTAKE_ARM_HOLD);
 
     }
 

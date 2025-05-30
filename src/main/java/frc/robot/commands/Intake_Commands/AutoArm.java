@@ -24,7 +24,8 @@ public class AutoArm extends Command {
     @Override
     public void initialize() {
         System.out.println("INFO: AutoArm.initialize");
-        intake.getRaiseLowerSpinner().getPIDController().setReference(targetTraj, CANSparkBase.ControlType.kSmartMotion);
+        // intake.getRaiseLowerSpinner().getPIDController().setReference(targetTraj, CANSparkBase.ControlType.kSmartMotion);
+        intake.getRaiseLowerSpinner().set(targetTraj);
     }
 
     @Override
@@ -34,7 +35,7 @@ public class AutoArm extends Command {
 
     @Override
     public boolean isFinished() {
-        var trajPoseError = targetTraj - intake.getRaiseLowerSpinner().getEncoder().getPosition();
+        var trajPoseError = targetTraj - intake.getRaiseLowerSpinner().getPosition().getValueAsDouble();
         if (isDown) {
             return Math.abs(trajPoseError) < 1;
         } else {
